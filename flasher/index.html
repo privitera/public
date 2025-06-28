@@ -319,12 +319,15 @@
         <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px; margin: 20px 0;">
             <h3 style="font-size: 20px; margin-bottom: 15px;">📋 Required Hardware</h3>
             <ul style="text-align: left; list-style: none; padding: 0;">
-                <li style="margin: 8px 0;">✓ Raspberry Pi (tested on Pi 5)</li>
-                <li style="margin: 8px 0;">✓ USB CAN adapter (250kbps)</li>
-                <li style="margin: 8px 0;">✓ Optional: 52Pi 3.5" LCD display for status</li>
+                <li style="margin: 8px 0;">✓ Raspberry Pi 5 or CM5 (Pi 4 also supported)</li>
+                <li style="margin: 8px 0;">✓ CAN adapter: USB or SPI MCP2515 (250kbps)</li>
+                <li style="margin: 8px 0;">✓ Optional: Display (52Pi LCD, Official touchscreen, HDMI)</li>
                 <li style="margin: 8px 0;">✓ SD card (8GB+ recommended)</li>
                 <li style="margin: 8px 0;">✓ Network connection (Ethernet or WiFi)</li>
             </ul>
+            <p style="font-size: 14px; opacity: 0.8; margin-top: 15px;">
+                The deployment script automatically detects your hardware configuration and adapts accordingly.
+            </p>
         </div>
 
         <div class="features">
@@ -362,15 +365,24 @@
         <div class="command-box" style="margin-bottom: 20px;">
             <h3>Prerequisites: Prepare Your Raspberry Pi</h3>
             <p style="margin: 15px 0; line-height: 1.6;">
-                1. <strong>Flash Raspberry Pi OS Lite (64-bit)</strong> to an SD card using 
-                <a href="https://www.raspberrypi.com/software/" target="_blank" style="color: #00ccff;">Raspberry Pi Imager</a><br>
-                2. <strong>Enable SSH</strong> and set a hostname (<code style="font-size: 12px;">flasher</code> recommended)<br>
-                3. <strong>Configure user credentials</strong> during imaging<br>
-                4. <strong>Optional:</strong> Configure WiFi if not using Ethernet<br>
-                5. <strong>Boot your Pi</strong> and ensure network connectivity
+                <strong>Using Raspberry Pi Imager:</strong><br>
+                1. <strong>Download and install</strong> <a href="https://www.raspberrypi.com/software/" target="_blank" style="color: #00ccff;">Raspberry Pi Imager</a><br>
+                2. <strong>Select OS:</strong> Raspberry Pi OS Lite (64-bit)<br>
+                3. <strong>Click the gear icon</strong> for advanced options:<br>
+                   • Set hostname: <code style="font-size: 12px;">flasher</code><br>
+                   • Enable SSH with password authentication<br>
+                   • Configure username and password<br>
+                   • Configure WiFi (optional if using Ethernet)<br>
+                   • Set locale settings<br>
+                4. <strong>Flash the SD card</strong> and wait for completion<br>
+                5. <strong>Insert SD card</strong> and boot your Pi<br>
+                6. <strong>Verify network access</strong> via SSH
             </p>
             <p style="font-size: 13px; opacity: 0.8; margin-top: 10px;">
-                ⚠️ <strong>Security Note:</strong> Always use strong, unique passwords. Change default credentials immediately after deployment.
+                💡 <strong>Note:</strong> The deployment script handles all other configuration including display drivers, CAN setup, and hardware-specific settings.
+            </p>
+            <p style="font-size: 13px; opacity: 0.8; margin-top: 5px;">
+                ⚠️ <strong>Security:</strong> Use strong passwords. The deployment script will configure additional security settings.
             </p>
         </div>
 
