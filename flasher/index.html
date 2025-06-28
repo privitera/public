@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Battery Flasher - One-Click Deploy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -146,7 +149,7 @@
             background: rgba(0, 0, 0, 0.5);
             padding: 15px 20px;
             border-radius: 5px;
-            font-family: 'Courier New', monospace;
+            font-family: 'Roboto Mono', monospace;
             font-size: 14px;
             word-break: break-all;
             margin-bottom: 15px;
@@ -157,6 +160,50 @@
 
         .command:hover {
             background: rgba(0, 0, 0, 0.7);
+        }
+        
+        /* Code blocks in status messages */
+        code {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 13px;
+        }
+        
+        /* Copy button for code blocks */
+        .code-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .copy-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            padding: 4px 8px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .code-container:hover .copy-button {
+            opacity: 1;
+        }
+        
+        .copy-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        
+        .copy-button.copied {
+            background: rgba(0, 255, 136, 0.3);
+            border-color: rgba(0, 255, 136, 0.5);
+            color: #00ff88;
         }
 
         .copy-hint {
@@ -303,10 +350,13 @@
 
         <div class="command-box">
             <h3>Manual Installation</h3>
-            <div class="command" onclick="copyCommand(this)">
-                curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash
+            <div class="code-container">
+                <div class="command" style="cursor: default;">
+                    curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash
+                </div>
+                <button class="copy-button" style="opacity: 1;" onclick="copyCode(this, 'curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash')">Copy</button>
             </div>
-            <p class="copy-hint">Click to copy command</p>
+            <p class="copy-hint">One-line installer for quick deployment</p>
         </div>
     </div>
 
@@ -329,15 +379,28 @@
             status.innerHTML = `
                 <strong>📋 Deployment Instructions:</strong><br><br>
                 
-                1. SSH into your Raspberry Pi:<br>
-                <code style="background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 10px 0; word-wrap: break-word;">
-                    ssh pi@flasher.local
-                </code><br><br>
+                1. SSH into your Raspberry Pi (use either root or pi user):<br>
+                <div class="code-container" style="margin: 10px 0;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word;">
+                        ssh root@flasher.local
+                    </code>
+                    <button class="copy-button" onclick="copyCode(this, 'ssh root@flasher.local')">Copy</button>
+                </div>
+                <div class="code-container" style="margin: 10px 0;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word;">
+                        ssh pi@flasher.local
+                    </code>
+                    <button class="copy-button" onclick="copyCode(this, 'ssh pi@flasher.local')">Copy</button>
+                </div>
+                <span style="font-size: 12px; opacity: 0.8;">Default password for both users: <strong>flasher</strong></span><br><br>
                 
                 2. Run the deployment command:<br>
-                <code style="background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 10px 0; word-wrap: break-word; max-width: 100%;">
-                    curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash
-                </code><br><br>
+                <div class="code-container" style="margin: 10px 0;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto;">
+                        curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash
+                    </code>
+                    <button class="copy-button" onclick="copyCode(this, 'curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash')">Copy</button>
+                </div><br>
                 
                 3. The installer will:<br>
                 • Check system compatibility<br>
@@ -348,9 +411,12 @@
                 • Run hardware tests<br><br>
                 
                 4. After installation, reboot your Pi:<br>
-                <code style="background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 10px 0; word-wrap: break-word;">
-                    sudo reboot
-                </code><br><br>
+                <div class="code-container" style="margin: 10px 0;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word;">
+                        sudo reboot
+                    </code>
+                    <button class="copy-button" onclick="copyCode(this, 'sudo reboot')">Copy</button>
+                </div><br>
                 
                 5. The system will automatically start on boot and begin monitoring for batteries to flash.
             `;
@@ -373,7 +439,7 @@
 
         function copyCommand(element) {
             const command = element.textContent.trim();
-            navigator.clipboard.writeText(command).then(() => {
+            copyToClipboard(command, () => {
                 const originalText = element.innerHTML;
                 element.style.background = 'rgba(0, 255, 136, 0.3)';
                 element.innerHTML = '✅ Copied to clipboard!';
@@ -382,21 +448,33 @@
                     element.style.background = '';
                     element.innerHTML = originalText;
                 }, 2000);
+            });
+        }
+        
+        function copyCode(button, text) {
+            copyToClipboard(text, () => {
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+        
+        function copyToClipboard(text, callback) {
+            navigator.clipboard.writeText(text).then(() => {
+                callback();
             }).catch(() => {
                 // Fallback for older browsers
                 const textArea = document.createElement('textarea');
-                textArea.value = command;
+                textArea.value = text;
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                
-                element.style.background = 'rgba(0, 255, 136, 0.3)';
-                element.innerHTML = '✅ Copied!';
-                setTimeout(() => {
-                    element.style.background = '';
-                    element.innerHTML = command;
-                }, 2000);
+                callback();
             });
         }
 
