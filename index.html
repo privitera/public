@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impulse Labs Public Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+            background: linear-gradient(45deg, #00B4DB, #0083B0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #888;
+            margin-bottom: 3em;
+        }
+
+        .projects {
+            display: grid;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 180, 219, 0.2);
+            border-color: rgba(0, 180, 219, 0.3);
+        }
+
+        .project-title {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #00B4DB;
+        }
+
+        .project-description {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .coming-soon {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .coming-soon:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .footer {
+            margin-top: 60px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Impulse Labs</h1>
+        <p class="subtitle">Public Project Landing Pages</p>
+        
+        <div class="projects">
+            <a href="flasher/" class="project-card">
+                <h2 class="project-title">🔋 Battery Flasher</h2>
+                <p class="project-description">
+                    Automated battery firmware flashing system for Raspberry Pi.
+                    One-click deployment for BYD battery management systems.
+                </p>
+            </a>
+            
+            <div class="project-card coming-soon">
+                <h2 class="project-title">🚀 More Projects</h2>
+                <p class="project-description">
+                    Additional project deployment pages coming soon...
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 Impulse Labs - Internal Tools</p>
+        </div>
+    </div>
+</body>
+</html>
