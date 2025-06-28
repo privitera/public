@@ -447,17 +447,25 @@
                     </code>
                     <button class="copy-button" onclick="copyCode(this, 'gh auth login')">Copy</button>
                 </div>
-                <span style="font-size: 12px; opacity: 0.8;">Choose: GitHub.com → HTTPS → Login with web browser</span><br><br>
+                <span style="font-size: 12px; opacity: 0.8;">Choose: GitHub.com → SSH → Generate new SSH key</span><br><br>
                 
-                4. Run the main deployment:<br>
+                4. Clone the private repository:<br>
                 <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash">
-                        curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="git clone git@github.com:privitera/flasher.git">
+                        git clone git@github.com:privitera/flasher.git
                     </code>
-                    <button class="copy-button" onclick="copyCode(this, 'curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash')">Copy</button>
+                    <button class="copy-button" onclick="copyCode(this, 'git clone git@github.com:privitera/flasher.git')">Copy</button>
                 </div><br>
                 
-                5. After installation, reboot your Pi:<br>
+                5. Run the deployment script:<br>
+                <div class="code-container" style="margin: 10px 0;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="cd flasher && sudo ./deploy.sh">
+                        cd flasher && sudo ./deploy.sh
+                    </code>
+                    <button class="copy-button" onclick="copyCode(this, 'cd flasher && sudo ./deploy.sh')">Copy</button>
+                </div><br>
+                
+                6. After installation, reboot your Pi:<br>
                 <div class="code-container" style="margin: 10px 0;">
                     <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="sudo reboot">
                         sudo reboot
@@ -465,7 +473,7 @@
                     <button class="copy-button" onclick="copyCode(this, 'sudo reboot')">Copy</button>
                 </div><br>
                 
-                6. The system will automatically start on boot and begin monitoring for batteries to flash.
+                7. The system will automatically start on boot and begin monitoring for batteries to flash.
             `;
             
             // Simulate progress
