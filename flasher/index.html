@@ -283,7 +283,7 @@
             <div class="feature">
                 <div class="feature-icon">🔌</div>
                 <div class="feature-title">CAN Interface</div>
-                <div class="feature-desc">Auto-configured for MCP2515</div>
+                <div class="feature-desc">USB CAN adapter support</div>
             </div>
             <div class="feature">
                 <div class="feature-icon">📊</div>
@@ -330,12 +330,12 @@
                 <strong>📋 Deployment Instructions:</strong><br><br>
                 
                 1. SSH into your Raspberry Pi:<br>
-                <code style="background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 10px 0;">
+                <code style="background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 10px 0; word-wrap: break-word;">
                     ssh pi@flasher.local
                 </code><br><br>
                 
                 2. Run the deployment command:<br>
-                <code style="background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 10px 0;">
+                <code style="background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 10px 0; word-wrap: break-word; max-width: 100%;">
                     curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash
                 </code><br><br>
                 
@@ -348,9 +348,11 @@
                 • Run hardware tests<br><br>
                 
                 4. After installation, reboot your Pi:<br>
-                <code style="background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 10px 0;">
+                <code style="background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 3px; display: inline-block; margin: 10px 0; word-wrap: break-word;">
                     sudo reboot
-                </code>
+                </code><br><br>
+                
+                5. The system will automatically start on boot and begin monitoring for batteries to flash.
             `;
             
             // Simulate progress
