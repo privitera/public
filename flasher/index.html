@@ -349,14 +349,14 @@
         </div>
 
         <div class="command-box">
-            <h3>Manual Installation</h3>
+            <h3>Quick Start (Public Repo)</h3>
             <div class="code-container">
-                <div class="command" style="cursor: default;">
-                    curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash
+                <div class="command" style="cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash">
+                    curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash
                 </div>
-                <button class="copy-button" style="opacity: 1;" onclick="copyCode(this, 'curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash')">Copy</button>
+                <button class="copy-button" style="opacity: 1;" onclick="copyCode(this, 'curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash')">Copy</button>
             </div>
-            <p class="copy-hint">One-line installer for quick deployment</p>
+            <p class="copy-hint">Click code to copy • Sets up GitHub authentication for private repo access</p>
         </div>
     </div>
 
@@ -381,44 +381,53 @@
                 
                 1. SSH into your Raspberry Pi (use either root or pi user):<br>
                 <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="ssh root@flasher.local">
                         ssh root@flasher.local
                     </code>
                     <button class="copy-button" onclick="copyCode(this, 'ssh root@flasher.local')">Copy</button>
                 </div>
                 <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="ssh pi@flasher.local">
                         ssh pi@flasher.local
                     </code>
                     <button class="copy-button" onclick="copyCode(this, 'ssh pi@flasher.local')">Copy</button>
                 </div>
-                <span style="font-size: 12px; opacity: 0.8;">Default password for both users: <strong>flasher</strong></span><br><br>
+                <span style="font-size: 12px; opacity: 0.8;">Default password for both users: <strong>flasher</strong> | <em>Click code to copy</em></span><br><br>
                 
-                2. Run the deployment command:<br>
+                2. Run Stage 1 setup (prepares GitHub authentication):<br>
                 <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash">
+                        curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash
+                    </code>
+                    <button class="copy-button" onclick="copyCode(this, 'curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash')">Copy</button>
+                </div><br>
+                
+                3. Authenticate with GitHub (required for private repo access):<br>
+                <div class="code-container" style="margin: 10px 0;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="gh auth login">
+                        gh auth login
+                    </code>
+                    <button class="copy-button" onclick="copyCode(this, 'gh auth login')">Copy</button>
+                </div>
+                <span style="font-size: 12px; opacity: 0.8;">Choose: GitHub.com → HTTPS → Login with web browser</span><br><br>
+                
+                4. Run the main deployment:<br>
+                <div class="code-container" style="margin: 10px 0;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash">
                         curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash
                     </code>
                     <button class="copy-button" onclick="copyCode(this, 'curl -sL https://raw.githubusercontent.com/privitera/flasher/main/deploy.sh | sudo bash')">Copy</button>
                 </div><br>
                 
-                3. The installer will:<br>
-                • Check system compatibility<br>
-                • Install all dependencies<br>
-                • Build flashbatt from source<br>
-                • Configure CAN interface<br>
-                • Set up systemd services<br>
-                • Run hardware tests<br><br>
-                
-                4. After installation, reboot your Pi:<br>
+                5. After installation, reboot your Pi:<br>
                 <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="sudo reboot">
                         sudo reboot
                     </code>
                     <button class="copy-button" onclick="copyCode(this, 'sudo reboot')">Copy</button>
                 </div><br>
                 
-                5. The system will automatically start on boot and begin monitoring for batteries to flash.
+                6. The system will automatically start on boot and begin monitoring for batteries to flash.
             `;
             
             // Simulate progress
@@ -438,16 +447,16 @@
         }
 
         function copyCommand(element) {
-            const command = element.textContent.trim();
+            const command = element.dataset.command || element.textContent.trim();
             copyToClipboard(command, () => {
                 const originalText = element.innerHTML;
                 element.style.background = 'rgba(0, 255, 136, 0.3)';
-                element.innerHTML = '✅ Copied to clipboard!';
+                element.innerHTML = '✅ Copied!';
                 
                 setTimeout(() => {
                     element.style.background = '';
                     element.innerHTML = originalText;
-                }, 2000);
+                }, 1500);
             });
         }
         
