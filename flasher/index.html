@@ -387,25 +387,26 @@
         </div>
 
         <div class="command-box">
-            <h3>Quick Start Options</h3>
+            <h3>Quick Start</h3>
             
-            <h4 style="margin-top: 20px; font-size: 16px;">Option A: One-Line Deploy (After Stage 1)</h4>
-            <div class="code-container">
-                <div class="command" style="cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash">
-                    curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash
-                </div>
-                <button class="copy-button" style="opacity: 1;" onclick="copyCode(this, 'curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash')">Copy</button>
-            </div>
-            <p class="copy-hint" style="margin-bottom: 20px;">Requires: Stage 1 complete + gh auth login</p>
+            <h4 style="margin-top: 20px; font-size: 16px;">Complete Installation Process:</h4>
+            <ol style="text-align: left; line-height: 1.8; margin: 15px 0;">
+                <li>Prepare SD card with Raspberry Pi Imager (see prerequisites above)</li>
+                <li>Boot Pi and SSH in with your credentials</li>
+                <li>Run Stage 1 setup: <code style="font-size: 12px;">curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash</code></li>
+                <li>Authenticate GitHub: <code style="font-size: 12px;">gh auth login</code> (choose SSH)</li>
+                <li>Deploy: <code style="font-size: 12px;">curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash</code></li>
+                <li>Reboot: <code style="font-size: 12px;">sudo reboot</code></li>
+            </ol>
             
-            <h4 style="font-size: 16px;">Option B: Stage 1 Setup (First Time Only)</h4>
+            <h4 style="font-size: 16px;">First Command (Stage 1):</h4>
             <div class="code-container">
                 <div class="command" style="cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash">
                     curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash
                 </div>
                 <button class="copy-button" style="opacity: 1;" onclick="copyCode(this, 'curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash')">Copy</button>
             </div>
-            <p class="copy-hint">Click code to copy • Installs GitHub CLI and dependencies</p>
+            <p class="copy-hint">Installs GitHub CLI and prepares system for deployment</p>
         </div>
     </div>
 
@@ -428,20 +429,14 @@
             status.innerHTML = `
                 <strong>📋 Deployment Instructions:</strong><br><br>
                 
-                1. SSH into your Raspberry Pi (use either root or pi user):<br>
-                <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="ssh root@flasher.local">
-                        ssh root@flasher.local
-                    </code>
-                    <button class="copy-button" onclick="copyCode(this, 'ssh root@flasher.local')">Copy</button>
-                </div>
+                1. SSH into your Raspberry Pi:<br>
                 <div class="code-container" style="margin: 10px 0;">
                     <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="ssh pi@flasher.local">
                         ssh pi@flasher.local
                     </code>
                     <button class="copy-button" onclick="copyCode(this, 'ssh pi@flasher.local')">Copy</button>
                 </div>
-                <span style="font-size: 12px; opacity: 0.8;"><em>Click code to copy</em> | You'll need login credentials for your Pi</span><br><br>
+                <span style="font-size: 12px; opacity: 0.8;"><em>Use the username and password you configured in Raspberry Pi Imager</em></span><br><br>
                 
                 2. Run Stage 1 setup (prepares GitHub authentication):<br>
                 <div class="code-container" style="margin: 10px 0;">
@@ -460,24 +455,14 @@
                 </div>
                 <span style="font-size: 12px; opacity: 0.8;">Choose: GitHub.com → SSH → Generate new SSH key</span><br><br>
                 
-                4. Deploy using one of these methods:<br>
-                <div style="margin-left: 20px;">
-                    <strong>Option A:</strong> One-line deployment (Recommended)<br>
-                    <div class="code-container" style="margin: 10px 0;">
-                        <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash">
-                            curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash
-                        </code>
-                        <button class="copy-button" onclick="copyCode(this, 'curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash')">Copy</button>
-                    </div>
-                    
-                    <strong>Option B:</strong> Manual clone and run<br>
-                    <div class="code-container" style="margin: 10px 0;">
-                        <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="git clone git@github.com:privitera/flasher.git && cd flasher && sudo ./deploy.sh">
-                            git clone git@github.com:privitera/flasher.git && cd flasher && sudo ./deploy.sh
-                        </code>
-                        <button class="copy-button" onclick="copyCode(this, 'git clone git@github.com:privitera/flasher.git && cd flasher && sudo ./deploy.sh')">Copy</button>
-                    </div>
-                </div><br>
+                4. Run the deployment:<br>
+                <div class="code-container" style="margin: 10px 0;">
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash">
+                        curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash
+                    </code>
+                    <button class="copy-button" onclick="copyCode(this, 'curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash')">Copy</button>
+                </div>
+                <span style="font-size: 12px; opacity: 0.8;"><em>The wrapper will clone the private repo and run the deployment with sudo</em></span><br><br>
                 
                 5. After installation, reboot your Pi:<br>
                 <div class="code-container" style="margin: 10px 0;">
