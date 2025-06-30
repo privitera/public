@@ -362,29 +362,6 @@
             <div id="progressFill" class="progress-fill"></div>
         </div>
 
-        <div class="command-box" style="margin-bottom: 20px;">
-            <h3>Prerequisites: Prepare Your Raspberry Pi</h3>
-            <p style="margin: 15px 0; line-height: 1.6;">
-                <strong>Using Raspberry Pi Imager:</strong><br>
-                1. <strong>Download and install</strong> <a href="https://www.raspberrypi.com/software/" target="_blank" style="color: #00ccff;">Raspberry Pi Imager</a><br>
-                2. <strong>Select OS:</strong> Raspberry Pi OS Lite (64-bit)<br>
-                3. <strong>Click the gear icon</strong> for advanced options:<br>
-                   • Set hostname: <code style="font-size: 12px;">flasher</code><br>
-                   • Enable SSH with password authentication<br>
-                   • Configure username and password<br>
-                   • Configure WiFi (optional if using Ethernet)<br>
-                   • Set locale settings<br>
-                4. <strong>Flash the SD card</strong> and wait for completion<br>
-                5. <strong>Insert SD card</strong> and boot your Pi<br>
-                6. <strong>Verify network access</strong> via SSH
-            </p>
-            <p style="font-size: 13px; opacity: 0.8; margin-top: 10px;">
-                💡 <strong>Note:</strong> The deployment script handles all other configuration including display drivers, CAN setup, and hardware-specific settings.
-            </p>
-            <p style="font-size: 13px; opacity: 0.8; margin-top: 5px;">
-                ⚠️ <strong>Security:</strong> Use strong passwords. The deployment script will configure additional security settings.
-            </p>
-        </div>
     </div>
 
     <script>
@@ -404,18 +381,32 @@
             
             status.className = 'status progress show';
             status.innerHTML = `
-                <strong>📋 Deployment Instructions:</strong><br><br>
+                <strong>📋 Complete Deployment Process:</strong><br><br>
                 
-                1. SSH into your Raspberry Pi:<br>
+                <strong>Step 1: Prepare Your Raspberry Pi</strong><br>
+                <div style="margin: 10px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 5px; font-size: 14px;">
+                    1. Download and install <a href="https://www.raspberrypi.com/software/" target="_blank" style="color: #00ccff;">Raspberry Pi Imager</a><br>
+                    2. Select: Raspberry Pi OS Lite (64-bit)<br>
+                    3. Click gear icon for settings:<br>
+                    <div style="margin-left: 20px;">
+                        • Set hostname: <code>flasher</code><br>
+                        • Enable SSH<br>
+                        • Set username (e.g., <code>admin</code>) and password<br>
+                        • Configure WiFi if needed<br>
+                    </div>
+                    4. Flash SD card and boot Pi<br>
+                </div><br>
+                
+                <strong>Step 2: SSH into your Raspberry Pi:</strong><br>
                 <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="ssh pi@flasher.local">
-                        ssh pi@flasher.local
+                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="ssh [username]@flasher.local">
+                        ssh [username]@flasher.local
                     </code>
-                    <button class="copy-button" onclick="copyCode(this, 'ssh pi@flasher.local')">Copy</button>
+                    <button class="copy-button" onclick="copyCode(this, 'ssh [username]@flasher.local')">Copy</button>
                 </div>
-                <span style="font-size: 12px; opacity: 0.8;"><em>Use the username and password you configured in Raspberry Pi Imager</em></span><br><br>
+                <span style="font-size: 12px; opacity: 0.8;"><em>Replace [username] with the username you set in Raspberry Pi Imager</em></span><br><br>
                 
-                2. Run Stage 1 setup (prepares GitHub authentication):<br>
+                <strong>Step 3: Run Stage 1 setup (prepares GitHub authentication):</strong><br>
                 <div class="code-container" style="margin: 10px 0;">
                     <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash">
                         curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash
@@ -423,7 +414,7 @@
                     <button class="copy-button" onclick="copyCode(this, 'curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash')">Copy</button>
                 </div><br>
                 
-                3. Authenticate with GitHub (required for private repo access):<br>
+                <strong>Step 4: Authenticate with GitHub (required for private repo access):</strong><br>
                 <div class="code-container" style="margin: 10px 0;">
                     <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="gh auth login">
                         gh auth login
@@ -432,7 +423,7 @@
                 </div>
                 <span style="font-size: 12px; opacity: 0.8;">Choose: GitHub.com → SSH → Generate new SSH key</span><br><br>
                 
-                4. Run the deployment:<br>
+                <strong>Step 5: Run the deployment:</strong><br>
                 <div class="code-container" style="margin: 10px 0;">
                     <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash">
                         curl -sL https://privitera.github.io/public/flasher/deploy-wrapper.sh | bash
@@ -441,7 +432,7 @@
                 </div>
                 <span style="font-size: 12px; opacity: 0.8;"><em>The wrapper will clone the private repo and run the deployment with sudo</em></span><br><br>
                 
-                5. After installation, reboot your Pi:<br>
+                <strong>Step 6: After installation, reboot your Pi:</strong><br>
                 <div class="code-container" style="margin: 10px 0;">
                     <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="sudo reboot">
                         sudo reboot
@@ -449,7 +440,7 @@
                     <button class="copy-button" onclick="copyCode(this, 'sudo reboot')">Copy</button>
                 </div><br>
                 
-                6. The system will automatically start on boot and begin monitoring for batteries to flash.
+                ✅ <strong>The system will automatically start on boot and begin monitoring for batteries to flash.</strong>
             `;
             
             // Simulate progress
