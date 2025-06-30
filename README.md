@@ -5,7 +5,11 @@ This repository hosts public landing pages for various Impulse Labs projects.
 ## Projects
 
 ### [Battery Flasher](flasher/)
-Automated battery firmware flashing system for Raspberry Pi with one-click deployment.
+Automated battery firmware flashing system for Raspberry Pi.
+
+**[→ Open Deployment Page](https://privitera.github.io/public/flasher/)**
+
+One-click deployment system that configures CAN interfaces, builds the flashbatt tool, and sets up all required services.
 
 ## About
 
