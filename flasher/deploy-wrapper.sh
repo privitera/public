@@ -5,10 +5,11 @@
 
 set -e
 
-# Colors for output
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
+# Colors for output - Paul Tol's colorblind-safe palette
+GREEN='\033[38;2;0;158;115m'   # Success messages
+YELLOW='\033[38;2;238;119;51m' # Warnings and prompts
+RED='\033[38;2;204;51;17m'     # Errors
+GREY='\033[38;2;187;187;187m'  # Secondary info
 NC='\033[0m' # No Color
 
 echo -e "${GREEN}Battery Flasher Deployment Wrapper${NC}"
