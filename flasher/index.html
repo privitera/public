@@ -452,27 +452,6 @@
             font-size: 0.9rem;
         }
 
-        /* ASCII art logo */
-        .ascii-logo {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: clamp(0.5rem, 2vw, 0.8rem);
-            line-height: 1;
-            text-align: center;
-            color: var(--neon-cyan);
-            margin: 40px 0;
-            white-space: pre;
-            text-shadow: 0 0 10px currentColor;
-            animation: logo-flicker 5s infinite;
-        }
-
-        @keyframes logo-flicker {
-            0%, 100% { opacity: 1; }
-            92% { opacity: 1; }
-            93% { opacity: 0.3; }
-            94% { opacity: 1; }
-            95% { opacity: 0.3; }
-            96% { opacity: 1; }
-        }
 
         /* Footer */
         .footer {
@@ -545,19 +524,6 @@
     <div class="matrix-rain" id="matrixRain"></div>
 
     <div class="main-container">
-        <div class="ascii-logo">
-╔═══════════════════════════════════════════════════════════╗
-║  ██████╗ ██╗    ███████╗██╗      █████╗ ███████╗██╗  ██╗ ║
-║  ██╔══██╗██║    ██╔════╝██║     ██╔══██╗██╔════╝██║  ██║ ║
-║  ██████╔╝██║    █████╗  ██║     ███████║███████╗███████║ ║
-║  ██╔═══╝ ██║    ██╔══╝  ██║     ██╔══██║╚════██║██╔══██║ ║
-║  ██║     ██║    ██║     ███████╗██║  ██║███████║██║  ██║ ║
-║  ╚═╝     ╚═╝    ╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ║
-║                                                           ║
-║      UNIVERSAL DEPLOYMENT SYSTEM FOR RASPBERRY PI         ║
-╚═══════════════════════════════════════════════════════════╝
-        </div>
-
         <h1 class="glitch" data-text="PI.FLASHER">PI.FLASHER</h1>
         <div class="subtitle">UNIVERSAL DEPLOYMENT SYSTEM FOR RASPBERRY PI</div>
 
