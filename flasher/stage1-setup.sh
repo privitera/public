@@ -38,7 +38,9 @@ apt-get install -y \
     ca-certificates \
     gnupg \
     lsb-release \
-    software-properties-common
+    software-properties-common \
+    python3-pip \
+    python3-dev
 
 # Install GitHub CLI
 echo -e "\n${YELLOW}Installing GitHub CLI...${NC}"

@@ -406,13 +406,14 @@
                 </div>
                 <span style="font-size: 12px; opacity: 0.8;"><em>Replace [username] with the username you set in Raspberry Pi Imager</em></span><br><br>
                 
-                <strong>Step 3: Run Stage 1 setup (prepares GitHub authentication):</strong><br>
+                <strong>Step 3: Run Stage 1 setup (installs dependencies & prepares GitHub authentication):</strong><br>
                 <div class="code-container" style="margin: 10px 0;">
                     <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash">
                         curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash
                     </code>
                     <button class="copy-button" onclick="copyCode(this, 'curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash')">Copy</button>
-                </div><br>
+                </div>
+                <span style="font-size: 12px; opacity: 0.8;"><em>This installs git, Python dependencies, GitHub CLI, and prepares the system</em></span><br><br>
                 
                 <strong>Step 4: Authenticate with GitHub (required for private repo access):</strong><br>
                 <div class="code-container" style="margin: 10px 0;">
