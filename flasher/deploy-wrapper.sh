@@ -65,9 +65,24 @@ if [ -t 0 ] && [ -t 1 ]; then
     # Interactive terminal available, run normally
     sudo ./deploy.sh
 else
-    # No interactive terminal, run with auto mode
-    echo -e "${YELLOW}Note: Running in non-interactive mode${NC}"
-    sudo ./deploy.sh --auto
+    # No interactive terminal - provide instructions for interactive setup
+    echo -e "${YELLOW}┌────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${YELLOW}│ Interactive Setup Required                                 │${NC}"
+    echo -e "${YELLOW}└────────────────────────────────────────────────────────────┘${NC}"
+    echo ""
+    echo -e "${RED}The hardware configurator needs an interactive terminal.${NC}"
+    echo ""
+    echo "Please run the deployment directly:"
+    echo -e "  ${GREEN}cd /tmp/${NC}"
+    echo -e "  ${GREEN}git clone git@github.com:privitera/flasher.git${NC}"
+    echo -e "  ${GREEN}cd flasher && sudo ./deploy.sh${NC}"
+    echo ""
+    echo "Or use auto-detection mode (less options):"
+    echo -e "  ${GREEN}cd /tmp/${NC}"
+    echo -e "  ${GREEN}git clone git@github.com:privitera/flasher.git${NC}"
+    echo -e "  ${GREEN}cd flasher && sudo ./deploy.sh --auto${NC}"
+    echo ""
+    exit 1
 fi
 
 # Script will clean up temp directory on exit due to trap
