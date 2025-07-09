@@ -40,7 +40,8 @@ apt-get install -y \
     lsb-release \
     software-properties-common \
     python3-pip \
-    python3-dev
+    python3-dev \
+    jq
 
 # Install GitHub CLI
 echo -e "\n${YELLOW}Installing GitHub CLI...${NC}"
