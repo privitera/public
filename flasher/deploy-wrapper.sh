@@ -59,6 +59,15 @@ chmod +x flasher/deploy.sh
 # Execute the deployment script with sudo
 echo -e "${YELLOW}Running deployment script...${NC}"
 cd flasher
-sudo ./deploy.sh
+
+# Check if running in an interactive terminal
+if [ -t 0 ] && [ -t 1 ]; then
+    # Interactive terminal available, run normally
+    sudo ./deploy.sh
+else
+    # No interactive terminal, run with auto mode
+    echo -e "${YELLOW}Note: Running in non-interactive mode${NC}"
+    sudo ./deploy.sh --auto
+fi
 
 # Script will clean up temp directory on exit due to trap
