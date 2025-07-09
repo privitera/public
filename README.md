@@ -11,13 +11,6 @@ Automated battery firmware flashing system for Raspberry Pi.
 
 One-click deployment system that configures CAN interfaces, builds the flashbatt tool, and sets up all required services.
 
-### [Dotfiles Provisioning](dotfiles/)
-Cyberpunk-themed development environment setup with workstation presets.
-
-**[→ Open Provisioning Page](https://privitera.github.io/public/dotfiles/)**
-
-Interactive tool selection interface for setting up modern CLI tools, programming languages, and development environments.
-
 ## About
 
 This repository contains only the public-facing deployment pages. The actual source code for these projects is maintained in private repositories.
