@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battery Flasher - One-Click Deploy</title>
+    <title>BATTERY.FLASHER // CYBERPUNK DEPLOYMENT SYSTEM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,505 +14,712 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --neon-cyan: #00ffff;
+            --neon-pink: #ff006e;
+            --neon-yellow: #ffdd00;
+            --dark-bg: #0a0a0a;
+            --grid-color: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --glitch-red: #ff0040;
+            --glitch-blue: #00ddff;
+            --terminal-green: #00ff88;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--dark-bg);
+            color: var(--text-primary);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        .container {
-            max-width: 800px;
+        /* Animated grid background */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 60px 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 10s linear infinite;
+            z-index: -2;
         }
 
-        .logo {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 30px;
-            background: linear-gradient(45deg, #00ff88, #00ccff);
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
-        h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        /* Scanline effect */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 255, 0.03) 2px,
+                rgba(0, 255, 255, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .subtitle {
-            font-size: 24px;
-            margin-bottom: 40px;
-            opacity: 0.9;
-            font-weight: 300;
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
         }
 
-        .description {
-            font-size: 18px;
-            line-height: 1.6;
-            margin-bottom: 50px;
-            opacity: 0.8;
+        .particle {
+            position: absolute;
+            background: var(--neon-cyan);
+            width: 2px;
+            height: 2px;
+            box-shadow: 0 0 10px var(--neon-cyan);
+            animation: float-up 20s linear infinite;
         }
 
-        .deploy-button {
-            background: linear-gradient(45deg, #00ff88, #00ccff);
-            color: #1e3c72;
-            border: none;
-            padding: 20px 60px;
-            font-size: 24px;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Main container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Glitch text effect */
+        .glitch {
+            position: relative;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 8vw, 5rem);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            text-align: center;
+            margin: 40px 0;
+            letter-spacing: 0.05em;
+            animation: glitch-skew 2s infinite linear alternate-reverse;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 0.5s infinite;
+            color: var(--glitch-red);
+            z-index: -2;
+        }
+
+        .glitch::after {
+            animation: glitch-2 0.5s infinite;
+            color: var(--glitch-blue);
+            z-index: -1;
+        }
+
+        @keyframes glitch-1 {
+            0% { clip-path: inset(40% 0 61% 0); transform: translate(0); }
+            20% { clip-path: inset(92% 0 1% 0); transform: translate(-2px, 2px); }
+            40% { clip-path: inset(43% 0 1% 0); transform: translate(-2px, -2px); }
+            60% { clip-path: inset(25% 0 58% 0); transform: translate(2px, 0); }
+            80% { clip-path: inset(54% 0 7% 0); transform: translate(-1px, 0); }
+            100% { clip-path: inset(58% 0 43% 0); transform: translate(0); }
+        }
+
+        @keyframes glitch-2 {
+            0% { clip-path: inset(50% 0 30% 0); transform: translate(0); }
+            20% { clip-path: inset(55% 0 0% 0); transform: translate(2px, -2px); }
+            40% { clip-path: inset(0% 0 86% 0); transform: translate(-2px, 2px); }
+            60% { clip-path: inset(81% 0 0% 0); transform: translate(1px, 0); }
+            80% { clip-path: inset(0% 0 50% 0); transform: translate(-2px, 0); }
+            100% { clip-path: inset(10% 0 10% 0); transform: translate(0); }
+        }
+
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(0deg); }
+            21% { transform: skew(0.5deg); }
+            22% { transform: skew(0deg); }
+            40% { transform: skew(0deg); }
+            41% { transform: skew(-0.5deg); }
+            42% { transform: skew(0deg); }
+            100% { transform: skew(0deg); }
+        }
+
+        /* Subtitle with typewriter effect */
+        .subtitle {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.2rem;
+            text-align: center;
+            color: var(--neon-cyan);
+            margin-bottom: 60px;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid var(--neon-cyan);
+            animation: typewriter 3s steps(40) 1s 1 normal both,
+                       blink-cursor 0.75s step-end infinite;
+        }
+
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-cursor {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--neon-cyan); }
+        }
+
+        /* Hardware requirements card */
+        .requirements-card {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(255, 0, 110, 0.1) 100%);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 0;
+            padding: 30px;
+            margin: 40px 0;
             position: relative;
             overflow: hidden;
+            animation: border-pulse 2s infinite;
         }
 
-        .deploy-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.6);
+        @keyframes border-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.8); }
         }
 
-        .deploy-button:active {
-            transform: translateY(0);
-        }
-
-        .deploy-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .status {
-            margin-top: 40px;
-            padding: 20px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            display: none;
-            font-size: 16px;
-            line-height: 1.6;
-        }
-
-        .status.show {
-            display: block;
-        }
-
-        .status.success {
-            background: rgba(0, 255, 136, 0.2);
-            border: 1px solid rgba(0, 255, 136, 0.5);
-        }
-
-        .status.error {
-            background: rgba(255, 0, 0, 0.2);
-            border: 1px solid rgba(255, 0, 0, 0.5);
-        }
-
-        .status.progress {
-            background: rgba(0, 204, 255, 0.2);
-            border: 1px solid rgba(0, 204, 255, 0.5);
-        }
-
-        .command-box {
-            margin-top: 60px;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .command-box h3 {
-            margin-bottom: 20px;
-            font-size: 20px;
-            opacity: 0.9;
-        }
-
-        .command {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px 20px;
-            border-radius: 5px;
-            font-family: 'Roboto Mono', monospace;
-            font-size: 14px;
-            word-break: break-all;
-            margin-bottom: 15px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .command:hover {
-            background: rgba(0, 0, 0, 0.7);
-        }
-        
-        /* Code blocks in status messages */
-        code {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 13px;
-        }
-        
-        /* Copy button for code blocks */
-        .code-container {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-        
-        .copy-button {
+        .requirements-card::before {
+            content: "";
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-            padding: 4px 8px;
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.8);
-            cursor: pointer;
-            opacity: 0;
-            transition: all 0.2s ease;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink), var(--neon-cyan));
+            z-index: -1;
+            animation: rotate-border 3s linear infinite;
         }
-        
-        .code-container:hover .copy-button {
+
+        @keyframes rotate-border {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .requirements-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--dark-bg);
+            z-index: -1;
+        }
+
+        .requirements-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--neon-yellow);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .requirements-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .requirements-card li {
+            margin: 15px 0;
+            padding-left: 30px;
+            position: relative;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .requirements-card li::before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: var(--terminal-green);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Terminal window */
+        .terminal {
+            background: #000;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 40px 0;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.5);
+            animation: terminal-glow 2s infinite alternate;
+        }
+
+        @keyframes terminal-glow {
+            from { box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+            to { box-shadow: 0 0 60px rgba(0, 255, 255, 0.8); }
+        }
+
+        .terminal-header {
+            background: var(--neon-cyan);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #000;
+        }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .terminal-body {
+            padding: 30px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            line-height: 1.8;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .terminal-body::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .terminal-body::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        .terminal-body::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+            border-radius: 5px;
+        }
+
+        .step {
+            margin: 30px 0;
+            animation: fade-in 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .step:nth-child(1) { animation-delay: 0.5s; }
+        .step:nth-child(2) { animation-delay: 1s; }
+        .step:nth-child(3) { animation-delay: 1.5s; }
+        .step:nth-child(4) { animation-delay: 2s; }
+        .step:nth-child(5) { animation-delay: 2.5s; }
+        .step:nth-child(6) { animation-delay: 3s; }
+
+        @keyframes fade-in {
+            to { opacity: 1; }
+        }
+
+        .step-header {
+            color: var(--neon-yellow);
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .code-block {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            padding: 15px 20px;
+            margin: 10px 0;
+            position: relative;
+            overflow-x: auto;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .code-block:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transform: translateX(5px);
+        }
+
+        .code-block::before {
+            content: "CLICK TO COPY";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: var(--dark-bg);
+            color: var(--neon-cyan);
+            padding: 2px 10px;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .code-block:hover::before {
             opacity: 1;
         }
-        
-        .copy-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-        }
-        
-        .copy-button.copied {
-            background: rgba(0, 255, 136, 0.3);
-            border-color: rgba(0, 255, 136, 0.5);
-            color: #00ff88;
+
+        .code-block.copied {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--terminal-green);
         }
 
-        .copy-hint {
-            font-size: 12px;
-            opacity: 0.6;
-            margin-top: 5px;
+        .code-block.copied::after {
+            content: "COPIED!";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--terminal-green);
+            font-weight: bold;
+            font-size: 1.5rem;
+            animation: copy-pulse 0.5s ease-out;
         }
 
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+        @keyframes copy-pulse {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+        }
+
+        .note {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-style: italic;
+            margin: 10px 0;
+            padding-left: 20px;
+            border-left: 2px solid var(--neon-pink);
+        }
+
+        .command-options {
+            margin-left: 30px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ASCII art logo */
+        .ascii-logo {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: clamp(0.5rem, 2vw, 0.8rem);
+            line-height: 1;
+            text-align: center;
+            color: var(--neon-cyan);
             margin: 40px 0;
+            white-space: pre;
+            text-shadow: 0 0 10px currentColor;
+            animation: logo-flicker 5s infinite;
         }
 
-        .feature {
+        @keyframes logo-flicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.3; }
+            94% { opacity: 1; }
+            95% { opacity: 0.3; }
+            96% { opacity: 1; }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 80px;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--grid-color);
+        }
+
+        .footer a {
+            color: var(--neon-cyan);
+            text-decoration: none;
             transition: all 0.3s ease;
         }
 
-        .feature:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
+        .footer a:hover {
+            text-shadow: 0 0 10px currentColor;
         }
 
-        .feature-icon {
-            font-size: 36px;
-            margin-bottom: 10px;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .glitch {
+                font-size: clamp(1.5rem, 10vw, 3rem);
+            }
+            
+            .terminal-body {
+                padding: 20px;
+                font-size: 0.9rem;
+            }
+            
+            .code-block {
+                font-size: 0.85rem;
+                padding: 12px 15px;
+            }
         }
 
-        .feature-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .feature-desc {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .progress-bar {
+        /* Matrix rain effect */
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-            margin-top: 20px;
-            overflow: hidden;
-            display: none;
-        }
-
-        .progress-bar.show {
-            display: block;
-        }
-
-        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #00ff88, #00ccff);
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 3px;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.1;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 40px 20px;
-            }
-            
-            h1 {
-                font-size: 36px;
-            }
-            
-            .subtitle {
-                font-size: 20px;
-            }
-            
-            .deploy-button {
-                padding: 15px 40px;
-                font-size: 20px;
-            }
+        .matrix-column {
+            position: absolute;
+            top: -100%;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            color: var(--terminal-green);
+            animation: matrix-fall linear infinite;
+            text-shadow: 0 0 5px currentColor;
+        }
+
+        @keyframes matrix-fall {
+            to { transform: translateY(200vh); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">⚡</div>
-        <h1>Battery Flasher</h1>
-        <p class="subtitle">One-Click Deployment System</p>
-        
-        <p class="description">
-            Deploy a complete battery flashing system to your Raspberry Pi with a single click.
-            This installer will configure CAN interfaces, build the flashbatt tool, and set up all required services.
-        </p>
-        
-        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="font-size: 20px; margin-bottom: 15px;">📋 Required Hardware</h3>
-            <ul style="text-align: left; list-style: none; padding: 0;">
-                <li style="margin: 8px 0;">✓ Raspberry Pi 5 or CM5 (Pi 4 also supported)</li>
-                <li style="margin: 8px 0;">✓ CAN adapter: USB or SPI MCP2515 (250kbps)</li>
-                <li style="margin: 8px 0;">✓ Optional: Display (52Pi LCD, Official touchscreen, HDMI)</li>
-                <li style="margin: 8px 0;">✓ SD card (8GB+ recommended)</li>
-                <li style="margin: 8px 0;">✓ Network connection (Ethernet or WiFi)</li>
+    <div class="grid-bg"></div>
+    <div class="scanlines"></div>
+    <div class="particles" id="particles"></div>
+    <div class="matrix-rain" id="matrixRain"></div>
+
+    <div class="main-container">
+        <div class="ascii-logo">
+   ____   _  _____ _____ _____ ______   __ 
+  |  _ \ | |/ ____|_   _|_   _|  ____| |  |
+  | |_) || | (___   | |   | | | |__    |  |
+  |  _ < | |\___ \  | |   | | |  __|   |  |
+  | |_) || |____) | | |   | | | |____  |__|
+  |____/ |_|_____/  |_|   |_| |______| (__)
+   _____ _       ___   _____ _    _ _____ ____  
+  |  ___| |     / _ \ / ____| |  | |  ___|  _ \ 
+  | |_  | |    / /_\ \| (___ | |__| | |_  | |_) |
+  |  _| | |    |  _  | \___ \|  __  |  _| |  _ < 
+  | |   | |____| | | | ____) | |  | | |___| |_) |
+  |_|   |______|_| |_|_____/|_|  |_|_____|____/
+        </div>
+
+        <h1 class="glitch" data-text="BATTERY.FLASHER">BATTERY.FLASHER</h1>
+        <div class="subtitle">AUTOMATED DEPLOYMENT SYSTEM FOR RASPBERRY PI</div>
+
+        <div class="requirements-card">
+            <h3>// SYSTEM REQUIREMENTS</h3>
+            <ul>
+                <li>Raspberry Pi 5 or CM5 (Pi 4 also supported)</li>
+                <li>CAN adapter: USB or SPI MCP2515 (250kbps)</li>
+                <li>Optional: Display (52Pi LCD, Official touchscreen, HDMI)</li>
+                <li>SD card (8GB+ recommended)</li>
+                <li>Network connection (Ethernet or WiFi)</li>
             </ul>
-            <p style="font-size: 14px; opacity: 0.8; margin-top: 15px;">
-                The deployment script automatically detects your hardware configuration and adapts accordingly.
-            </p>
         </div>
 
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">🚀</div>
-                <div class="feature-title">Automated Setup</div>
-                <div class="feature-desc">Complete system configuration</div>
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-button"></div>
+                <div class="terminal-button"></div>
+                <div class="terminal-button"></div>
+                <div class="terminal-title">deployment.sequence</div>
             </div>
-            <div class="feature">
-                <div class="feature-icon">🔧</div>
-                <div class="feature-title">Built from Source</div>
-                <div class="feature-desc">Latest flashbatt tool</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🔌</div>
-                <div class="feature-title">CAN Interface</div>
-                <div class="feature-desc">USB CAN adapter support</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">📊</div>
-                <div class="feature-title">Service Management</div>
-                <div class="feature-desc">Systemd integration</div>
+            <div class="terminal-body">
+                <div class="step">
+                    <div class="step-header">[STEP.01] // PREPARE RASPBERRY PI</div>
+                    <div class="note">
+                        Download Raspberry Pi Imager and flash OS Lite (64-bit)<br>
+                        Configure: hostname=flasher, enable SSH, set credentials
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-header">[STEP.02] // ESTABLISH CONNECTION</div>
+                    <div class="code-block" onclick="copyCommand(this)" data-command="ssh [username]@flasher.local">ssh [username]@flasher.local</div>
+                    <div class="note">Replace [username] with your configured username</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-header">[STEP.03] // INITIALIZE SYSTEM</div>
+                    <div class="code-block" onclick="copyCommand(this)" data-command="curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash">curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash</div>
+                    <div class="note">Installs git, Python dependencies, GitHub CLI, and prepares the system</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-header">[STEP.04] // AUTHENTICATE</div>
+                    <div class="code-block" onclick="copyCommand(this)" data-command="gh auth login">gh auth login</div>
+                    <div class="command-options">
+                        → GitHub.com<br>
+                        → SSH protocol<br>
+                        → Generate new SSH key
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-header">[STEP.05] // DEPLOY</div>
+                    <div class="code-block" onclick="copyCommand(this)" data-command="wget https://privitera.github.io/public/flasher/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh">wget https://privitera.github.io/public/flasher/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</div>
+                    <div class="note">Downloads and runs deployment with full interactive hardware configurator</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-header">[STEP.06] // REBOOT SYSTEM</div>
+                    <div class="code-block" onclick="copyCommand(this)" data-command="sudo reboot">sudo reboot</div>
+                    <div class="note">System will automatically start on boot and begin monitoring</div>
+                </div>
             </div>
         </div>
 
-        <button id="deployButton" class="deploy-button" onclick="showInstructions()">
-            Deploy Flasher
-        </button>
-
-        <div id="status" class="status"></div>
-        <div id="progressBar" class="progress-bar">
-            <div id="progressFill" class="progress-fill"></div>
+        <div class="footer">
+            <p>BATTERY.FLASHER v2.0 | <a href="https://github.com/privitera/public" target="_blank">SOURCE CODE</a></p>
         </div>
-
     </div>
 
     <script>
-        let deploymentInProgress = false;
+        // Create floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            document.getElementById('particles').appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 20000);
+        }
 
-        function showInstructions() {
-            if (deploymentInProgress) return;
+        // Create particles periodically
+        setInterval(createParticle, 300);
+
+        // Create initial particles
+        for (let i = 0; i < 20; i++) {
+            setTimeout(createParticle, i * 100);
+        }
+
+        // Matrix rain effect
+        function createMatrixRain() {
+            const container = document.getElementById('matrixRain');
+            const columns = Math.floor(window.innerWidth / 20);
             
-            deploymentInProgress = true;
-            const button = document.getElementById('deployButton');
-            const status = document.getElementById('status');
-            const progressBar = document.getElementById('progressBar');
-            const progressFill = document.getElementById('progressFill');
-            
-            button.disabled = true;
-            button.innerHTML = '<span class="loading"></span> Preparing...';
-            
-            status.className = 'status progress show';
-            status.innerHTML = `
-                <strong>📋 Complete Deployment Process:</strong><br><br>
+            for (let i = 0; i < columns; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = i * 20 + 'px';
+                column.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                column.style.animationDelay = Math.random() * 5 + 's';
                 
-                <strong>Step 1: Prepare Your Raspberry Pi</strong><br>
-                <div style="margin: 10px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 5px; font-size: 14px;">
-                    1. Download and install <a href="https://www.raspberrypi.com/software/" target="_blank" style="color: #00ccff;">Raspberry Pi Imager</a><br>
-                    2. Select: Raspberry Pi OS Lite (64-bit)<br>
-                    3. Click gear icon for settings:<br>
-                    <div style="margin-left: 20px;">
-                        • Set hostname: <code>flasher</code><br>
-                        • Enable SSH<br>
-                        • Set username (e.g., <code>admin</code>) and password<br>
-                        • Configure WiFi if needed<br>
-                    </div>
-                    4. Flash SD card and boot Pi<br>
-                </div><br>
-                
-                <strong>Step 2: SSH into your Raspberry Pi:</strong><br>
-                <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="ssh [username]@flasher.local">
-                        ssh [username]@flasher.local
-                    </code>
-                    <button class="copy-button" onclick="copyCode(this, 'ssh [username]@flasher.local')">Copy</button>
-                </div>
-                <span style="font-size: 12px; opacity: 0.8;"><em>Replace [username] with the username you set in Raspberry Pi Imager</em></span><br><br>
-                
-                <strong>Step 3: Run Stage 1 setup (installs dependencies & prepares GitHub authentication):</strong><br>
-                <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash">
-                        curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash
-                    </code>
-                    <button class="copy-button" onclick="copyCode(this, 'curl -sL https://privitera.github.io/public/flasher/stage1-setup.sh | sudo bash')">Copy</button>
-                </div>
-                <span style="font-size: 12px; opacity: 0.8;"><em>This installs git, Python dependencies, GitHub CLI, and prepares the system</em></span><br><br>
-                
-                <strong>Step 4: Authenticate with GitHub (required for private repo access):</strong><br>
-                <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="gh auth login">
-                        gh auth login
-                    </code>
-                    <button class="copy-button" onclick="copyCode(this, 'gh auth login')">Copy</button>
-                </div>
-                <span style="font-size: 12px; opacity: 0.8;">Choose: GitHub.com → SSH → Generate new SSH key</span><br><br>
-                
-                <strong>Step 5: Run the deployment:</strong><br>
-                <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; overflow-x: auto; cursor: pointer;" onclick="copyCommand(this)" data-command="wget https://privitera.github.io/public/flasher/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh">
-                        wget https://privitera.github.io/public/flasher/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh
-                    </code>
-                    <button class="copy-button" onclick="copyCode(this, 'wget https://privitera.github.io/public/flasher/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh')">Copy</button>
-                </div>
-                <span style="font-size: 12px; opacity: 0.8;"><em>Downloads and runs the deployment with full interactive hardware configurator</em></span><br>
-                
-                <strong>Step 6: After installation, reboot your Pi:</strong><br>
-                <div class="code-container" style="margin: 10px 0;">
-                    <code style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 3px; display: block; word-wrap: break-word; cursor: pointer;" onclick="copyCommand(this)" data-command="sudo reboot">
-                        sudo reboot
-                    </code>
-                    <button class="copy-button" onclick="copyCode(this, 'sudo reboot')">Copy</button>
-                </div><br>
-                
-                ✅ <strong>The system will automatically start on boot and begin monitoring for batteries to flash.</strong>
-            `;
-            
-            // Simulate progress
-            progressBar.classList.add('show');
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += 10;
-                progressFill.style.width = progress + '%';
-                
-                if (progress >= 100) {
-                    clearInterval(progressInterval);
-                    button.innerHTML = 'View Instructions';
-                    button.disabled = false;
-                    deploymentInProgress = false;
+                // Random characters
+                let text = '';
+                const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789';
+                for (let j = 0; j < 30; j++) {
+                    text += chars[Math.floor(Math.random() * chars.length)] + '\n';
                 }
-            }, 200);
+                column.textContent = text;
+                
+                container.appendChild(column);
+            }
         }
 
+        createMatrixRain();
+
+        // Copy command functionality
         function copyCommand(element) {
-            const command = element.dataset.command || element.textContent.trim();
-            copyToClipboard(command, () => {
-                const originalText = element.innerHTML;
-                element.style.background = 'rgba(0, 255, 136, 0.3)';
-                element.innerHTML = '✅ Copied!';
-                
+            const command = element.dataset.command;
+            navigator.clipboard.writeText(command).then(() => {
+                element.classList.add('copied');
                 setTimeout(() => {
-                    element.style.background = '';
-                    element.innerHTML = originalText;
-                }, 1500);
-            });
-        }
-        
-        function copyCode(button, text) {
-            copyToClipboard(text, () => {
-                button.textContent = 'Copied!';
-                button.classList.add('copied');
-                
-                setTimeout(() => {
-                    button.textContent = 'Copy';
-                    button.classList.remove('copied');
-                }, 2000);
-            });
-        }
-        
-        function copyToClipboard(text, callback) {
-            navigator.clipboard.writeText(text).then(() => {
-                callback();
+                    element.classList.remove('copied');
+                }, 1000);
             }).catch(() => {
                 // Fallback for older browsers
                 const textArea = document.createElement('textarea');
-                textArea.value = text;
+                textArea.value = command;
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                callback();
+                
+                element.classList.add('copied');
+                setTimeout(() => {
+                    element.classList.remove('copied');
+                }, 1000);
             });
         }
 
-        // Add some animation on load
-        window.addEventListener('load', () => {
-            const features = document.querySelectorAll('.feature');
-            features.forEach((feature, index) => {
-                feature.style.opacity = '0';
-                feature.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    feature.style.transition = 'all 0.5s ease';
-                    feature.style.opacity = '1';
-                    feature.style.transform = 'translateY(0)';
-                }, 100 * index);
+        // Glitch effect on hover
+        document.querySelector('.glitch').addEventListener('mouseenter', function() {
+            this.style.animation = 'glitch-skew 0.1s infinite linear alternate-reverse';
+        });
+
+        document.querySelector('.glitch').addEventListener('mouseleave', function() {
+            this.style.animation = 'glitch-skew 2s infinite linear alternate-reverse';
+        });
+
+        // Terminal typing effect
+        const terminalSteps = document.querySelectorAll('.step');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
             });
+        }, { threshold: 0.1 });
+
+        terminalSteps.forEach(step => {
+            observer.observe(step);
         });
     </script>
 </body>
