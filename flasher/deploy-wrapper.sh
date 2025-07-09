@@ -33,9 +33,18 @@ if ! gh auth status &> /dev/null; then
     exit 1
 fi
 
+# Set up cleanup trap for interrupts
+cleanup() {
+    if [ -n "$TEMP_DIR" ] && [ -d "$TEMP_DIR" ]; then
+        echo -e "\n${YELLOW}Cleaning up...${NC}"
+        rm -rf "$TEMP_DIR"
+    fi
+    exit 1
+}
+
 # Create temporary directory
 TEMP_DIR=$(mktemp -d)
-trap "rm -rf $TEMP_DIR" EXIT
+trap cleanup EXIT INT TERM
 
 echo -e "${YELLOW}Cloning private repository...${NC}"
 cd "$TEMP_DIR"
@@ -71,6 +80,7 @@ else
     echo -e "${YELLOW}└────────────────────────────────────────────────────────────┘${NC}"
     echo ""
     echo -e "${RED}The hardware configurator needs an interactive terminal.${NC}"
+    echo -e "${GREY}(Press Ctrl+C to exit)${NC}"
     echo ""
     echo "Please run the deployment directly:"
     echo -e "  ${GREEN}cd /tmp/${NC}"
