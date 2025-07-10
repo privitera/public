@@ -51,12 +51,51 @@ trap cleanup EXIT INT TERM
 echo -e "${YELLOW}Cloning private repository...${NC}"
 cd "$TEMP_DIR"
 
-# Clone the private repo using gh
-if ! git clone git@github.com:privitera/flasher.git &> /dev/null; then
-    echo -e "${RED}Error: Failed to clone repository${NC}"
+# Function to show progress bar
+show_progress() {
+    local progress=$1
+    local total=$2
+    local width=50
+    local percentage=$((progress * 100 / total))
+    local filled=$((width * progress / total))
+    
+    printf "\r["
+    printf "%${filled}s" | tr ' ' '█'
+    printf "%$((width - filled))s" | tr ' ' '▒'
+    printf "] %3d%%" $percentage
+}
+
+# Clone with progress output
+echo -e "${GREY}Repository: github.com:privitera/flasher.git${NC}"
+if ! git clone --progress git@github.com:privitera/flasher.git 2>&1 | while IFS= read -r line; do
+    # Parse git progress output
+    if [[ "$line" =~ Receiving\ objects:\ +([0-9]+)%\ \(([0-9]+)/([0-9]+)\) ]]; then
+        percent="${BASH_REMATCH[1]}"
+        current="${BASH_REMATCH[2]}"
+        total="${BASH_REMATCH[3]}"
+        show_progress $current $total
+    elif [[ "$line" =~ Resolving\ deltas:\ +([0-9]+)%\ \(([0-9]+)/([0-9]+)\) ]]; then
+        percent="${BASH_REMATCH[1]}"
+        current="${BASH_REMATCH[2]}"
+        total="${BASH_REMATCH[3]}"
+        printf "\r${GREEN}Resolving deltas...${NC} "
+        show_progress $current $total
+    elif [[ "$line" =~ "Cloning into" ]]; then
+        echo -e "${GREY}$line${NC}"
+    elif [[ "$line" =~ "Submodule" ]] && [[ ! "$line" =~ "registered" ]]; then
+        # Don't show submodule registration messages
+        :
+    elif [[ "$line" =~ "error:" ]] || [[ "$line" =~ "fatal:" ]]; then
+        echo -e "\n${RED}$line${NC}"
+        exit 1
+    fi
+done; then
+    echo -e "\n${RED}Error: Failed to clone repository${NC}"
     echo "Please check your GitHub authentication and try again"
     exit 1
 fi
+
+echo -e "\n${GREEN}✓ Repository cloned successfully${NC}"
 
 # Check if deploy.sh exists
 if [ ! -f "flasher/deploy.sh" ]; then
@@ -66,6 +105,41 @@ fi
 
 # Make it executable
 chmod +x flasher/deploy.sh
+
+# Initialize submodules if present
+if [ -f .gitmodules ]; then
+    echo -e "${YELLOW}Initializing submodules...${NC}"
+    
+    # Function to show spinner
+    spinner() {
+        local pid=$1
+        local delay=0.1
+        local spinstr='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+        local msg="${2:-Processing...}"
+        while [ -d /proc/$pid ]; do
+            local temp=${spinstr#?}
+            printf "\r${YELLOW}%c${NC} %s" "$spinstr" "$msg"
+            spinstr=$temp${spinstr%"$temp"}
+            sleep $delay
+        done
+        printf "\r${GREEN}✓${NC} %s\n" "$msg"
+    }
+    
+    # Run git submodule update with progress
+    git submodule update --init --recursive --progress 2>&1 | while IFS= read -r line; do
+        if [[ "$line" =~ "Cloning into" ]]; then
+            echo -e "${GREY}$line${NC}"
+        elif [[ "$line" =~ Receiving\ objects:\ +([0-9]+)%\ \(([0-9]+)/([0-9]+)\) ]]; then
+            percent="${BASH_REMATCH[1]}"
+            current="${BASH_REMATCH[2]}"
+            total="${BASH_REMATCH[3]}"
+            show_progress $current $total
+        elif [[ "$line" =~ "Submodule path" ]]; then
+            echo -e "\n${CYAN}$line${NC}"
+        fi
+    done
+    echo -e "\n${GREEN}✓ Submodules initialized${NC}"
+fi
 
 # Execute the deployment script with sudo
 echo -e "${YELLOW}Running deployment script...${NC}"
