@@ -309,8 +309,7 @@
             </div>
             <div class="code-block">
                 <button class="copy-btn" onclick="copyCode(this)">COPY</button>
-                <code># Replace with your Stage 2 deployment command
-# Example: gh repo clone YOUR_ORG/deployments && cd deployments && ./deploy.sh</code>
+                <code>wget -qO- https://github.com/privitera/deployments-private/raw/master/deploy-wrapper.sh | bash</code>
             </div>
             <div class="warning-box">
                 <strong>Note:</strong> Stage 2 contains your private configurations and deployment options.
@@ -339,7 +338,7 @@
             </div>
             <div class="code-block">
                 <button class="copy-btn" onclick="copyCode(this)">COPY</button>
-                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login</code>
+                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget -qO- https://github.com/privitera/deployments-private/raw/master/deploy-wrapper.sh | bash</code>
             </div>
         </div>
     </div>
