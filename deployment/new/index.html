@@ -700,12 +700,18 @@
             drops[x] = 0;
         }
         
-        let lastTime = 0;
-        const frameDelay = 50; // ~20 FPS for better performance
+        // Store character cache to avoid recalculating
+        const charCache = [];
+        for(let i = 0; i < columns; i++) {
+            charCache[i] = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+        }
         
-        function drawMatrix(currentTime) {
-            if (currentTime - lastTime < frameDelay) return;
-            lastTime = currentTime;
+        let frameCount = 0;
+        
+        function drawMatrix() {
+            // Only update every 2nd frame for performance
+            frameCount++;
+            if (frameCount % 2 !== 0) return;
             
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -713,29 +719,25 @@
             ctx.font = fontSize + 'px monospace';
             
             for(let i = 0; i < drops.length; i++) {
-                const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
-                
-                // Leading character - white flash
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
-                // Previous characters - green fade
-                if(drops[i] > 0) {
-                    ctx.fillStyle = '#00ff41';
-                    ctx.fillText(text, i * fontSize, (drops[i] - 1) * fontSize);
+                // Update character occasionally
+                if(Math.random() > 0.95) {
+                    charCache[i] = matrixArray[Math.floor(Math.random() * matrixArray.length)];
                 }
                 
-                // Randomly flip some characters horizontally
-                if(Math.random() > 0.5) {
-                    ctx.save();
-                    ctx.translate(i * fontSize + fontSize/2, drops[i] * fontSize);
-                    ctx.scale(-1, 1);
-                    ctx.fillStyle = '#00ff41';
-                    ctx.fillText(text, -fontSize/2, 0);
-                    ctx.restore();
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                
+                // Draw character
+                ctx.fillStyle = '#00ff41';
+                ctx.fillText(charCache[i], x, y);
+                
+                // Add white highlight to leading edge
+                if(Math.random() > 0.98) {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(charCache[i], x, y);
                 }
                 
-                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                if(y > canvas.height && Math.random() > 0.975) {
                     drops[i] = 0;
                 }
                 drops[i]++;
@@ -743,8 +745,8 @@
         }
         
         // Use requestAnimationFrame for better performance
-        function animate(currentTime) {
-            drawMatrix(currentTime);
+        function animate() {
+            drawMatrix();
             requestAnimationFrame(animate);
         }
         requestAnimationFrame(animate);
