@@ -495,7 +495,7 @@
             <p>Run your Stage 2 deployment script - Interactive TUI for configuration selection</p>
             <div class="code-block">
                 <button class="copy-btn" onclick="copyCode(this)">COPY</button>
-                <code>wget -qO- https://github.com/privitera/deployments-private/raw/main/deploy-wrapper.sh | bash</code>
+                <code>wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
             </div>
             <div class="warning-box">
                 <strong>[CLASSIFIED]</strong> Stage 2 contains your private configurations and deployment profiles
@@ -507,7 +507,7 @@
             <p>For advanced users - Execute everything with one command (requires interaction)</p>
             <div class="code-block">
                 <button class="copy-btn" onclick="copyCode(this)">EXECUTE</button>
-                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget -qO- https://github.com/privitera/deployments-private/raw/main/deploy-wrapper.sh | bash</code>
+                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
             </div>
             <div class="warning-box">
                 <strong>[DANGER ZONE]</strong> Only for experienced users who understand the process

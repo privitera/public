@@ -362,7 +362,7 @@
             </div>
             <div class="code-block">
                 <button class="copy-button" onclick="copyCode(this)">CLIK HERE</button>
-                <code>wget -qO- https://github.com/privitera/deployments-private/raw/main/deploy-wrapper.sh | bash</code>
+                <code>wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
             </div>
             <div style="background: #FF0000; color: #FFFF00; padding: 10px; border: 5px double #00FF00; text-align: center; font-size: 20px;">
                 <div class="blink">⚠️ TOP SECRET AREA ⚠️</div>
@@ -377,7 +377,7 @@
             </div>
             <div class="code-block">
                 <button class="copy-button" onclick="copyCode(this)">ULTRACOPY</button>
-                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget -qO- https://github.com/privitera/deployments-private/raw/main/deploy-wrapper.sh | bash</code>
+                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
             </div>
             <marquee direction="right" style="background: #00FF00; color: #FF0000; font-size: 24px; padding: 10px;">
                 ⚡⚡⚡ DANGER ZONE - ONLY FOR 1337 HAXX0RS ⚡⚡⚡
