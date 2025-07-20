@@ -740,7 +740,8 @@
         `;
         document.head.appendChild(style);
         
-        // Generate glitch lines at random intervals
+        // Generate glitch lines at random intervals - COMMENTED OUT
+        /*
         function generateGlitches() {
             const numGlitches = Math.floor(Math.random() * 5) + 2;
             for(let i = 0; i < numGlitches; i++) {
@@ -751,6 +752,7 @@
             setTimeout(generateGlitches, Math.random() * 1500 + 500);
         }
         generateGlitches();
+        */
         
         // Boot sequence animation
         const bootLines = document.querySelectorAll('.boot-line');
