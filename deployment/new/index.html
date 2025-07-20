@@ -665,8 +665,8 @@
     <!-- Matrix Rain Switcher -->
     <div class="matrix-switcher">
         <div class="matrix-switcher-title">MATRIX.VER</div>
-        <button class="matrix-option active" data-version="custom">CUSTOM</button>
-        <button class="matrix-option" data-version="authentic">AUTHENTIC</button>
+        <button class="matrix-option" data-version="custom">CUSTOM</button>
+        <button class="matrix-option active" data-version="authentic">AUTHENTIC</button>
         <button class="matrix-option" data-version="minimal">MINIMAL</button>
         <button class="matrix-option" data-version="off">OFF</button>
     </div>
@@ -783,7 +783,7 @@
         window.scrollTo(0, 0);
         
         // Matrix switcher functionality
-        let currentMatrixVersion = 'custom';
+        let currentMatrixVersion = 'authentic';
         let animationId = null;
         let dataStreamInterval = null;
         
@@ -835,9 +835,8 @@
                 case 'minimal':
                     canvas.style.display = 'block';
                     canvas.style.opacity = '0.05';
-                    dataStream.style.display = 'block';
+                    // No data stream for minimal version
                     initMinimalMatrix();
-                    startDataStream();
                     break;
                 case 'off':
                     // All remain hidden, no data stream
@@ -983,8 +982,8 @@
             animationId = requestAnimationFrame(drawMinimal);
         }
         
-        // Initialize with custom matrix
-        initCustomMatrix();
+        // Initialize with authentic matrix
+        switchMatrix('authentic');
         
         // Dynamic glitch lines
         function createGlitchLine() {
@@ -1121,8 +1120,7 @@
             }
         }
         
-        // Initialize data stream
-        startDataStream();
+        // Data stream is now managed by switchMatrix()
         
         // Update fake monitoring values - commented out for now
         /*
