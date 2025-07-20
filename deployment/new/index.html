@@ -87,11 +87,93 @@
         .glitch-line {
             position: absolute;
             width: 100%;
-            height: 1px;
+            height: 0.5px;
             background: var(--neon-cyan);
             opacity: 0;
-            filter: blur(0.5px);
             mix-blend-mode: screen;
+        }
+        
+        /* Hum bars - slow moving horizontal interference */
+        .hum-bar {
+            position: absolute;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(
+                to bottom,
+                transparent,
+                rgba(255, 255, 255, 0.02),
+                transparent
+            );
+            opacity: 0.3;
+            animation: hum-bar 8s linear infinite;
+        }
+        
+        @keyframes hum-bar {
+            0% { transform: translateY(-100vh); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        /* Rolling interference - thicker distortion bands */
+        .rolling-interference {
+            position: absolute;
+            width: 100%;
+            height: 80px;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                rgba(0, 255, 0, 0.01) 2px,
+                transparent 4px
+            );
+            opacity: 0.5;
+            animation: rolling 12s linear infinite;
+        }
+        
+        @keyframes rolling {
+            0% { transform: translateY(-100vh); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        /* AC interference - flickering brightness */
+        .ac-interference {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.01);
+            pointer-events: none;
+            animation: ac-flicker 0.15s infinite;
+            z-index: 1;
+        }
+        
+        @keyframes ac-flicker {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.02; }
+        }
+        
+        /* Beat frequency interference - subtle warping */
+        .beat-interference {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.3;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 3px,
+                rgba(255, 255, 255, 0.01) 3px,
+                rgba(255, 255, 255, 0.01) 4px
+            );
+            animation: beat-shift 3s linear infinite;
+        }
+        
+        @keyframes beat-shift {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
         }
 
         /* Container */
@@ -441,9 +523,19 @@
     <canvas id="matrix-bg"></canvas>
     <div class="scanlines"></div>
     <div class="noise"></div>
+    <div class="ac-interference"></div>
+    <div class="beat-interference"></div>
     
     <!-- Dynamic Glitch lines -->
-    <div class="glitch-wrapper" id="glitchContainer"></div>
+    <div class="glitch-wrapper" id="glitchContainer">
+        <!-- Hum bars -->
+        <div class="hum-bar" style="animation-delay: 0s;"></div>
+        <div class="hum-bar" style="animation-delay: 4s;"></div>
+        
+        <!-- Rolling interference -->
+        <div class="rolling-interference" style="animation-delay: 0s;"></div>
+        <div class="rolling-interference" style="animation-delay: 6s;"></div>
+    </div>
     
     <!-- Data streams -->
     <div class="data-stream" id="dataStream"></div>
@@ -593,8 +685,8 @@
             const colors = ['var(--neon-cyan)', 'var(--neon-pink)', 'var(--neon-yellow)', 'var(--neon-green)'];
             line.style.background = colors[Math.floor(Math.random() * colors.length)];
             
-            // Randomize height - thinner lines
-            line.style.height = (Math.random() * 1.5 + 0.5) + 'px';
+            // Randomize height - ultra thin like real scanlines
+            line.style.height = (Math.random() * 0.8 + 0.2) + 'px';
             
             // Randomize animation duration
             const duration = Math.random() * 4 + 2;
