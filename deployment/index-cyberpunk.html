@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ D3PL0YM3NT.3X3 ] >> SYST3M.1N1T</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --neon-pink: #ff00ff;
+            --neon-yellow: #ffff00;
+            --neon-green: #00ff00;
+            --neon-red: #ff0044;
+            --dark-bg: #000000;
+            --terminal-green: #00ff00;
+            --matrix-green: #00ff41;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: crosshair;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', 'VT323', monospace;
+            background: var(--dark-bg);
+            color: var(--neon-green);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Matrix Rain Background */
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            opacity: 0.1;
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 2px;
+            z-index: 2;
+            pointer-events: none;
+            animation: scanlines 8s linear infinite;
+        }
+
+        @keyframes scanlines {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 10px; }
+        }
+
+        /* Glitch container */
+        .glitch-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -2;
+        }
+
+        .glitch-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: var(--neon-cyan);
+            opacity: 0;
+            animation: glitch-line 3s infinite;
+        }
+
+        @keyframes glitch-line {
+            0%, 90% { opacity: 0; }
+            92% { opacity: 0.8; transform: translateX(0); }
+            94% { opacity: 0.8; transform: translateX(-100px); }
+            96% { opacity: 0.8; transform: translateX(100px); }
+            100% { opacity: 0; }
+        }
+
+        /* Container */
+        .terminal-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ASCII Header */
+        .ascii-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--neon-cyan);
+            font-size: 10px;
+            line-height: 1;
+            font-family: 'VT323', monospace;
+            white-space: pre;
+            animation: flicker 2s infinite;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+            75% { opacity: 0.9; }
+        }
+
+        /* Main Title */
+        .main-title {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .glitch-title {
+            font-size: 4rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            position: relative;
+            color: var(--neon-green);
+            letter-spacing: 0.1em;
+            animation: glitch 2s infinite;
+            text-shadow: 
+                2px 2px 0 var(--neon-pink),
+                -2px -2px 0 var(--neon-cyan),
+                0 0 30px var(--neon-green);
+        }
+
+        .glitch-title::before,
+        .glitch-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-title::before {
+            animation: glitch-1 0.5s infinite;
+            color: var(--neon-cyan);
+            z-index: -1;
+        }
+
+        .glitch-title::after {
+            animation: glitch-2 0.5s infinite;
+            color: var(--neon-pink);
+            z-index: -2;
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            20% { clip-path: inset(20% 0 60% 0); transform: translate(-5px); }
+            40% { clip-path: inset(50% 0 20% 0); transform: translate(5px); }
+            60% { clip-path: inset(10% 0 80% 0); transform: translate(2px); }
+            80% { clip-path: inset(80% 0 5% 0); transform: translate(-2px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translate(5px); }
+            40% { clip-path: inset(20% 0 50% 0); transform: translate(-5px); }
+            60% { clip-path: inset(80% 0 10% 0); transform: translate(-2px); }
+            80% { clip-path: inset(5% 0 80% 0); transform: translate(2px); }
+        }
+
+        /* Boot sequence */
+        .boot-sequence {
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            color: var(--terminal-green);
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--terminal-green);
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .boot-line {
+            opacity: 0;
+            animation: boot-fade 0.1s forwards;
+        }
+
+        @keyframes boot-fade {
+            to { opacity: 1; }
+        }
+
+        /* Step containers */
+        .step {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid;
+            border-image: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink), var(--neon-yellow)) 1;
+            position: relative;
+            animation: border-pulse 3s infinite;
+            overflow: hidden;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink), var(--neon-yellow));
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0.5;
+            animation: border-rotate 3s linear infinite;
+        }
+
+        @keyframes border-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes border-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .step-header {
+            font-size: 1.4rem;
+            color: var(--neon-yellow);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            position: relative;
+            display: inline-block;
+        }
+
+        .step-header::before {
+            content: '>';
+            position: absolute;
+            left: -20px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: #000;
+            border: 1px solid var(--neon-green);
+            border-radius: 0;
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+            overflow-x: auto;
+            font-family: 'Share Tech Mono', monospace;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 0, 0.5),
+                inset 0 0 20px rgba(0, 255, 0, 0.1);
+        }
+
+        .code-block::before {
+            content: '$ ';
+            color: var(--neon-green);
+        }
+
+        .code-block code {
+            color: var(--neon-green);
+            font-size: 14px;
+            text-shadow: 0 0 5px currentColor;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--neon-pink);
+            color: #000;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px currentColor;
+            transform: scale(1.1) rotate(2deg);
+        }
+
+        .copy-btn.copied {
+            background: var(--neon-green);
+            animation: pulse 0.5s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Info boxes */
+        .hack-box {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px dashed var(--neon-green);
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hack-box::before {
+            content: '[!]';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: var(--neon-yellow);
+            animation: blink 0.5s infinite;
+        }
+
+        .warning-box {
+            background: rgba(255, 0, 68, 0.1);
+            border: 2px solid var(--neon-red);
+            padding: 15px;
+            margin: 15px 0;
+            animation: warning-pulse 2s infinite;
+        }
+
+        @keyframes warning-pulse {
+            0%, 100% { box-shadow: 0 0 10px var(--neon-red); }
+            50% { box-shadow: 0 0 30px var(--neon-red); }
+        }
+
+        /* Floating elements */
+        .float-element {
+            position: fixed;
+            color: var(--neon-cyan);
+            font-size: 20px;
+            animation: float 10s infinite ease-in-out;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+            25% { transform: translateY(-100px) translateX(50px) rotate(90deg); }
+            50% { transform: translateY(-50px) translateX(-50px) rotate(180deg); }
+            75% { transform: translateY(-150px) translateX(25px) rotate(270deg); }
+        }
+
+        /* Typewriter effect */
+        .typewriter {
+            overflow: hidden;
+            border-right: .15em solid var(--neon-green);
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: 
+                typing 3.5s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--neon-green); }
+        }
+
+        /* Mobile hack */
+        @media (max-width: 768px) {
+            .glitch-title { font-size: 2.5rem; }
+            .ascii-header { font-size: 6px; }
+            .terminal-container { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix rain background -->
+    <canvas id="matrix-bg"></canvas>
+    
+    <!-- Scanlines overlay -->
+    <div class="scanlines"></div>
+    
+    <!-- Glitch lines -->
+    <div class="glitch-wrapper">
+        <div class="glitch-line" style="top: 10%; animation-delay: 0s;"></div>
+        <div class="glitch-line" style="top: 30%; animation-delay: 1s;"></div>
+        <div class="glitch-line" style="top: 50%; animation-delay: 2s;"></div>
+        <div class="glitch-line" style="top: 70%; animation-delay: 1.5s;"></div>
+        <div class="glitch-line" style="top: 90%; animation-delay: 0.5s;"></div>
+    </div>
+
+    <!-- Floating elements -->
+    <div class="float-element" style="top: 10%; left: 10%;">01</div>
+    <div class="float-element" style="top: 20%; right: 15%; animation-delay: 2s;">10</div>
+    <div class="float-element" style="bottom: 30%; left: 20%; animation-delay: 4s;">11</div>
+    <div class="float-element" style="bottom: 10%; right: 10%; animation-delay: 3s;">00</div>
+
+    <div class="terminal-container">
+        <!-- ASCII Header -->
+        <div class="ascii-header">
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  ██████╗ ███████╗██████╗ ██╗      ██████╗ ██╗   ██╗    ██╗  ██╗██╗  ██╗    ║
+║  ██╔══██╗██╔════╝██╔══██╗██║     ██╔═══██╗╚██╗ ██╔╝    ╚██╗██╔╝╚██╗██╔╝    ║
+║  ██║  ██║█████╗  ██████╔╝██║     ██║   ██║ ╚████╔╝      ╚███╔╝  ╚███╔╝     ║
+║  ██║  ██║██╔══╝  ██╔═══╝ ██║     ██║   ██║  ╚██╔╝       ██╔██╗  ██╔██╗     ║
+║  ██████╔╝███████╗██║     ███████╗╚██████╔╝   ██║       ██╔╝ ██╗██╔╝ ██╗    ║
+║  ╚═════╝ ╚══════╝╚═╝     ╚══════╝ ╚═════╝    ╚═╝       ╚═╝  ╚═╝╚═╝  ╚═╝    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+        </div>
+
+        <!-- Main Title -->
+        <div class="main-title">
+            <h1 class="glitch-title" data-text="SYSTEM.DEPLOY">SYSTEM.DEPLOY</h1>
+            <p class="typewriter">Initializing Universal Deployment Protocol...</p>
+        </div>
+
+        <!-- Boot Sequence -->
+        <div class="boot-sequence" id="boot-seq">
+            <div class="boot-text"></div>
+        </div>
+
+        <!-- Steps -->
+        <div class="step">
+            <div class="step-header">[0x01] SYSTEM.PREPARATION</div>
+            <p>Prepare your system for deployment - Update all packages</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                <code>sudo apt update && sudo apt upgrade -y</code>
+            </div>
+            <div class="hack-box">
+                <strong>PRO TIP:</strong> This will update your packages and ensure everything is current
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-header">[0x02] STAGE.1.INIT</div>
+            <p>Download and execute the Stage 1 setup script - Installs GitHub CLI and dependencies</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash</code>
+            </div>
+            <div class="hack-box">
+                <strong>FUNCTION:</strong> Installs git, GitHub CLI, and sets up authentication helpers
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-header">[0x03] GITHUB.AUTH</div>
+            <p>Authenticate with GitHub to enable access to private repositories</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                <code>gh auth login</code>
+            </div>
+            <div class="hack-box">
+                <strong>SELECT:</strong> GitHub.com → SSH → Generate new key (or use existing)
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-header">[0x04] STAGE.2.EXEC</div>
+            <p>Run your Stage 2 deployment script - Interactive TUI for configuration selection</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                <code>wget -qO- https://github.com/privitera/deployments-private/raw/main/deploy-wrapper.sh | bash</code>
+            </div>
+            <div class="warning-box">
+                <strong>[CLASSIFIED]</strong> Stage 2 contains your private configurations and deployment profiles
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-header">[0xFF] ONE.LINER.EXECUTION</div>
+            <p>For advanced users - Execute everything with one command (requires interaction)</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">EXECUTE</button>
+                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget -qO- https://github.com/privitera/deployments-private/raw/main/deploy-wrapper.sh | bash</code>
+            </div>
+            <div class="warning-box">
+                <strong>[DANGER ZONE]</strong> Only for experienced users who understand the process
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-header">[EOF] SYSTEM.STATUS</div>
+            <p>Check your deployment and verify successful installation</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">VERIFY</button>
+                <code>cat /opt/deployment/.deployment-info && systemctl status</code>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Matrix rain effect
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const chars = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ01';
+        const charArray = chars.split('');
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+        
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+        
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#00ff41';
+            ctx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 35);
+        
+        // Boot sequence animation
+        const bootLines = [
+            'BIOS v4.20.69 - (C) 2024 1337 H4X0R C0RP',
+            'CPU: Quantum 9000X @ 420.69 GHz [OK]',
+            'RAM: 1337 TB DDR69 @ 9001 MHz [OK]',
+            'GPU: RTX 9090 Ti SUPER ULTRA [OK]',
+            'Checking for administrator credentials... [AUTHORIZED]',
+            'Loading deployment kernel... [■■■■■■■■■■] 100%',
+            'Initializing gibson interface... [CONNECTED]',
+            'Starting deployment services...',
+            '> github-cli.service [ACTIVE]',
+            '> ansible-vault.service [ENCRYPTED]',
+            '> docker-swarm.service [SWARMING]',
+            '> kubernetes.service [ORCHESTRATING]',
+            '',
+            'SYSTEM READY - WELCOME TO THE MATRIX',
+            '_'
+        ];
+        
+        const bootSeq = document.querySelector('.boot-text');
+        let lineIndex = 0;
+        
+        function typeBootLine() {
+            if (lineIndex < bootLines.length) {
+                const line = document.createElement('div');
+                line.className = 'boot-line';
+                line.style.animationDelay = `${lineIndex * 0.1}s`;
+                line.textContent = bootLines[lineIndex];
+                bootSeq.appendChild(line);
+                
+                if (bootSeq.children.length > 10) {
+                    bootSeq.removeChild(bootSeq.firstChild);
+                }
+                
+                lineIndex++;
+                setTimeout(typeBootLine, 200);
+            } else {
+                lineIndex = 0;
+                setTimeout(() => {
+                    bootSeq.innerHTML = '';
+                    typeBootLine();
+                }, 3000);
+            }
+        }
+        
+        typeBootLine();
+        
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.parentElement.querySelector('code');
+            const textArea = document.createElement('textarea');
+            textArea.value = codeBlock.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            const originalText = btn.textContent;
+            btn.textContent = 'COPIED!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+        
+        // Random glitch effect
+        setInterval(() => {
+            const elements = document.querySelectorAll('.step-header, .hack-box');
+            const target = elements[Math.floor(Math.random() * elements.length)];
+            if (target) {
+                target.style.transform = `translateX(${Math.random() * 4 - 2}px)`;
+                setTimeout(() => {
+                    target.style.transform = 'translateX(0)';
+                }, 100);
+            }
+        }, 3000);
+        
+        // Konami code easter egg
+        let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    document.body.style.animation = 'rainbow 1s infinite';
+                    alert('ELITE MODE ACTIVATED!');
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+        
+        // Add rainbow animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rainbow {
+                0% { filter: hue-rotate(0deg); }
+                100% { filter: hue-rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
