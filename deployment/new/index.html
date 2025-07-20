@@ -757,6 +757,7 @@
         // Matrix switcher functionality
         let currentMatrixVersion = 'custom';
         let animationId = null;
+        let dataStreamInterval = null;
         
         function switchMatrix(version) {
             // Stop current animation
@@ -765,16 +766,27 @@
                 animationId = null;
             }
             
+            // Stop data stream
+            if (dataStreamInterval) {
+                clearInterval(dataStreamInterval);
+                dataStreamInterval = null;
+            }
+            
             const canvas = document.getElementById('matrix-bg');
             const iframe = document.getElementById('rezmason-matrix');
+            const dataStream = document.getElementById('dataStream');
             
             // Reset canvas
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
+            // Clear data stream
+            dataStream.innerHTML = '';
+            
             // Hide all versions first
             canvas.style.display = 'none';
             iframe.style.display = 'none';
+            dataStream.style.display = 'none';
             
             currentMatrixVersion = version;
             
@@ -782,19 +794,25 @@
                 case 'custom':
                     canvas.style.display = 'block';
                     canvas.style.opacity = '0.1';
+                    dataStream.style.display = 'block';
                     initCustomMatrix();
+                    startDataStream();
                     break;
                 case 'authentic':
                     iframe.style.display = 'block';
                     iframe.style.opacity = '0.1';
+                    dataStream.style.display = 'block';
+                    startDataStream();
                     break;
                 case 'minimal':
                     canvas.style.display = 'block';
                     canvas.style.opacity = '0.05';
+                    dataStream.style.display = 'block';
                     initMinimalMatrix();
+                    startDataStream();
                     break;
                 case 'off':
-                    // Both remain hidden
+                    // All remain hidden, no data stream
                     break;
             }
         }
@@ -1069,7 +1087,14 @@
             setTimeout(() => char.remove(), 10000);
         }
         
-        setInterval(createDataStream, 100);
+        function startDataStream() {
+            if (!dataStreamInterval) {
+                dataStreamInterval = setInterval(createDataStream, 100);
+            }
+        }
+        
+        // Initialize data stream
+        startDataStream();
         
         // Update fake monitoring values - commented out for now
         /*
