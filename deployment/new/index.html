@@ -98,8 +98,8 @@
 
         /* ASCII Header */
         .ascii-header {
-            text-align: center;
-            margin-bottom: 30px;
+            text-align: left;
+            margin: 0 auto 30px;
             color: var(--neon-cyan);
             font-size: 10px;
             line-height: 1;
@@ -107,6 +107,7 @@
             white-space: pre;
             animation: flicker 2s infinite;
             text-shadow: 0 0 10px currentColor;
+            display: table;
         }
 
         @keyframes flicker {
