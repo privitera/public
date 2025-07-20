@@ -93,21 +93,25 @@
             mix-blend-mode: screen;
         }
         
-        /* Hum bars - slow moving horizontal interference */
+        /* Hum bars - realistic 60Hz interference */
         .hum-bar {
             position: absolute;
             width: 100%;
-            height: 40px;
-            background: linear-gradient(
-                to bottom,
-                transparent,
-                rgba(0, 255, 255, 0.1),
-                rgba(0, 255, 255, 0.05),
-                transparent
-            );
-            opacity: 0.6;
-            animation: hum-bar 8s linear infinite;
-            mix-blend-mode: screen;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.8);
+            opacity: 0.15;
+            animation: hum-bar 6s linear infinite;
+            filter: blur(1px);
+        }
+        
+        .hum-bar::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            transform: scaleY(3);
+            filter: blur(2px);
         }
         
         @keyframes hum-bar {
@@ -115,47 +119,52 @@
             100% { transform: translateY(100vh); }
         }
         
-        /* Rolling interference - thicker distortion bands */
+        /* Rolling interference - realistic sync issues */
         .rolling-interference {
             position: absolute;
             width: 100%;
-            height: 120px;
-            background: repeating-linear-gradient(
+            height: 200px;
+            background: linear-gradient(
                 to bottom,
-                transparent,
-                rgba(0, 255, 0, 0.08) 3px,
-                transparent 6px
+                transparent 0%,
+                rgba(0, 0, 0, 0.1) 45%,
+                rgba(0, 0, 0, 0.2) 50%,
+                rgba(0, 0, 0, 0.1) 55%,
+                transparent 100%
             );
-            opacity: 0.7;
-            animation: rolling 10s linear infinite;
-            mix-blend-mode: screen;
+            opacity: 0.3;
+            animation: rolling 15s linear infinite;
+            transform: skewY(0.5deg);
         }
         
         @keyframes rolling {
-            0% { transform: translateY(-100vh); }
-            100% { transform: translateY(100vh); }
+            0% { transform: translateY(-200vh) skewY(0.5deg); }
+            100% { transform: translateY(100vh) skewY(0.5deg); }
         }
         
-        /* AC interference - flickering brightness */
+        /* AC interference - realistic power fluctuation */
         .ac-interference {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 255, 0, 0.02);
+            background: radial-gradient(
+                ellipse at center,
+                transparent 0%,
+                rgba(255, 255, 255, 0.01) 100%
+            );
             pointer-events: none;
-            animation: ac-flicker 0.1s infinite;
+            animation: ac-flicker 0.0167s steps(2, end) infinite;
             z-index: 1;
-            mix-blend-mode: screen;
         }
         
         @keyframes ac-flicker {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 0.5; }
+            0% { opacity: 0.95; }
+            50% { opacity: 1; }
         }
         
-        /* Beat frequency interference - subtle warping */
+        /* Beat frequency interference - moiré pattern from frequency mismatch */
         .beat-interference {
             position: fixed;
             top: 0;
@@ -164,21 +173,28 @@
             height: 100%;
             pointer-events: none;
             z-index: 1;
-            opacity: 0.5;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0, 255, 255, 0.03) 2px,
-                rgba(0, 255, 255, 0.03) 3px
-            );
-            animation: beat-shift 2s linear infinite;
-            mix-blend-mode: screen;
+            opacity: 0.05;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 1.8px,
+                    rgba(0, 0, 0, 0.3) 1.8px,
+                    rgba(0, 0, 0, 0.3) 2px
+                ),
+                repeating-linear-gradient(
+                    0.5deg,
+                    transparent,
+                    transparent 1.9px,
+                    rgba(0, 0, 0, 0.2) 1.9px,
+                    rgba(0, 0, 0, 0.2) 2.1px
+                );
+            animation: beat-shift 8s ease-in-out infinite;
         }
         
         @keyframes beat-shift {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(3px); }
+            0%, 100% { transform: translateY(0) rotate(0.01deg); }
+            50% { transform: translateY(1px) rotate(-0.01deg); }
         }
 
         /* Container */
@@ -526,20 +542,22 @@
 </head>
 <body>
     <canvas id="matrix-bg"></canvas>
-    <div class="scanlines"></div>
+    <!-- <div class="scanlines"></div> -->
     <div class="noise"></div>
     <div class="ac-interference"></div>
     <div class="beat-interference"></div>
     
     <!-- Dynamic Glitch lines -->
     <div class="glitch-wrapper" id="glitchContainer">
-        <!-- Hum bars -->
-        <div class="hum-bar" style="animation-delay: 0s;"></div>
-        <div class="hum-bar" style="animation-delay: 4s;"></div>
+        <!-- Hum bars - multiple thin bars like real 60Hz interference -->
+        <div class="hum-bar" style="animation-delay: 0s; animation-duration: 5.5s;"></div>
+        <div class="hum-bar" style="animation-delay: 1.2s; animation-duration: 6s;"></div>
+        <div class="hum-bar" style="animation-delay: 2.8s; animation-duration: 5.8s;"></div>
+        <div class="hum-bar" style="animation-delay: 4.1s; animation-duration: 6.2s;"></div>
         
-        <!-- Rolling interference -->
-        <div class="rolling-interference" style="animation-delay: 0s;"></div>
-        <div class="rolling-interference" style="animation-delay: 6s;"></div>
+        <!-- Rolling interference - varying speeds -->
+        <div class="rolling-interference" style="animation-delay: 0s; animation-duration: 14s;"></div>
+        <div class="rolling-interference" style="animation-delay: 7s; animation-duration: 16s;"></div>
     </div>
     
     <!-- Data streams -->
