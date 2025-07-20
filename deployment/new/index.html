@@ -313,28 +313,13 @@
             z-index: -2;
         }
 
+        /* We'll create dynamic keyframes with JavaScript for randomization */
         @keyframes glitch {
             0%, 100% { transform: translate(0); }
             20% { transform: translate(-2px, 2px); }
             40% { transform: translate(-2px, -2px); }
             60% { transform: translate(2px, 2px); }
             80% { transform: translate(2px, -2px); }
-        }
-
-        @keyframes glitch-1 {
-            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
-            20% { clip-path: inset(20% 0 60% 0); transform: translate(-5px); }
-            40% { clip-path: inset(50% 0 20% 0); transform: translate(5px); }
-            60% { clip-path: inset(10% 0 80% 0); transform: translate(2px); }
-            80% { clip-path: inset(80% 0 5% 0); transform: translate(-2px); }
-        }
-
-        @keyframes glitch-2 {
-            0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
-            20% { clip-path: inset(60% 0 10% 0); transform: translate(5px); }
-            40% { clip-path: inset(20% 0 50% 0); transform: translate(-5px); }
-            60% { clip-path: inset(80% 0 10% 0); transform: translate(-2px); }
-            80% { clip-path: inset(5% 0 80% 0); transform: translate(2px); }
         }
 
 
@@ -955,6 +940,77 @@
         
         // Initialize with authentic matrix
         switchMatrix('authentic');
+        
+        // Randomized ASCII glitch effect
+        function createRandomGlitch() {
+            // Remove existing glitch style if any
+            const existingStyle = document.getElementById('dynamic-glitch-style');
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+            
+            // Create new style element
+            const style = document.createElement('style');
+            style.id = 'dynamic-glitch-style';
+            
+            // Generate random glitch keyframes
+            const glitch1Frames = [];
+            const glitch2Frames = [];
+            
+            // Create 5 keyframe points (0%, 20%, 40%, 60%, 80%, 100%)
+            const percentages = [0, 20, 40, 60, 80, 100];
+            
+            percentages.forEach(percent => {
+                if (percent === 0 || percent === 100) {
+                    // Start and end at neutral position
+                    glitch1Frames.push(`${percent}% { clip-path: inset(0 0 0 0); transform: translate(0); }`);
+                    glitch2Frames.push(`${percent}% { clip-path: inset(0 0 0 0); transform: translate(0); }`);
+                } else {
+                    // Random clip-path values
+                    const top1 = Math.floor(Math.random() * 80);
+                    const bottom1 = Math.floor(Math.random() * 80);
+                    const top2 = Math.floor(Math.random() * 80);
+                    const bottom2 = Math.floor(Math.random() * 80);
+                    
+                    // Random transform values (-8 to 8 pixels)
+                    const x1 = Math.floor(Math.random() * 16 - 8);
+                    const x2 = Math.floor(Math.random() * 16 - 8);
+                    
+                    glitch1Frames.push(`${percent}% { clip-path: inset(${top1}% 0 ${bottom1}% 0); transform: translate(${x1}px); }`);
+                    glitch2Frames.push(`${percent}% { clip-path: inset(${top2}% 0 ${bottom2}% 0); transform: translate(${x2}px); }`);
+                }
+            });
+            
+            // Create the CSS
+            style.textContent = `
+                @keyframes glitch-1 {
+                    ${glitch1Frames.join('\n')}
+                }
+                
+                @keyframes glitch-2 {
+                    ${glitch2Frames.join('\n')}
+                }
+                
+                /* Apply different animation durations for variety */
+                .glitch-title::before {
+                    animation: glitch-1 ${0.3 + Math.random() * 0.4}s infinite;
+                }
+                
+                .glitch-title::after {
+                    animation: glitch-2 ${0.3 + Math.random() * 0.4}s infinite;
+                }
+            `;
+            
+            document.head.appendChild(style);
+        }
+        
+        // Initialize first glitch pattern
+        createRandomGlitch();
+        
+        // Randomize glitch pattern every 3-7 seconds
+        setInterval(() => {
+            createRandomGlitch();
+        }, 3000 + Math.random() * 4000);
         
         // Dynamic glitch lines
         function createGlitchLine() {
