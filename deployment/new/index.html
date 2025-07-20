@@ -334,31 +334,15 @@
             box-shadow: 0 0 20px var(--neon-pink);
         }
 
-        /* Warning box */
-        .warning-box {
-            background: rgba(255, 0, 68, 0.1);
-            border: 2px solid var(--neon-red);
-            padding: 20px;
-            margin: 20px 0;
+        /* Info box */
+        .info-box {
+            background: rgba(0, 255, 255, 0.05);
+            border-left: 3px solid var(--neon-cyan);
+            padding: 15px 20px;
+            margin: 15px 0;
             position: relative;
-            animation: warning-pulse 2s infinite;
-        }
-
-        @keyframes warning-pulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 68, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(255, 0, 68, 0.8); }
-        }
-
-        .warning-box::before {
-            content: '⚠ CAUTION ⚠';
-            position: absolute;
-            top: -12px;
-            left: 20px;
-            background: var(--dark-bg);
-            padding: 0 10px;
-            color: var(--neon-red);
-            font-weight: bold;
-            animation: blink 0.5s infinite;
+            font-size: 14px;
+            color: var(--neon-cyan);
         }
 
         /* Floating UI elements */
@@ -494,8 +478,8 @@
             <h2 class="step-header">STAGE.001 // SYSTEM UPDATE</h2>
             <p>Initialize system and prepare for deployment. This stage updates package repositories and upgrades all system components to ensure compatibility.</p>
             <div class="code-block">
-                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
-                <code>sudo apt update && sudo apt upgrade -y</code>
+<button class="copy-btn" onclick="copyCode(this)">COPY</button>
+<code>sudo apt update && sudo apt upgrade -y</code>
             </div>
         </div>
 
@@ -503,8 +487,8 @@
             <h2 class="step-header">STAGE.002 // BOOTSTRAP INIT</h2>
             <p>Download and execute Stage 1 setup script. This installs essential tools including Git and GitHub CLI for repository access.</p>
             <div class="code-block">
-                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
-                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash</code>
+<button class="copy-btn" onclick="copyCode(this)">COPY</button>
+<code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash</code>
             </div>
         </div>
 
@@ -512,11 +496,11 @@
             <h2 class="step-header">STAGE.003 // AUTH PROTOCOL</h2>
             <p>Establish secure connection to GitHub. Authentication required for accessing deployment configurations.</p>
             <div class="code-block">
-                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
-                <code>gh auth login</code>
+<button class="copy-btn" onclick="copyCode(this)">COPY</button>
+<code>gh auth login</code>
             </div>
-            <div class="warning-box">
-                <p><strong>PROTOCOL:</strong> Select GitHub.com → SSH → Generate new SSH key</p>
+            <div class="info-box">
+                <strong>PROTOCOL:</strong> Select GitHub.com → SSH → Generate new SSH key
             </div>
         </div>
 
@@ -524,11 +508,11 @@
             <h2 class="step-header">STAGE.004 // DEPLOY EXECUTE</h2>
             <p>Execute Stage 2 deployment with interactive configuration selector. Choose from multiple deployment profiles.</p>
             <div class="code-block">
-                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
-                <code>wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
+<button class="copy-btn" onclick="copyCode(this)">COPY</button>
+<code>wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
             </div>
-            <div class="warning-box">
-                <p><strong>ACCESS LEVEL:</strong> This stage requires private repository access</p>
+            <div class="info-box">
+                <strong>ACCESS LEVEL:</strong> This stage requires private repository access
             </div>
         </div>
 
@@ -536,8 +520,8 @@
             <h2 class="step-header">PROTOCOL.OMEGA // RAPID DEPLOYMENT</h2>
             <p>Execute full deployment sequence in single command stream. For experienced operators only.</p>
             <div class="code-block">
-                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
-                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
+<button class="copy-btn" onclick="copyCode(this)">COPY</button>
+<code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
             </div>
         </div>
     </div>
