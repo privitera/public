@@ -558,12 +558,89 @@
             pointer-events: none;
             background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="1"/></svg>');
         }
+
+        /* Matrix switcher */
+        .matrix-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--neon-cyan);
+            padding: 10px;
+            font-size: 10px;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--neon-cyan);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .matrix-switcher:hover {
+            opacity: 1;
+        }
+
+        .matrix-switcher-title {
+            text-align: center;
+            margin-bottom: 8px;
+            color: var(--neon-yellow);
+            font-size: 9px;
+            letter-spacing: 1px;
+        }
+
+        .matrix-option {
+            display: block;
+            background: transparent;
+            border: 1px solid var(--terminal-green);
+            color: var(--terminal-green);
+            padding: 4px 8px;
+            margin: 2px 0;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .matrix-option.active {
+            background: var(--terminal-green);
+            color: var(--dark-bg);
+            box-shadow: 0 0 10px var(--terminal-green);
+        }
+
+        .matrix-option:hover:not(.active) {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        /* Rezmason Matrix integration */
+        #rezmason-matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            opacity: 0.1;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <canvas id="matrix-bg"></canvas>
+    <iframe id="rezmason-matrix" src="https://rezmason.github.io/matrix/" frameborder="0"></iframe>
     <!-- <div class="scanlines"></div> -->
     <div class="noise"></div>
+    
+    <!-- Matrix Rain Switcher -->
+    <div class="matrix-switcher">
+        <div class="matrix-switcher-title">MATRIX.VER</div>
+        <button class="matrix-option active" data-version="custom">CUSTOM</button>
+        <button class="matrix-option" data-version="authentic">AUTHENTIC</button>
+        <button class="matrix-option" data-version="minimal">MINIMAL</button>
+        <button class="matrix-option" data-version="off">OFF</button>
+    </div>
     <div class="ac-interference"></div>
     <div class="beat-interference"></div>
     
@@ -677,79 +754,191 @@
         // Ensure page starts at top on load
         window.scrollTo(0, 0);
         
-        // Matrix rain effect
-        const canvas = document.getElementById('matrix-bg');
-        const ctx = canvas.getContext('2d');
+        // Matrix switcher functionality
+        let currentMatrixVersion = 'custom';
+        let animationId = null;
         
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        // Authentic Matrix characters - katakana, numbers, some Latin
-        const katakana = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
-        const numbers = "0123456789";
-        const latin = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const symbols = "@#$%^&*()+-=[]{}|;:<>?";
-        const matrix = katakana + numbers + latin + symbols;
-        const matrixArray = matrix.split("");
-        
-        const fontSize = 10;
-        const columns = canvas.width / fontSize;
-        
-        const drops = [];
-        for(let x = 0; x < columns; x++) {
-            drops[x] = 0;
-        }
-        
-        // Store character cache to avoid recalculating
-        const charCache = [];
-        for(let i = 0; i < columns; i++) {
-            charCache[i] = matrixArray[Math.floor(Math.random() * matrixArray.length)];
-        }
-        
-        let frameCount = 0;
-        
-        function drawMatrix() {
-            // Only update every 2nd frame for performance
-            frameCount++;
-            if (frameCount % 2 !== 0) return;
+        function switchMatrix(version) {
+            // Stop current animation
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
             
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const canvas = document.getElementById('matrix-bg');
+            const iframe = document.getElementById('rezmason-matrix');
             
-            ctx.font = fontSize + 'px monospace';
+            // Reset canvas
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            for(let i = 0; i < drops.length; i++) {
-                // Update character occasionally
-                if(Math.random() > 0.95) {
-                    charCache[i] = matrixArray[Math.floor(Math.random() * matrixArray.length)];
-                }
-                
-                const x = i * fontSize;
-                const y = drops[i] * fontSize;
-                
-                // Draw character
-                ctx.fillStyle = '#00ff41';
-                ctx.fillText(charCache[i], x, y);
-                
-                // Add white highlight to leading edge
-                if(Math.random() > 0.98) {
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillText(charCache[i], x, y);
-                }
-                
-                if(y > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
+            // Hide all versions first
+            canvas.style.display = 'none';
+            iframe.style.display = 'none';
+            
+            currentMatrixVersion = version;
+            
+            switch(version) {
+                case 'custom':
+                    canvas.style.display = 'block';
+                    canvas.style.opacity = '0.1';
+                    initCustomMatrix();
+                    break;
+                case 'authentic':
+                    iframe.style.display = 'block';
+                    iframe.style.opacity = '0.1';
+                    break;
+                case 'minimal':
+                    canvas.style.display = 'block';
+                    canvas.style.opacity = '0.05';
+                    initMinimalMatrix();
+                    break;
+                case 'off':
+                    // Both remain hidden
+                    break;
             }
         }
         
-        // Use requestAnimationFrame for better performance
-        function animate() {
-            drawMatrix();
-            requestAnimationFrame(animate);
+        // Matrix switcher event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const switcher = document.querySelector('.matrix-switcher');
+            const options = switcher.querySelectorAll('.matrix-option');
+            
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove active class from all options
+                    options.forEach(opt => opt.classList.remove('active'));
+                    // Add active class to clicked option
+                    this.classList.add('active');
+                    // Switch matrix version
+                    switchMatrix(this.dataset.version);
+                });
+            });
+        });
+        
+        // Matrix implementations
+        function initCustomMatrix() {
+            const canvas = document.getElementById('matrix-bg');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Authentic Matrix characters - katakana, numbers, some Latin
+            const katakana = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+            const numbers = "0123456789";
+            const latin = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const symbols = "@#$%^&*()+-=[]{}|;:<>?";
+            const matrix = katakana + numbers + latin + symbols;
+            const matrixArray = matrix.split("");
+            
+            const fontSize = 10;
+            const columns = canvas.width / fontSize;
+            
+            const drops = [];
+            for(let x = 0; x < columns; x++) {
+                drops[x] = 0;
+            }
+            
+            // Store character cache to avoid recalculating
+            const charCache = [];
+            for(let i = 0; i < columns; i++) {
+                charCache[i] = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+            }
+            
+            let frameCount = 0;
+            
+            function drawMatrix() {
+                // Only update every 2nd frame for performance
+                frameCount++;
+                if (frameCount % 2 !== 0) {
+                    animationId = requestAnimationFrame(drawMatrix);
+                    return;
+                }
+                
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.font = fontSize + 'px monospace';
+                
+                for(let i = 0; i < drops.length; i++) {
+                    // Update character occasionally
+                    if(Math.random() > 0.95) {
+                        charCache[i] = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+                    }
+                    
+                    const x = i * fontSize;
+                    const y = drops[i] * fontSize;
+                    
+                    // Draw character
+                    ctx.fillStyle = '#00ff41';
+                    ctx.fillText(charCache[i], x, y);
+                    
+                    // Add white highlight to leading edge
+                    if(Math.random() > 0.98) {
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillText(charCache[i], x, y);
+                    }
+                    
+                    if(y > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+                
+                animationId = requestAnimationFrame(drawMatrix);
+            }
+            
+            animationId = requestAnimationFrame(drawMatrix);
         }
-        requestAnimationFrame(animate);
+        
+        function initMinimalMatrix() {
+            const canvas = document.getElementById('matrix-bg');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Minimal character set - just numbers and basic symbols
+            const chars = "01";
+            const charArray = chars.split("");
+            
+            const fontSize = 12;
+            const columns = Math.floor(canvas.width / fontSize);
+            
+            const drops = [];
+            for(let x = 0; x < columns; x++) {
+                drops[x] = Math.floor(Math.random() * canvas.height / fontSize);
+            }
+            
+            function drawMinimal() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#00ff41';
+                ctx.font = fontSize + 'px monospace';
+                
+                for(let i = 0; i < drops.length; i++) {
+                    const char = charArray[Math.floor(Math.random() * charArray.length)];
+                    const x = i * fontSize;
+                    const y = drops[i] * fontSize;
+                    
+                    ctx.fillText(char, x, y);
+                    
+                    if(y > canvas.height && Math.random() > 0.98) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+                
+                animationId = requestAnimationFrame(drawMinimal);
+            }
+            
+            animationId = requestAnimationFrame(drawMinimal);
+        }
+        
+        // Initialize with custom matrix
+        initCustomMatrix();
         
         // Dynamic glitch lines
         function createGlitchLine() {
@@ -897,8 +1086,16 @@
         
         // Resize handler
         window.addEventListener('resize', () => {
+            const canvas = document.getElementById('matrix-bg');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            
+            // Reinitialize current matrix version
+            if (currentMatrixVersion === 'custom') {
+                switchMatrix('custom');
+            } else if (currentMatrixVersion === 'minimal') {
+                switchMatrix('minimal');
+            }
         });
         
         // Ensure scroll to top on page load
