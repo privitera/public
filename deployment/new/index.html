@@ -261,7 +261,7 @@
             position: relative;
             color: var(--neon-green);
             letter-spacing: 0.1em;
-            animation: glitch 2s infinite;
+            /* animation added dynamically */
             text-shadow: 
                 2px 2px 0 var(--neon-pink),
                 -2px -2px 0 var(--neon-cyan),
@@ -313,13 +313,9 @@
             z-index: -2;
         }
 
-        /* We'll create dynamic keyframes with JavaScript for randomization */
-        @keyframes glitch {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
+        /* Base glitch class - animation will be added dynamically */
+        .glitch-title {
+            /* Remove the static animation */
         }
 
 
@@ -953,36 +949,54 @@
             const style = document.createElement('style');
             style.id = 'dynamic-glitch-style';
             
-            // Generate random glitch keyframes
+            // Generate random main glitch movement
+            const mainGlitchFrames = [];
             const glitch1Frames = [];
             const glitch2Frames = [];
             
-            // Create 5 keyframe points (0%, 20%, 40%, 60%, 80%, 100%)
-            const percentages = [0, 20, 40, 60, 80, 100];
+            // Create keyframe points with occasional glitches
+            const percentages = [0, 15, 30, 45, 60, 75, 90, 100];
             
             percentages.forEach(percent => {
                 if (percent === 0 || percent === 100) {
                     // Start and end at neutral position
+                    mainGlitchFrames.push(`${percent}% { transform: translate(0); }`);
                     glitch1Frames.push(`${percent}% { clip-path: inset(0 0 0 0); transform: translate(0); }`);
                     glitch2Frames.push(`${percent}% { clip-path: inset(0 0 0 0); transform: translate(0); }`);
                 } else {
-                    // Random clip-path values
-                    const top1 = Math.floor(Math.random() * 80);
-                    const bottom1 = Math.floor(Math.random() * 80);
-                    const top2 = Math.floor(Math.random() * 80);
-                    const bottom2 = Math.floor(Math.random() * 80);
+                    // Main element: Occasional subtle movements (90% chance of staying still)
+                    if (Math.random() > 0.9) {
+                        const x = Math.floor(Math.random() * 4 - 2); // -2 to 2 pixels
+                        const y = Math.floor(Math.random() * 4 - 2);
+                        mainGlitchFrames.push(`${percent}% { transform: translate(${x}px, ${y}px); }`);
+                    } else {
+                        mainGlitchFrames.push(`${percent}% { transform: translate(0); }`);
+                    }
                     
-                    // Random transform values (-8 to 8 pixels)
-                    const x1 = Math.floor(Math.random() * 16 - 8);
-                    const x2 = Math.floor(Math.random() * 16 - 8);
+                    // Pseudo elements: More aggressive glitching
+                    const top1 = Math.floor(Math.random() * 70);
+                    const bottom1 = Math.floor(Math.random() * 70);
+                    const top2 = Math.floor(Math.random() * 70);
+                    const bottom2 = Math.floor(Math.random() * 70);
+                    
+                    const x1 = Math.floor(Math.random() * 12 - 6); // -6 to 6 pixels
+                    const x2 = Math.floor(Math.random() * 12 - 6);
                     
                     glitch1Frames.push(`${percent}% { clip-path: inset(${top1}% 0 ${bottom1}% 0); transform: translate(${x1}px); }`);
                     glitch2Frames.push(`${percent}% { clip-path: inset(${top2}% 0 ${bottom2}% 0); transform: translate(${x2}px); }`);
                 }
             });
             
-            // Create the CSS
+            // Create the CSS with variable timing
+            const mainDuration = 3 + Math.random() * 2; // 3-5 seconds
+            const beforeDuration = 0.4 + Math.random() * 0.3; // 0.4-0.7 seconds
+            const afterDuration = 0.4 + Math.random() * 0.3;
+            
             style.textContent = `
+                @keyframes glitch-main {
+                    ${mainGlitchFrames.join('\n')}
+                }
+                
                 @keyframes glitch-1 {
                     ${glitch1Frames.join('\n')}
                 }
@@ -991,13 +1005,18 @@
                     ${glitch2Frames.join('\n')}
                 }
                 
-                /* Apply different animation durations for variety */
+                /* Main element - subtle random movement */
+                .glitch-title {
+                    animation: glitch-main ${mainDuration}s infinite ease-in-out;
+                }
+                
+                /* Pseudo elements - more aggressive glitching */
                 .glitch-title::before {
-                    animation: glitch-1 ${0.3 + Math.random() * 0.4}s infinite;
+                    animation: glitch-1 ${beforeDuration}s infinite;
                 }
                 
                 .glitch-title::after {
-                    animation: glitch-2 ${0.3 + Math.random() * 0.4}s infinite;
+                    animation: glitch-2 ${afterDuration}s infinite;
                 }
             `;
             
@@ -1007,10 +1026,10 @@
         // Initialize first glitch pattern
         createRandomGlitch();
         
-        // Randomize glitch pattern every 3-7 seconds
+        // Randomize glitch pattern every 2-5 seconds
         setInterval(() => {
             createRandomGlitch();
-        }, 3000 + Math.random() * 4000);
+        }, 2000 + Math.random() * 3000);
         
         // Dynamic glitch lines
         function createGlitchLine() {
