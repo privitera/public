@@ -337,27 +337,6 @@
             80% { clip-path: inset(5% 0 80% 0); transform: translate(2px); }
         }
 
-        /* Boot sequence */
-        .boot-sequence {
-            font-family: 'VT323', monospace;
-            font-size: 14px;
-            color: var(--terminal-green);
-            margin: 20px 0;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid var(--terminal-green);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .boot-line {
-            opacity: 0;
-            animation: boot-appear 0.1s forwards;
-        }
-
-        @keyframes boot-appear {
-            to { opacity: 1; }
-        }
 
         /* Step boxes with enhanced effects */
         .step-box {
@@ -717,14 +696,6 @@
             </pre>
         </div>
 
-        <div class="boot-sequence" id="bootSequence">
-            <div class="boot-line">[INIT] Starting deployment sequence...</div>
-            <div class="boot-line">[OK] Kernel modules loaded</div>
-            <div class="boot-line">[OK] Network interfaces configured</div>
-            <div class="boot-line">[OK] Security protocols initialized</div>
-            <div class="boot-line">[OK] System ready for deployment</div>
-            <div class="boot-line">[READY] Awaiting user input<span class="cursor"></span></div>
-        </div>
 
         <div class="step-box">
             <h2 class="step-header">STAGE.001 // SYSTEM UPDATE</h2>
@@ -1044,11 +1015,6 @@
         generateGlitches();
         */
         
-        // Boot sequence animation
-        const bootLines = document.querySelectorAll('.boot-line');
-        bootLines.forEach((line, index) => {
-            line.style.animationDelay = `${index * 0.5}s`;
-        });
         
         // Copy code function
         function copyCode(btn) {
