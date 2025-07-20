@@ -98,8 +98,8 @@
             position: absolute;
             width: 100%;
             height: 6px;
-            background: rgba(0, 255, 0, 0.15);
-            opacity: 0.6;
+            background: rgba(0, 255, 0, 0.25);
+            opacity: 0.8;
             animation: hum-bar 6s linear infinite, hum-jitter 0.1s infinite;
             filter: blur(2px);
             mix-blend-mode: screen;
@@ -143,12 +143,12 @@
             background: linear-gradient(
                 to bottom,
                 transparent 0%,
-                rgba(0, 255, 255, 0.05) 45%,
-                rgba(0, 255, 255, 0.08) 50%,
-                rgba(0, 255, 255, 0.05) 55%,
+                rgba(0, 255, 255, 0.1) 45%,
+                rgba(0, 255, 255, 0.15) 50%,
+                rgba(0, 255, 255, 0.1) 55%,
                 transparent 100%
             );
-            opacity: 0.6;
+            opacity: 0.8;
             animation: rolling 15s linear infinite;
             transform: skewY(0.5deg);
             mix-blend-mode: screen;
@@ -700,8 +700,14 @@
             drops[x] = 0;
         }
         
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+        let lastTime = 0;
+        const frameDelay = 50; // ~20 FPS for better performance
+        
+        function drawMatrix(currentTime) {
+            if (currentTime - lastTime < frameDelay) return;
+            lastTime = currentTime;
+            
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             ctx.font = fontSize + 'px monospace';
@@ -736,7 +742,12 @@
             }
         }
         
-        setInterval(drawMatrix, 35);
+        // Use requestAnimationFrame for better performance
+        function animate(currentTime) {
+            drawMatrix(currentTime);
+            requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
         
         // Dynamic glitch lines
         function createGlitchLine() {
