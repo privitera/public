@@ -321,13 +321,16 @@
 
         /* Step boxes with enhanced effects */
         .step-box {
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.85);
             border: 2px solid var(--neon-cyan);
-            margin: 30px 0;
-            padding: 25px;
+            margin: 20px 0;
+            padding: 20px;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .step-box::before {
@@ -371,15 +374,21 @@
         .step-box:hover::after {
             opacity: 1;
         }
+        
+        .step-box p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
 
         .step-header {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
             color: var(--neon-yellow);
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             position: relative;
-            padding-left: 30px;
+            padding-left: 25px;
         }
 
         .step-header::before {
@@ -398,26 +407,16 @@
         .code-block {
             background: rgba(0, 20, 0, 0.8);
             border: 1px solid var(--terminal-green);
-            padding: 15px;
-            margin: 15px 0;
+            padding: 12px;
+            margin: 12px 0;
             font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
+            font-size: 13px;
             position: relative;
             overflow-x: auto;
             white-space: pre;
         }
 
-        .code-block::before {
-            content: 'EXECUTE://';
-            position: absolute;
-            top: -10px;
-            left: 10px;
-            background: var(--dark-bg);
-            padding: 0 10px;
-            color: var(--neon-red);
-            font-size: 12px;
-            letter-spacing: 2px;
-        }
+        /* Removed EXECUTE:// label to fix red artifact issue */
 
         code {
             color: var(--terminal-green);
@@ -454,10 +453,10 @@
         .info-box {
             background: rgba(0, 255, 255, 0.05);
             border-left: 3px solid var(--neon-cyan);
-            padding: 15px 20px;
-            margin: 15px 0;
+            padding: 10px 15px;
+            margin: 10px 0;
             position: relative;
-            font-size: 14px;
+            font-size: 12px;
             color: var(--neon-cyan);
         }
 
