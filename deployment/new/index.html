@@ -569,10 +569,45 @@
 
         .matrix-switcher-title {
             text-align: center;
-            margin-bottom: 8px;
             color: var(--neon-yellow);
             font-size: 9px;
             letter-spacing: 1px;
+            cursor: pointer;
+            user-select: none;
+            padding: 5px;
+            transition: all 0.2s ease;
+        }
+        
+        .matrix-switcher-title:hover {
+            color: var(--neon-cyan);
+        }
+        
+        .matrix-toggle {
+            display: inline-block;
+            transition: transform 0.2s ease;
+            font-family: monospace;
+        }
+        
+        .matrix-options {
+            margin-top: 8px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            max-height: 200px;
+            opacity: 1;
+        }
+        
+        .matrix-switcher.collapsed .matrix-options {
+            max-height: 0;
+            opacity: 0;
+            margin-top: 0;
+        }
+        
+        .matrix-switcher.collapsed {
+            padding: 5px;
+        }
+        
+        .matrix-switcher:not(.collapsed) .matrix-toggle {
+            transform: rotate(90deg);
         }
 
         .matrix-option {
@@ -622,12 +657,16 @@
     <div class="noise"></div>
     
     <!-- Matrix Rain Switcher -->
-    <div class="matrix-switcher">
-        <div class="matrix-switcher-title">MATRIX.VER</div>
-        <button class="matrix-option" data-version="custom">CUSTOM</button>
-        <button class="matrix-option active" data-version="authentic">AUTHENTIC</button>
-        <button class="matrix-option" data-version="minimal">MINIMAL</button>
-        <button class="matrix-option" data-version="off">OFF</button>
+    <div class="matrix-switcher collapsed">
+        <div class="matrix-switcher-title">
+            <span class="matrix-toggle">▶</span> MATRIX.VER
+        </div>
+        <div class="matrix-options">
+            <button class="matrix-option" data-version="custom">CUSTOM</button>
+            <button class="matrix-option active" data-version="authentic">AUTHENTIC</button>
+            <button class="matrix-option" data-version="minimal">MINIMAL</button>
+            <button class="matrix-option" data-version="off">OFF</button>
+        </div>
     </div>
     <div class="ac-interference"></div>
     <div class="beat-interference"></div>
@@ -798,7 +837,13 @@
         // Matrix switcher event listeners
         document.addEventListener('DOMContentLoaded', function() {
             const switcher = document.querySelector('.matrix-switcher');
+            const title = switcher.querySelector('.matrix-switcher-title');
             const options = switcher.querySelectorAll('.matrix-option');
+            
+            // Toggle collapsed state
+            title.addEventListener('click', function() {
+                switcher.classList.toggle('collapsed');
+            });
             
             options.forEach(option => {
                 option.addEventListener('click', function() {
