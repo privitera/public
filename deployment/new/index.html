@@ -100,9 +100,15 @@
             height: 6px;
             background: rgba(0, 255, 0, 0.15);
             opacity: 0.6;
-            animation: hum-bar 6s linear infinite;
+            animation: hum-bar 6s linear infinite, hum-jitter 0.1s infinite;
             filter: blur(2px);
             mix-blend-mode: screen;
+        }
+        
+        @keyframes hum-jitter {
+            0%, 100% { transform: translateX(0); }
+            33% { transform: translateX(0.5px); }
+            66% { transform: translateX(-0.5px); }
         }
         
         .hum-bar::after {
@@ -116,8 +122,17 @@
         }
         
         @keyframes hum-bar {
-            0% { transform: translateY(100vh); }
-            100% { transform: translateY(-100vh); }
+            0% { transform: translateY(100vh) translateX(0); }
+            10% { transform: translateY(80vh) translateX(1px); }
+            20% { transform: translateY(60vh) translateX(-1px); }
+            30% { transform: translateY(40vh) translateX(0.5px); }
+            40% { transform: translateY(20vh) translateX(-0.5px); }
+            50% { transform: translateY(0vh) translateX(1px); }
+            60% { transform: translateY(-20vh) translateX(0); }
+            70% { transform: translateY(-40vh) translateX(-1px); }
+            80% { transform: translateY(-60vh) translateX(0.5px); }
+            90% { transform: translateY(-80vh) translateX(-0.5px); }
+            100% { transform: translateY(-100vh) translateX(0); }
         }
         
         /* Rolling interference - realistic sync issues */
@@ -140,8 +155,11 @@
         }
         
         @keyframes rolling {
-            0% { transform: translateY(100vh) skewY(0.5deg); }
-            100% { transform: translateY(-200vh) skewY(0.5deg); }
+            0% { transform: translateY(100vh) skewY(0.5deg) translateX(0); }
+            25% { transform: translateY(25vh) skewY(0.6deg) translateX(2px); }
+            50% { transform: translateY(-50vh) skewY(0.4deg) translateX(-1px); }
+            75% { transform: translateY(-125vh) skewY(0.55deg) translateX(1px); }
+            100% { transform: translateY(-200vh) skewY(0.5deg) translateX(0); }
         }
         
         /* AC interference - realistic power fluctuation */
