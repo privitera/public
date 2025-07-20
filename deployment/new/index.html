@@ -267,6 +267,22 @@
                 -2px -2px 0 var(--neon-cyan),
                 0 0 30px var(--neon-green);
         }
+        
+        /* ASCII art title specific styles */
+        .ascii-title {
+            font-size: 10px;
+            line-height: 1;
+            font-family: 'Courier New', 'Consolas', monospace;
+            white-space: pre;
+            display: inline-block;
+            text-transform: none;
+            letter-spacing: 0;
+            margin: 0 auto;
+            text-shadow: 
+                1px 1px 0 var(--neon-pink),
+                -1px -1px 0 var(--neon-cyan),
+                0 0 20px var(--neon-green);
+        }
 
         .glitch-title::before,
         .glitch-title::after {
@@ -276,6 +292,13 @@
             left: 0;
             width: 100%;
             height: 100%;
+        }
+        
+        /* For ASCII art, we need to duplicate the actual content */
+        .ascii-title::before,
+        .ascii-title::after {
+            content: "██╗     ██╗███╗   ██╗██╗   ██╗██╗  ██╗    ██████╗ ███████╗██████╗ ██╗      ██████╗ ██╗   ██╗███╗   ███╗███████╗███╗   ██╗████████╗\A██║     ██║████╗  ██║██║   ██║╚██╗██╔╝    ██╔══██╗██╔════╝██╔══██╗██║     ██╔═══██╗╚██╗ ██╔╝████╗ ████║██╔════╝████╗  ██║╚══██╔══╝\A██║     ██║██╔██╗ ██║██║   ██║ ╚███╔╝     ██║  ██║█████╗  ██████╔╝██║     ██║   ██║ ╚████╔╝ ██╔████╔██║█████╗  ██╔██╗ ██║   ██║   \A██║     ██║██║╚██╗██║██║   ██║ ██╔██╗     ██║  ██║██╔══╝  ██╔═══╝ ██║     ██║   ██║  ╚██╔╝  ██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   \A███████╗██║██║ ╚████║╚██████╔╝██╔╝ ██╗    ██████╔╝███████╗██║     ███████╗╚██████╔╝   ██║   ██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   \A╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝    ╚═════╝ ╚══════╝╚═╝     ╚══════╝ ╚═════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝";
+            white-space: pre;
         }
 
         .glitch-title::before {
@@ -510,6 +533,12 @@
                 font-size: 2.5rem;
             }
             
+            .ascii-title {
+                font-size: 5px;
+                overflow-x: auto;
+                max-width: 100vw;
+            }
+            
             .step-header {
                 font-size: 1.3rem;
             }
@@ -686,7 +715,14 @@
         </pre>
 
         <div class="main-title">
-            <h1 class="glitch-title" data-text="SYSTEM DEPLOYMENT">SYSTEM DEPLOYMENT</h1>
+            <pre class="glitch-title ascii-title" data-text="LINUX DEPLOYMENT">
+██╗     ██╗███╗   ██╗██╗   ██╗██╗  ██╗    ██████╗ ███████╗██████╗ ██╗      ██████╗ ██╗   ██╗███╗   ███╗███████╗███╗   ██╗████████╗
+██║     ██║████╗  ██║██║   ██║╚██╗██╔╝    ██╔══██╗██╔════╝██╔══██╗██║     ██╔═══██╗╚██╗ ██╔╝████╗ ████║██╔════╝████╗  ██║╚══██╔══╝
+██║     ██║██╔██╗ ██║██║   ██║ ╚███╔╝     ██║  ██║█████╗  ██████╔╝██║     ██║   ██║ ╚████╔╝ ██╔████╔██║█████╗  ██╔██╗ ██║   ██║   
+██║     ██║██║╚██╗██║██║   ██║ ██╔██╗     ██║  ██║██╔══╝  ██╔═══╝ ██║     ██║   ██║  ╚██╔╝  ██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   
+███████╗██║██║ ╚████║╚██████╔╝██╔╝ ██╗    ██████╔╝███████╗██║     ███████╗╚██████╔╝   ██║   ██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   
+╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝    ╚═════╝ ╚══════╝╚═╝     ╚══════╝ ╚═════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   
+            </pre>
         </div>
 
         <div class="boot-sequence" id="bootSequence">
