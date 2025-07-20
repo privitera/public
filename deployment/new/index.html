@@ -116,8 +116,8 @@
         }
         
         @keyframes hum-bar {
-            0% { transform: translateY(-100vh); }
-            100% { transform: translateY(100vh); }
+            0% { transform: translateY(100vh); }
+            100% { transform: translateY(-100vh); }
         }
         
         /* Rolling interference - realistic sync issues */
@@ -140,8 +140,8 @@
         }
         
         @keyframes rolling {
-            0% { transform: translateY(-200vh) skewY(0.5deg); }
-            100% { transform: translateY(100vh) skewY(0.5deg); }
+            0% { transform: translateY(100vh) skewY(0.5deg); }
+            100% { transform: translateY(-200vh) skewY(0.5deg); }
         }
         
         /* AC interference - realistic power fluctuation */
@@ -193,8 +193,10 @@
         }
         
         @keyframes beat-shift {
-            0%, 100% { transform: translateY(0) rotate(0.01deg); }
-            50% { transform: translateY(1px) rotate(-0.01deg); }
+            0%, 100% { transform: translateY(0) rotate(0.02deg); }
+            25% { transform: translateY(-1px) rotate(-0.01deg); }
+            50% { transform: translateY(0) rotate(-0.02deg); }
+            75% { transform: translateY(1px) rotate(0.01deg); }
         }
 
         /* Container */
