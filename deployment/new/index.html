@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>[ D3PL0YM3NT.3X3 ] >> SYST3M.1N1T</title>
-    <!-- Updated: Fixed code block alignment -->
+    <!-- Updated: Fixed code block alignment and scroll position -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
     <style>
+        /* Ensure proper initial positioning */
+        html {
+            scroll-behavior: auto;
+        }
+        
         :root {
             --neon-cyan: #00ffff;
             --neon-pink: #ff00ff;
@@ -534,6 +539,9 @@
     </div>
 
     <script>
+        // Ensure page starts at top on load
+        window.scrollTo(0, 0);
+        
         // Matrix rain effect
         const canvas = document.getElementById('matrix-bg');
         const ctx = canvas.getContext('2d');
@@ -718,6 +726,13 @@
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+        });
+        
+        // Ensure scroll to top on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
         });
     </script>
 </body>
