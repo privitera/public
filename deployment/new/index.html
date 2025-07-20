@@ -97,15 +97,17 @@
         .hum-bar {
             position: absolute;
             width: 100%;
-            height: 20px;
+            height: 40px;
             background: linear-gradient(
                 to bottom,
                 transparent,
-                rgba(255, 255, 255, 0.02),
+                rgba(0, 255, 255, 0.1),
+                rgba(0, 255, 255, 0.05),
                 transparent
             );
-            opacity: 0.3;
+            opacity: 0.6;
             animation: hum-bar 8s linear infinite;
+            mix-blend-mode: screen;
         }
         
         @keyframes hum-bar {
@@ -117,15 +119,16 @@
         .rolling-interference {
             position: absolute;
             width: 100%;
-            height: 80px;
+            height: 120px;
             background: repeating-linear-gradient(
                 to bottom,
                 transparent,
-                rgba(0, 255, 0, 0.01) 2px,
-                transparent 4px
+                rgba(0, 255, 0, 0.08) 3px,
+                transparent 6px
             );
-            opacity: 0.5;
-            animation: rolling 12s linear infinite;
+            opacity: 0.7;
+            animation: rolling 10s linear infinite;
+            mix-blend-mode: screen;
         }
         
         @keyframes rolling {
@@ -140,15 +143,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.01);
+            background: rgba(0, 255, 0, 0.02);
             pointer-events: none;
-            animation: ac-flicker 0.15s infinite;
+            animation: ac-flicker 0.1s infinite;
             z-index: 1;
+            mix-blend-mode: screen;
         }
         
         @keyframes ac-flicker {
             0%, 100% { opacity: 0; }
-            50% { opacity: 0.02; }
+            50% { opacity: 0.5; }
         }
         
         /* Beat frequency interference - subtle warping */
@@ -160,20 +164,21 @@
             height: 100%;
             pointer-events: none;
             z-index: 1;
-            opacity: 0.3;
+            opacity: 0.5;
             background: repeating-linear-gradient(
                 0deg,
                 transparent,
-                transparent 3px,
-                rgba(255, 255, 255, 0.01) 3px,
-                rgba(255, 255, 255, 0.01) 4px
+                transparent 2px,
+                rgba(0, 255, 255, 0.03) 2px,
+                rgba(0, 255, 255, 0.03) 3px
             );
-            animation: beat-shift 3s linear infinite;
+            animation: beat-shift 2s linear infinite;
+            mix-blend-mode: screen;
         }
         
         @keyframes beat-shift {
             0% { transform: translateY(0); }
-            100% { transform: translateY(4px); }
+            100% { transform: translateY(3px); }
         }
 
         /* Container */
