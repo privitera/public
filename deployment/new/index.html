@@ -684,7 +684,12 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         
-        const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}";
+        // Authentic Matrix characters - katakana, numbers, some Latin
+        const katakana = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+        const numbers = "0123456789";
+        const latin = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const symbols = "@#$%^&*()+-=[]{}|;:<>?";
+        const matrix = katakana + numbers + latin + symbols;
         const matrixArray = matrix.split("");
         
         const fontSize = 10;
@@ -699,12 +704,30 @@
             ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            ctx.fillStyle = '#00ff41';
             ctx.font = fontSize + 'px monospace';
             
             for(let i = 0; i < drops.length; i++) {
                 const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+                
+                // Leading character - white flash
+                ctx.fillStyle = '#ffffff';
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                // Previous characters - green fade
+                if(drops[i] > 0) {
+                    ctx.fillStyle = '#00ff41';
+                    ctx.fillText(text, i * fontSize, (drops[i] - 1) * fontSize);
+                }
+                
+                // Randomly flip some characters horizontally
+                if(Math.random() > 0.5) {
+                    ctx.save();
+                    ctx.translate(i * fontSize + fontSize/2, drops[i] * fontSize);
+                    ctx.scale(-1, 1);
+                    ctx.fillStyle = '#00ff41';
+                    ctx.fillText(text, -fontSize/2, 0);
+                    ctx.restore();
+                }
                 
                 if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                     drops[i] = 0;
