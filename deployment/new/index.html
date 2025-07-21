@@ -1074,21 +1074,30 @@
                         const velocityAlongNormal = vxRel * (dx/distance) + vyRel * (dy/distance);
                         if (velocityAlongNormal > 0) continue;
                         
-                        // Apply collision response
-                        const impulse = velocityAlongNormal * RESTITUTION;
-                        const impulseX = impulse * (dx/distance);
-                        const impulseY = impulse * (dy/distance);
+                        // Only apply collision response if particles are near ground
+                        const nearGround = this.y > canvas.height - 100 || other.y > canvas.height - 100;
                         
-                        this.vx -= impulseX;
-                        this.vy -= impulseY;
-                        other.vx += impulseX;
-                        other.vy += impulseY;
-                        
-                        // Apply friction to make particles settle
-                        this.vx *= FRICTION;
-                        this.vy *= FRICTION;
-                        other.vx *= FRICTION;
-                        other.vy *= FRICTION;
+                        if (nearGround) {
+                            // Apply collision response
+                            const impulse = velocityAlongNormal * RESTITUTION;
+                            const impulseX = impulse * (dx/distance);
+                            const impulseY = impulse * (dy/distance);
+                            
+                            this.vx -= impulseX;
+                            this.vy -= impulseY;
+                            other.vx += impulseX;
+                            other.vy += impulseY;
+                            
+                            // Apply friction to make particles settle
+                            this.vx *= FRICTION;
+                            this.vy *= FRICTION;
+                            other.vx *= FRICTION;
+                            other.vy *= FRICTION;
+                        } else {
+                            // While falling, only apply horizontal separation
+                            this.vx += separationX * 0.1;
+                            other.vx -= separationX * 0.1;
+                        }
                     }
                 }
                 
