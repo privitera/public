@@ -975,7 +975,7 @@
         const loadingStatus = document.getElementById('loadingStatus');
         
         // Configuration
-        const VERSION = "v2.5.2"; // Version indicator - force redeploy again
+        const VERSION = "v2.6-debug"; // Debug version
         let PARTICLE_RADIUS = 25; // Start with much larger particles
         const SPAWN_DELAY = 30; // ms between spawns
         const GRAVITY = 0.4;
@@ -1266,10 +1266,17 @@
         });
         
         // Start loading iframe
+        console.log('Sand timer v2.6-debug starting...');
         iframe.src = 'https://rezmason.github.io/matrix/';
         
-        // Start animation
-        requestAnimationFrame(animate);
+        // Start animation with error handling
+        try {
+            console.log('Starting animation...');
+            requestAnimationFrame(animate);
+        } catch (error) {
+            console.error('Animation error:', error);
+            completeLoading(); // Skip to main page on error
+        }
         
         // Matrix switcher functionality
         let currentMatrixVersion = 'authentic';
