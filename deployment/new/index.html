@@ -598,10 +598,16 @@
             font-family: 'Share Tech Mono', monospace;
             color: var(--neon-cyan);
             opacity: 0.7;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .matrix-switcher:hover {
+            opacity: 1;
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+        
+        .matrix-switcher:not(.collapsed) {
+            box-shadow: 0 0 30px var(--neon-cyan);
             opacity: 1;
         }
 
@@ -668,6 +674,29 @@
             background: var(--terminal-green);
             color: var(--dark-bg);
             box-shadow: 0 0 10px var(--terminal-green);
+        }
+        
+        .matrix-config-btn {
+            display: block;
+            background: transparent;
+            border: 1px solid var(--neon-yellow);
+            color: var(--neon-yellow);
+            padding: 4px 8px;
+            margin: 2px 0;
+            font-size: 9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Share Tech Mono', monospace;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .matrix-config-btn:hover {
+            background: var(--neon-yellow);
+            color: #000;
+            text-shadow: 0 0 5px var(--neon-yellow);
+            box-shadow: 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-yellow);
         }
 
         .matrix-option:hover:not(.active) {
@@ -987,9 +1016,7 @@
             <button class="matrix-option active" data-version="authentic">AUTHENTIC</button>
             <button class="matrix-option" data-version="minimal">MINIMAL</button>
             <button class="matrix-option" data-version="off">OFF</button>
-            <div style="font-size: 10px; color: var(--neon-cyan); opacity: 0.5; margin-top: 10px; text-align: center;">
-                [CTRL+SHIFT+M] CONFIG
-            </div>
+            <button class="matrix-config-btn" style="margin-top: 10px; width: 100%;">CONFIG</button>
         </div>
     </div>
     <div class="ac-interference"></div>
@@ -999,6 +1026,7 @@
     <div id="matrix-control-panel" style="display: none;">
         <div class="control-panel-header">
             <h3>MATRIX.CONFIG</h3>
+            <span style="font-size: 11px; color: var(--neon-green); opacity: 0.7;">[CTRL+SHIFT+M]</span>
             <button class="close-panel">×</button>
         </div>
         <div class="control-panel-content">
@@ -1538,14 +1566,31 @@
             const switcher = document.querySelector('.matrix-switcher');
             const title = switcher.querySelector('.matrix-switcher-title');
             const options = switcher.querySelectorAll('.matrix-option');
+            const configBtn = document.querySelector('.matrix-config-btn');
             
             // Toggle collapsed state
-            title.addEventListener('click', function() {
+            title.addEventListener('click', function(e) {
+                e.stopPropagation();
                 switcher.classList.toggle('collapsed');
             });
             
+            // Click outside to collapse
+            document.addEventListener('click', function(e) {
+                if (!switcher.contains(e.target) && !switcher.classList.contains('collapsed')) {
+                    switcher.classList.add('collapsed');
+                }
+            });
+            
+            // Config button opens control panel
+            configBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                controlPanel.style.display = 'block';
+                switcher.classList.add('collapsed');
+            });
+            
             options.forEach(option => {
-                option.addEventListener('click', function() {
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
                     // Remove active class from all options
                     options.forEach(opt => opt.classList.remove('active'));
                     // Add active class to clicked option
