@@ -1069,6 +1069,41 @@
                 <input type="checkbox" id="matrix-camera">
             </div>
             <div class="control-group">
+                <label>Effect:</label>
+                <select id="matrix-effect">
+                    <option value="none">None</option>
+                    <option value="plain">Plain</option>
+                    <option value="pride">Pride</option>
+                    <option value="stripes">Stripes</option>
+                    <option value="customStripes">Custom Stripes</option>
+                    <option value="image">Image</option>
+                    <option value="mirror">Mirror (Camera)</option>
+                    <option value="palette">Palette</option>
+                </select>
+            </div>
+            <div class="control-group" id="stripe-colors-group" style="display: none;">
+                <label>Stripe Colors:</label>
+                <input type="text" id="stripe-colors" placeholder="255,0,0,0,255,0,0,0,255" style="flex: 1; background: rgba(0, 255, 255, 0.1); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 5px; font-family: inherit;">
+            </div>
+            <div class="control-group" id="palette-colors-group" style="display: none;">
+                <label>Palette:</label>
+                <input type="text" id="palette-colors" placeholder="0,0,0,0,0,255,0,50,255,255,255,100" style="flex: 1; background: rgba(0, 255, 255, 0.1); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 5px; font-family: inherit;">
+            </div>
+            <div class="control-group">
+                <label>BG Color:</label>
+                <input type="text" id="bg-color" placeholder="0,0,0" style="width: 100px; background: rgba(0, 255, 255, 0.1); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 5px; font-family: inherit;">
+            </div>
+            <div class="control-group">
+                <label>Font Size:</label>
+                <input type="range" id="matrix-fontsize" min="8" max="32" value="14">
+                <span class="value-display">14</span>
+            </div>
+            <div class="control-group">
+                <label>Glow Size:</label>
+                <input type="range" id="matrix-glowsize" min="0" max="10" step="0.5" value="2">
+                <span class="value-display">2</span>
+            </div>
+            <div class="control-group">
                 <button id="apply-matrix-config">APPLY</button>
                 <button id="reset-matrix-config">RESET</button>
             </div>
@@ -2056,6 +2091,12 @@
         const rotationSlider = document.getElementById('matrix-rotation');
         const volumetricCheck = document.getElementById('matrix-volumetric');
         const cameraCheck = document.getElementById('matrix-camera');
+        const effectSelect = document.getElementById('matrix-effect');
+        const stripeColorsInput = document.getElementById('stripe-colors');
+        const paletteColorsInput = document.getElementById('palette-colors');
+        const bgColorInput = document.getElementById('bg-color');
+        const fontSizeSlider = document.getElementById('matrix-fontsize');
+        const glowSizeSlider = document.getElementById('matrix-glowsize');
         
         // Default values
         const defaults = {
@@ -2065,7 +2106,13 @@
             slant: 0,
             glyphRotation: 0,
             volumetric: false,
-            camera: false
+            camera: false,
+            effect: 'none',
+            stripeColors: '',
+            paletteColors: '',
+            backgroundColor: '',
+            fontSize: 14,
+            glowSize: 2
         };
         
         // Current configuration
@@ -2086,6 +2133,22 @@
         
         rotationSlider.addEventListener('input', (e) => {
             e.target.nextElementSibling.textContent = e.target.value + '°';
+        });
+        
+        fontSizeSlider.addEventListener('input', (e) => {
+            e.target.nextElementSibling.textContent = e.target.value;
+        });
+        
+        glowSizeSlider.addEventListener('input', (e) => {
+            e.target.nextElementSibling.textContent = e.target.value;
+        });
+        
+        // Show/hide color inputs based on effect
+        effectSelect.addEventListener('change', (e) => {
+            document.getElementById('stripe-colors-group').style.display = 
+                (e.target.value === 'stripes' || e.target.value === 'customStripes') ? 'flex' : 'none';
+            document.getElementById('palette-colors-group').style.display = 
+                e.target.value === 'palette' ? 'flex' : 'none';
         });
         
         // Build URL from configuration
@@ -2114,6 +2177,24 @@
             if (matrixConfig.camera) {
                 params.push('camera=true');
             }
+            if (matrixConfig.effect !== 'none') {
+                params.push(`effect=${matrixConfig.effect}`);
+            }
+            if (matrixConfig.stripeColors) {
+                params.push(`stripeColors=${matrixConfig.stripeColors}`);
+            }
+            if (matrixConfig.paletteColors) {
+                params.push(`palette=${matrixConfig.paletteColors}`);
+            }
+            if (matrixConfig.backgroundColor) {
+                params.push(`backgroundColor=${matrixConfig.backgroundColor}`);
+            }
+            if (matrixConfig.fontSize !== 14) {
+                params.push(`fontSize=${matrixConfig.fontSize}`);
+            }
+            if (matrixConfig.glowSize !== 2) {
+                params.push(`glowSize=${matrixConfig.glowSize}`);
+            }
             
             if (params.length > 0) {
                 url += '?' + params.join('&');
@@ -2131,6 +2212,12 @@
             matrixConfig.glyphRotation = parseInt(rotationSlider.value);
             matrixConfig.volumetric = volumetricCheck.checked;
             matrixConfig.camera = cameraCheck.checked;
+            matrixConfig.effect = effectSelect.value;
+            matrixConfig.stripeColors = stripeColorsInput.value;
+            matrixConfig.paletteColors = paletteColorsInput.value;
+            matrixConfig.backgroundColor = bgColorInput.value;
+            matrixConfig.fontSize = parseInt(fontSizeSlider.value);
+            matrixConfig.glowSize = parseFloat(glowSizeSlider.value);
             
             const url = buildMatrixURL();
             urlInput.value = url;
@@ -2155,9 +2242,21 @@
             rotationSlider.nextElementSibling.textContent = defaults.glyphRotation + '°';
             volumetricCheck.checked = defaults.volumetric;
             cameraCheck.checked = defaults.camera;
+            effectSelect.value = defaults.effect;
+            stripeColorsInput.value = defaults.stripeColors;
+            paletteColorsInput.value = defaults.paletteColors;
+            bgColorInput.value = defaults.backgroundColor;
+            fontSizeSlider.value = defaults.fontSize;
+            fontSizeSlider.nextElementSibling.textContent = defaults.fontSize;
+            glowSizeSlider.value = defaults.glowSize;
+            glowSizeSlider.nextElementSibling.textContent = defaults.glowSize;
             
             matrixConfig = {...defaults};
             urlInput.value = buildMatrixURL();
+            
+            // Hide color input groups
+            document.getElementById('stripe-colors-group').style.display = 'none';
+            document.getElementById('palette-colors-group').style.display = 'none';
         }
         
         // Event listeners
