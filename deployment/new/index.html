@@ -978,10 +978,10 @@
         let PARTICLE_RADIUS = 25; // Start with much larger particles
         const SPAWN_DELAY = 30; // ms between spawns
         const GRAVITY = 0.4;
-        const FRICTION = 0.6; // More friction
-        const RESTITUTION = 0.05; // Very low bounce
-        const DAMPING = 0.98; // Velocity damping each frame
-        const SETTLE_THRESHOLD = 0.1; // Velocity below this = settled
+        const FRICTION = 0.3; // Much more friction
+        const RESTITUTION = 0.01; // Almost no bounce
+        const DAMPING = 0.92; // Heavy velocity damping each frame
+        const SETTLE_THRESHOLD = 0.2; // Higher threshold for settling
         
         // State
         let startTime = Date.now();
@@ -1107,11 +1107,11 @@
                             other.vx += impulseX;
                             other.vy += impulseY;
                             
-                            // Apply strong friction to make particles settle
-                            this.vx *= FRICTION * 0.8;  // Extra friction during collisions
-                            this.vy *= FRICTION * 0.8;
-                            other.vx *= FRICTION * 0.8;
-                            other.vy *= FRICTION * 0.8;
+                            // Apply very strong friction to make particles settle
+                            this.vx *= FRICTION * 0.5;  // Heavy friction during collisions
+                            this.vy *= FRICTION * 0.5;
+                            other.vx *= FRICTION * 0.5;
+                            other.vy *= FRICTION * 0.5;
                         } else {
                             // While falling, only apply horizontal separation
                             this.vx += separationX * 0.1;
@@ -1122,15 +1122,15 @@
                 
                 // Apply damping to all velocities
                 // More damping in crowded areas
-                const densityDamping = Math.max(0.8, 1 - (nearbyCount * 0.02));
+                const densityDamping = Math.max(0.5, 1 - (nearbyCount * 0.05)); // Much stronger density damping
                 this.vx *= DAMPING * densityDamping;
                 this.vy *= DAMPING * densityDamping;
                 
                 // Wall proximity damping - slow down near walls
                 const wallDistance = Math.min(this.x, canvas.width - this.x);
                 if (wallDistance < this.radius * 3) {
-                    this.vx *= 0.9;
-                    this.vy *= 0.95;
+                    this.vx *= 0.7; // Much more wall damping
+                    this.vy *= 0.8;
                 }
                 
                 // Check if particle should be considered settled
