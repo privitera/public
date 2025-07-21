@@ -1164,8 +1164,8 @@
             // Update progress
             updateProgress();
             
-            // Check if loading complete
-            if (loadingProgress >= 100 || (iframeLoaded && particles.length > 500)) {
+            // Check if loading complete - only when progress reaches 100%
+            if (loadingProgress >= 100) {
                 isLoading = false;
                 setTimeout(() => {
                     iframe.style.visibility = 'visible';
