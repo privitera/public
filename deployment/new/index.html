@@ -333,6 +333,17 @@
             margin-right: auto;
             cursor: pointer;
         }
+        
+        /* Keyboard focus styles */
+        .step-box:focus {
+            outline: none;
+            border-color: var(--neon-yellow);
+            box-shadow: 0 0 20px var(--neon-yellow);
+        }
+        
+        .step-box:focus .step-header {
+            color: var(--neon-yellow);
+        }
 
         .step-box::before {
             content: '';
@@ -960,6 +971,11 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Keyboard navigation hint -->
+        <div style="position: fixed; bottom: 20px; left: 20px; color: rgba(0, 255, 0, 0.3); font-family: monospace; font-size: 10px;">
+            [TAB] NAVIGATE | [↑↓] SELECT | [→/ENTER] OPEN | [←] CLOSE
+        </div>
     </div>
 
     <script>
@@ -1353,24 +1369,77 @@
             
             // Step box toggle functionality - only one open at a time
             const stepBoxes = document.querySelectorAll('.step-box');
-            stepBoxes.forEach(box => {
+            let currentFocusIndex = -1;
+            
+            // Make step boxes focusable
+            stepBoxes.forEach((box, index) => {
+                box.setAttribute('tabindex', '0');
+                box.setAttribute('role', 'button');
+                box.setAttribute('aria-expanded', !box.classList.contains('collapsed'));
+                
+                // Click handler
                 box.addEventListener('click', function(e) {
                     // Don't toggle if clicking on a button or link inside
                     if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
                         return;
                     }
-                    
-                    const wasCollapsed = this.classList.contains('collapsed');
-                    
-                    // Collapse all boxes
-                    stepBoxes.forEach(b => b.classList.add('collapsed'));
-                    
-                    // If this box was collapsed, expand it
-                    if (wasCollapsed) {
-                        this.classList.remove('collapsed');
+                    toggleBox(this);
+                });
+                
+                // Keyboard handler for each box
+                box.addEventListener('keydown', function(e) {
+                    switch(e.key) {
+                        case 'Enter':
+                        case ' ':
+                        case 'ArrowRight':
+                            e.preventDefault();
+                            toggleBox(this);
+                            break;
+                        case 'ArrowLeft':
+                            e.preventDefault();
+                            if (!this.classList.contains('collapsed')) {
+                                toggleBox(this);
+                            }
+                            break;
+                        case 'ArrowDown':
+                            e.preventDefault();
+                            focusNextBox(index);
+                            break;
+                        case 'ArrowUp':
+                            e.preventDefault();
+                            focusPreviousBox(index);
+                            break;
                     }
                 });
             });
+            
+            function toggleBox(box) {
+                const wasCollapsed = box.classList.contains('collapsed');
+                
+                // Collapse all boxes
+                stepBoxes.forEach(b => {
+                    b.classList.add('collapsed');
+                    b.setAttribute('aria-expanded', 'false');
+                });
+                
+                // If this box was collapsed, expand it
+                if (wasCollapsed) {
+                    box.classList.remove('collapsed');
+                    box.setAttribute('aria-expanded', 'true');
+                }
+            }
+            
+            function focusNextBox(currentIndex) {
+                const nextIndex = (currentIndex + 1) % stepBoxes.length;
+                stepBoxes[nextIndex].focus();
+                currentFocusIndex = nextIndex;
+            }
+            
+            function focusPreviousBox(currentIndex) {
+                const prevIndex = (currentIndex - 1 + stepBoxes.length) % stepBoxes.length;
+                stepBoxes[prevIndex].focus();
+                currentFocusIndex = prevIndex;
+            }
         });
         
         // Matrix implementations
