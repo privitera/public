@@ -1027,11 +1027,14 @@
                 this.x += this.vx;
                 this.y += this.vy;
                 
-                // Floor collision
+                // Floor collision with strong damping
                 if (this.y + this.radius > canvas.height) {
                     this.y = canvas.height - this.radius;
-                    this.vy *= -RESTITUTION;
-                    this.vx *= FRICTION;
+                    this.vy *= -RESTITUTION * 0.3;  // Very little bounce
+                    this.vx *= FRICTION * 0.7;  // Strong friction on ground contact
+                    
+                    // Stop tiny movements
+                    if (Math.abs(this.vy) < 0.5) this.vy = 0;
                 }
                 
                 // Wall collisions
@@ -1077,8 +1080,9 @@
                         const nearGround = this.y > canvas.height - 100 || other.y > canvas.height - 100;
                         
                         if (nearGround) {
-                            // Apply collision response
-                            const impulse = velocityAlongNormal * RESTITUTION;
+                            // Apply collision response with energy loss
+                            const dampingFactor = 0.5; // Lose 50% of energy in collisions
+                            const impulse = velocityAlongNormal * RESTITUTION * dampingFactor;
                             const impulseX = impulse * (dx/distance);
                             const impulseY = impulse * (dy/distance);
                             
@@ -1087,11 +1091,11 @@
                             other.vx += impulseX;
                             other.vy += impulseY;
                             
-                            // Apply friction to make particles settle
-                            this.vx *= FRICTION;
-                            this.vy *= FRICTION;
-                            other.vx *= FRICTION;
-                            other.vy *= FRICTION;
+                            // Apply strong friction to make particles settle
+                            this.vx *= FRICTION * 0.8;  // Extra friction during collisions
+                            this.vy *= FRICTION * 0.8;
+                            other.vx *= FRICTION * 0.8;
+                            other.vy *= FRICTION * 0.8;
                         } else {
                             // While falling, only apply horizontal separation
                             this.vx += separationX * 0.1;
@@ -1100,8 +1104,13 @@
                     }
                 }
                 
-                // Apply general friction
-                this.vx *= 0.99;
+                // Apply general friction and damping
+                this.vx *= 0.95;  // More aggressive horizontal damping
+                this.vy *= 0.98;  // Some vertical damping too
+                
+                // Additional settling force - particles slow down over time
+                if (Math.abs(this.vx) < 0.1) this.vx = 0;
+                if (Math.abs(this.vy) < 0.1) this.vy = 0;
             }
             
             draw() {
