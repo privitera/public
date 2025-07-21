@@ -975,7 +975,6 @@
         const loadingStatus = document.getElementById('loadingStatus');
         
         // Configuration
-        const DURATION = 30000; // 30 seconds total
         let PARTICLE_RADIUS = 4; // Treat as circles (now adjustable)
         const SPAWN_DELAY = 30; // ms between spawns
         const GRAVITY = 0.4;
@@ -1122,7 +1121,7 @@
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Spawn new particle
+            // Spawn new particle (no limit)
             if (currentTime - lastSpawnTime > SPAWN_DELAY) {
                 particles.push(new SandParticle());
                 lastSpawnTime = currentTime;
@@ -1143,25 +1142,19 @@
                 particles[i].draw();
             }
             
-            // Update progress
-            const elapsed = Date.now() - startTime;
-            const progress = Math.min((elapsed / DURATION) * 100, 100);
-            loadingPercent.textContent = Math.floor(progress) + '%';
+            // Update progress - now shows particle count instead of time
+            const particleCount = particles.length;
+            loadingPercent.textContent = `${particleCount} PARTICLES`;
             
             // Update status message every 5 seconds
+            const elapsed = Date.now() - startTime;
             if (Math.floor(elapsed / 5000) !== messageIndex) {
-                messageIndex = Math.floor(elapsed / 5000);
-                if (messageIndex < messages.length) {
-                    loadingStatus.textContent = messages[messageIndex];
-                }
+                messageIndex = Math.floor(elapsed / 5000) % messages.length;
+                loadingStatus.textContent = messages[messageIndex];
             }
             
-            // Check completion
-            if (progress >= 100) {
-                completeLoading();
-            } else {
-                requestAnimationFrame(animate);
-            }
+            // Continue indefinitely
+            requestAnimationFrame(animate);
         }
         
         // Complete loading
