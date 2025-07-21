@@ -966,7 +966,7 @@
         // Ensure page starts at top on load
         window.scrollTo(0, 0);
         
-        // Digital Sand Timer Loading Implementation
+        // Sand Timer Loading Screen - Complete Refactor
         const iframe = document.getElementById('rezmason-matrix');
         const loadingScreen = document.getElementById('loadingScreen');
         const canvas = document.getElementById('sandCanvas');
@@ -974,7 +974,32 @@
         const loadingPercent = document.getElementById('loadingPercent');
         const loadingStatus = document.getElementById('loadingStatus');
         
-        // Set canvas size to full window
+        // Configuration
+        const DURATION = 30000; // 30 seconds total
+        const PARTICLE_SIZE = 5;
+        const SPAWN_DELAY = 25; // ms between spawns
+        const GRAVITY = 0.3;
+        const MAX_SLOPE = 0.6; // Maximum slope before particles roll
+        
+        // State
+        let startTime = Date.now();
+        let lastSpawnTime = 0;
+        let isRunning = true;
+        const particles = [];
+        const heightMap = new Map(); // Track max height at each x position
+        
+        // Status messages
+        const messages = [
+            'INITIALIZING BINARY STREAM...',
+            'LOADING SYSTEM COMPONENTS...',
+            'ESTABLISHING SECURE CONNECTION...',
+            'SYNCHRONIZING DATA FLOW...',
+            'COMPILING DEPLOYMENT SCRIPTS...',
+            'PREPARING ENVIRONMENT...'
+        ];
+        let messageIndex = 0;
+        
+        // Set canvas size
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -982,82 +1007,15 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
         
-        // Physics configuration
-        const GRAVITY = 1.2;
-        const PARTICLE_SIZE = 3;
-        const SPAWN_RATE = 80; // Higher spawn rate
-        const MAX_PARTICLES = 20000; // Run for longer
-        const COLUMN_WIDTH = PARTICLE_SIZE;
-        
-        const particles = [];
-        const columnHeights = {}; // Height of sand in each column
-        let loadingProgress = 0;
-        let isLoading = true;
-        let particleCount = 0;
-        let startTime = Date.now();
-        
-        // Get column index from x position
-        function getColumn(x) {
-            return Math.floor(x / COLUMN_WIDTH);
-        }
-        
-        // Get height of sand in a column
-        function getColumnHeight(col) {
-            return columnHeights[col] || canvas.height;
-        }
-        
-        // Set height of sand in a column
-        function setColumnHeight(col, height) {
-            columnHeights[col] = height;
-        }
-        
-        const statusMessages = [
-            'STREAMING BINARY DATA...',
-            'COMPILING DIGITAL PARTICLES...',
-            'INITIALIZING QUANTUM FLOW...',
-            'SYNCHRONIZING BIT STREAMS...',
-            'AGGREGATING DATA STRUCTURES...',
-            'CONSTRUCTING BINARY HEAP...',
-            'OPTIMIZING PARTICLE PHYSICS...',
-            'FINALIZING SYSTEM STATE...'
-        ];
-        
-        // Click to skip
-        loadingScreen.addEventListener('click', function() {
-            isLoading = false;
-            iframe.style.visibility = 'visible';
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-            }, 500);
-        });
-        
-        // Add skip hint
-        const skipHint = document.createElement('div');
-        skipHint.style.cssText = `
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: var(--terminal-green);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-            opacity: 0.5;
-            cursor: pointer;
-        `;
-        skipHint.textContent = '[CLICK TO SKIP]';
-        loadingScreen.appendChild(skipHint);
-        
-        class Particle {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
+        // Simple particle class
+        class SandParticle {
+            constructor() {
+                this.x = canvas.width / 2;
+                this.y = 0;
                 this.vy = 0;
-                this.char = Math.random() < 0.5 ? '0' : '1';
                 this.settled = false;
+                this.char = Math.random() < 0.5 ? '0' : '1';
                 this.color = this.char === '0' ? '#0077BB' : '#33BBEE';
-                if (Math.random() < 0.02) {
-                    this.color = '#FFD700';
-                }
             }
             
             update() {
@@ -1067,144 +1025,130 @@
                 this.vy += GRAVITY;
                 this.y += this.vy;
                 
-                // Get current column
-                const col = getColumn(this.x);
-                const centerHeight = getColumnHeight(col);
-                
-                // Check if we're about to hit sand
-                if (this.y >= centerHeight - PARTICLE_SIZE * 2) {
-                    // Check adjacent columns (only 1-2 columns away for natural slope)
-                    let bestCol = col;
-                    let bestHeight = centerHeight;
+                // Check ground collision
+                const groundY = getHeightAt(this.x);
+                if (this.y >= groundY - PARTICLE_SIZE) {
+                    // Find best position to settle (lowest nearby point)
+                    let bestX = this.x;
+                    let lowestY = groundY;
                     
-                    // Check left and right columns
-                    for (let offset = -2; offset <= 2; offset++) {
-                        const checkCol = col + offset;
-                        const h = getColumnHeight(checkCol);
-                        
-                        // Find the lowest column nearby
-                        if (h > bestHeight + PARTICLE_SIZE) {
-                            bestHeight = h;
-                            bestCol = checkCol;
+                    // Check nearby positions
+                    for (let dx = -PARTICLE_SIZE * 2; dx <= PARTICLE_SIZE * 2; dx += PARTICLE_SIZE) {
+                        const checkX = this.x + dx;
+                        const checkY = getHeightAt(checkX);
+                        if (checkY > lowestY) {
+                            lowestY = checkY;
+                            bestX = checkX;
                         }
                     }
                     
-                    // If found a lower spot, roll there
-                    if (bestCol !== col) {
-                        this.x = bestCol * COLUMN_WIDTH + COLUMN_WIDTH / 2;
-                    }
-                    
-                    // Settle at the top of the column
-                    const finalCol = getColumn(this.x);
-                    const finalHeight = getColumnHeight(finalCol);
-                    this.y = finalHeight - PARTICLE_SIZE;
+                    // Settle at best position
+                    this.x = bestX;
+                    this.y = lowestY - PARTICLE_SIZE;
                     this.settled = true;
+                    this.vy = 0;
                     
-                    // Update column height
-                    setColumnHeight(finalCol, this.y);
+                    // Update height map
+                    setHeightAt(this.x, this.y);
                 }
             }
             
             draw() {
+                ctx.globalAlpha = this.settled ? 0.7 : 1;
                 ctx.fillStyle = this.color;
-                ctx.font = `${PARTICLE_SIZE * 2}px 'Share Tech Mono', monospace`;
+                ctx.font = `${PARTICLE_SIZE * 1.5}px monospace`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.globalAlpha = this.settled ? 0.6 : 0.9;
                 ctx.fillText(this.char, this.x, this.y);
             }
         }
         
-        function spawnParticles() {
-            for (let i = 0; i < SPAWN_RATE && particles.length < MAX_PARTICLES; i++) {
-                // Single spawn point at center with tiny random offset
-                const x = canvas.width / 2 + (Math.random() - 0.5) * PARTICLE_SIZE;
-                const y = 0;
-                
-                particles.push(new Particle(x, y));
-                particleCount++;
+        // Height map functions
+        function getHeightAt(x) {
+            const key = Math.round(x / PARTICLE_SIZE) * PARTICLE_SIZE;
+            return heightMap.get(key) || canvas.height;
+        }
+        
+        function setHeightAt(x, y) {
+            const key = Math.round(x / PARTICLE_SIZE) * PARTICLE_SIZE;
+            const current = heightMap.get(key) || canvas.height;
+            if (y < current) {
+                heightMap.set(key, y);
             }
         }
         
-        function updateProgress() {
-            // Progress based on time elapsed (1 minute total)
-            const elapsed = Date.now() - startTime;
-            const duration = 60000; // 60 seconds
-            loadingProgress = Math.min((elapsed / duration) * 100, 100);
-            loadingPercent.textContent = Math.floor(loadingProgress) + '%';
-            
-            // Update status message periodically
-            if (particleCount % 200 === 0) {
-                loadingStatus.textContent = statusMessages[Math.floor(Math.random() * statusMessages.length)];
-            }
-        }
-        
-        function animate() {
-            if (!isLoading) return;
+        // Main animation loop
+        function animate(currentTime) {
+            if (!isRunning) return;
             
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Spawn new particles
-            if (particles.length < MAX_PARTICLES && loadingProgress < 100) {
-                spawnParticles();
+            // Spawn new particle
+            if (currentTime - lastSpawnTime > SPAWN_DELAY) {
+                particles.push(new SandParticle());
+                lastSpawnTime = currentTime;
             }
             
-            // Update all particles but only draw recent ones
-            particles.forEach(particle => {
-                particle.update();
+            // Update and draw particles
+            particles.forEach(p => {
+                p.update();
+                p.draw();
             });
             
-            // Only draw the most recent particles for performance
-            const visibleCount = Math.min(particles.length, 3000);
-            for (let i = particles.length - visibleCount; i < particles.length; i++) {
-                if (particles[i]) particles[i].draw();
+            // Update progress
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min((elapsed / DURATION) * 100, 100);
+            loadingPercent.textContent = Math.floor(progress) + '%';
+            
+            // Update status message every 5 seconds
+            if (Math.floor(elapsed / 5000) !== messageIndex) {
+                messageIndex = Math.floor(elapsed / 5000);
+                if (messageIndex < messages.length) {
+                    loadingStatus.textContent = messages[messageIndex];
+                }
             }
             
-            // Update progress
-            updateProgress();
-            
-            // Check if loading complete - only when progress reaches 100%
-            if (loadingProgress >= 100) {
-                isLoading = false;
-                setTimeout(() => {
-                    iframe.style.visibility = 'visible';
-                    loadingScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        loadingScreen.style.display = 'none';
-                    }, 500);
-                }, 300);
+            // Check completion
+            if (progress >= 100) {
+                completeLoading();
             } else {
                 requestAnimationFrame(animate);
             }
         }
         
-        // Start loading iframe immediately
-        console.log('Starting to load Matrix iframe...');
+        // Complete loading
+        function completeLoading() {
+            isRunning = false;
+            iframe.style.visibility = 'visible';
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }
+        
+        // Click to skip
+        loadingScreen.addEventListener('click', completeLoading);
+        
+        // Add skip hint
+        const skipHint = document.createElement('div');
+        skipHint.style.cssText = `
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: rgba(0, 255, 0, 0.5);
+            font-family: monospace;
+            font-size: 12px;
+            cursor: pointer;
+        `;
+        skipHint.textContent = '[CLICK TO SKIP]';
+        loadingScreen.appendChild(skipHint);
+        
+        // Start loading iframe
         iframe.src = 'https://rezmason.github.io/matrix/';
         
-        let iframeLoaded = false;
-        iframe.onload = function() {
-            console.log('Matrix iframe loaded successfully');
-            iframeLoaded = true;
-        };
-        
-        // Start animation after a tiny delay to ensure iframe starts loading
-        setTimeout(() => {
-            requestAnimationFrame(animate);
-        }, 10);
-        
-        // Auto proceed after 1 minute
-        setTimeout(() => {
-            if (loadingScreen.style.display !== 'none') {
-                isLoading = false;
-                iframe.style.visibility = 'visible';
-                loadingScreen.style.opacity = '0';
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                }, 500);
-            }
-        }, 60000); // 60 seconds
+        // Start animation
+        requestAnimationFrame(animate);
         
         // Matrix switcher functionality
         let currentMatrixVersion = 'authentic';
