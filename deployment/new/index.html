@@ -691,15 +691,12 @@
         }
         
         .sand-timer-container {
-            position: relative;
-            width: 600px;
-            height: 400px;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid var(--terminal-green);
-            border-radius: 0 0 300px 300px;
-            box-shadow: 
-                0 0 30px rgba(0, 255, 0, 0.3),
-                inset 0 0 100px rgba(0, 255, 0, 0.05);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
             overflow: hidden;
         }
         
@@ -710,6 +707,9 @@
             left: 0;
             width: 100%;
             height: 100%;
+            background: radial-gradient(ellipse at bottom, 
+                rgba(0, 255, 0, 0.02) 0%, 
+                transparent 70%);
         }
         
         /* Digital hourglass frame */
@@ -762,7 +762,7 @@
         
         .loading-info {
             position: absolute;
-            bottom: -80px;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             color: var(--terminal-green);
@@ -771,6 +771,8 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             white-space: nowrap;
+            z-index: 10;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
         
         .loading-percentage {
@@ -971,22 +973,23 @@
         const loadingPercent = document.getElementById('loadingPercent');
         const loadingStatus = document.getElementById('loadingStatus');
         
-        // Set canvas size
-        canvas.width = 600;
-        canvas.height = 400;
+        // Set canvas size to full window
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
         
         // Physics configuration
-        const GRAVITY = 0.3;
-        const FRICTION = 0.95;
-        const BOUNCE = 0.3;
-        const PARTICLE_SIZE = 6;
-        const SPAWN_RATE = 15; // particles per frame
-        const MAX_PARTICLES = 3000;
-        
-        // Container shape (bowl)
-        const CONTAINER_CENTER_X = canvas.width / 2;
-        const CONTAINER_BOTTOM_Y = canvas.height - 20;
-        const CONTAINER_RADIUS = 280;
+        const GRAVITY = 0.5;
+        const FRICTION = 0.85;
+        const BOUNCE = 0.1; // Much less bouncy for sand
+        const PARTICLE_SIZE = 4;
+        const SPAWN_RATE = 30; // particles per frame
+        const MAX_PARTICLES = 8000; // More particles for full screen
+        const ANGLE_OF_REPOSE = 30 * Math.PI / 180; // 30 degrees for sand
+        const SLIDE_THRESHOLD = 0.577; // tan(30°) for critical angle
         
         const particles = [];
         let loadingProgress = 0;
@@ -1004,28 +1007,50 @@
             'FINALIZING SYSTEM STATE...'
         ];
         
+        // Click to skip
+        loadingScreen.addEventListener('click', function() {
+            isLoading = false;
+            iframe.style.visibility = 'visible';
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        });
+        
+        // Add skip hint
+        const skipHint = document.createElement('div');
+        skipHint.style.cssText = `
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--terminal-green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            opacity: 0.5;
+            cursor: pointer;
+        `;
+        skipHint.textContent = '[CLICK TO SKIP]';
+        loadingScreen.appendChild(skipHint);
+        
         class Particle {
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.vx = (Math.random() - 0.5) * 2;
+                this.vx = (Math.random() - 0.5) * 1;
                 this.vy = Math.random() * 2;
                 this.char = Math.random() < 0.5 ? '0' : '1';
                 this.settled = false;
                 this.age = 0;
-                this.glowing = Math.random() < 0.1;
+                this.glowing = Math.random() < 0.05;
                 this.color = this.char === '0' ? '#0077BB' : '#33BBEE';
-                if (Math.random() < 0.02) {
+                if (Math.random() < 0.01) {
                     this.color = '#FFD700'; // Golden particle
                     this.glowing = true;
                 }
             }
             
             update() {
-                if (this.settled) {
-                    this.age++;
-                    return;
-                }
+                if (this.settled) return;
                 
                 // Apply gravity
                 this.vy += GRAVITY;
@@ -1034,47 +1059,27 @@
                 this.x += this.vx;
                 this.y += this.vy;
                 
-                // Bowl collision detection
-                const dx = this.x - CONTAINER_CENTER_X;
-                const dy = this.y - CONTAINER_BOTTOM_Y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                // Check if particle hit the bowl edge
-                if (distance > CONTAINER_RADIUS - PARTICLE_SIZE) {
-                    // Calculate normal vector
-                    const nx = dx / distance;
-                    const ny = dy / distance;
-                    
-                    // Reflect velocity
-                    const dot = this.vx * nx + this.vy * ny;
-                    this.vx -= 2 * dot * nx;
-                    this.vy -= 2 * dot * ny;
-                    
-                    // Apply bounce and friction
-                    this.vx *= BOUNCE * FRICTION;
-                    this.vy *= BOUNCE;
-                    
-                    // Push particle back inside
-                    const overlap = distance - (CONTAINER_RADIUS - PARTICLE_SIZE);
-                    this.x -= nx * overlap;
-                    this.y -= ny * overlap;
+                // Screen boundaries
+                if (this.x < PARTICLE_SIZE) {
+                    this.x = PARTICLE_SIZE;
+                    this.vx *= -BOUNCE;
+                }
+                if (this.x > canvas.width - PARTICLE_SIZE) {
+                    this.x = canvas.width - PARTICLE_SIZE;
+                    this.vx *= -BOUNCE;
                 }
                 
-                // Floor collision (for center pile)
-                if (this.y > CONTAINER_BOTTOM_Y - PARTICLE_SIZE) {
-                    this.y = CONTAINER_BOTTOM_Y - PARTICLE_SIZE;
-                    this.vy *= -BOUNCE;
+                // Floor collision
+                if (this.y > canvas.height - PARTICLE_SIZE) {
+                    this.y = canvas.height - PARTICLE_SIZE;
+                    this.vy = 0;
                     this.vx *= FRICTION;
-                    
-                    // Check if particle should settle
-                    if (Math.abs(this.vy) < 0.5 && Math.abs(this.vx) < 0.5) {
-                        this.settled = true;
-                        this.vx = 0;
-                        this.vy = 0;
-                    }
+                    this.settled = true;
+                    return;
                 }
                 
-                // Particle-to-particle collision (simplified)
+                // Check collision with settled particles
+                let landed = false;
                 for (let other of particles) {
                     if (other === this || !other.settled) continue;
                     
@@ -1082,21 +1087,35 @@
                     const dy = this.y - other.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     
-                    if (dist < PARTICLE_SIZE * 1.5) {
-                        // Simple separation
-                        this.x += dx / dist * 0.5;
-                        this.y += dy / dist * 0.5;
-                        this.vx *= FRICTION;
-                        this.vy *= -BOUNCE * 0.5;
+                    if (dist < PARTICLE_SIZE * 2) {
+                        // Land on top of other particle
+                        landed = true;
                         
-                        if (Math.abs(this.vy) < 1) {
-                            this.settled = true;
-                            this.vx = 0;
+                        // Calculate slope angle
+                        const angle = Math.atan2(dy, dx);
+                        const slope = Math.abs(Math.sin(angle));
+                        
+                        // If slope is too steep, roll down
+                        if (slope > SLIDE_THRESHOLD && Math.abs(dx) > PARTICLE_SIZE * 0.5) {
+                            // Roll in the direction of lower ground
+                            const rollDirection = dx > 0 ? 1 : -1;
+                            this.x += rollDirection * 2;
+                            this.vx = rollDirection * 2;
+                            this.vy = 1;
+                            landed = false;
+                        } else {
+                            // Settle on top
+                            this.y = other.y - PARTICLE_SIZE * 1.8;
                             this.vy = 0;
+                            this.vx = 0;
+                            this.settled = true;
                         }
                         break;
                     }
                 }
+                
+                // Apply friction to horizontal movement
+                this.vx *= FRICTION;
             }
             
             draw() {
@@ -1104,16 +1123,16 @@
                 
                 // Glow effect
                 if (this.glowing) {
-                    ctx.shadowBlur = 10;
+                    ctx.shadowBlur = 8;
                     ctx.shadowColor = this.color;
                 }
                 
                 // Draw character
                 ctx.fillStyle = this.color;
-                ctx.font = `${PARTICLE_SIZE * 1.5}px 'Share Tech Mono', monospace`;
+                ctx.font = `${PARTICLE_SIZE * 2}px 'Share Tech Mono', monospace`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.globalAlpha = this.settled ? 0.8 : 1;
+                ctx.globalAlpha = this.settled ? 0.7 : 0.9;
                 
                 ctx.fillText(this.char, this.x, this.y);
                 
@@ -1123,8 +1142,9 @@
         
         function spawnParticles() {
             for (let i = 0; i < SPAWN_RATE && particles.length < MAX_PARTICLES; i++) {
-                const x = CONTAINER_CENTER_X + (Math.random() - 0.5) * 50;
-                const y = 10;
+                // Spawn from center top with some spread
+                const x = canvas.width / 2 + (Math.random() - 0.5) * 100;
+                const y = -10;
                 particles.push(new Particle(x, y));
                 particleCount++;
             }
@@ -1132,11 +1152,12 @@
         
         function updateProgress() {
             const settledCount = particles.filter(p => p.settled).length;
-            loadingProgress = Math.min((settledCount / MAX_PARTICLES) * 200, 100);
+            // Progress based on particles settled (reach 100% when 25% of particles settle)
+            loadingProgress = Math.min((settledCount / (MAX_PARTICLES * 0.25)) * 100, 100);
             loadingPercent.textContent = Math.floor(loadingProgress) + '%';
             
             // Update status message periodically
-            if (particleCount % 100 === 0) {
+            if (particleCount % 200 === 0) {
                 loadingStatus.textContent = statusMessages[Math.floor(Math.random() * statusMessages.length)];
             }
         }
@@ -1147,20 +1168,14 @@
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Draw bowl outline
-            ctx.strokeStyle = 'rgba(0, 255, 0, 0.1)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.arc(CONTAINER_CENTER_X, CONTAINER_BOTTOM_Y, CONTAINER_RADIUS, 0, Math.PI, true);
-            ctx.stroke();
-            
             // Spawn new particles
-            if (particles.length < MAX_PARTICLES) {
+            if (particles.length < MAX_PARTICLES && loadingProgress < 100) {
                 spawnParticles();
             }
             
-            // Update and draw particles
-            particles.forEach(particle => {
+            // Update and draw particles (limit to visible particles for performance)
+            const visibleParticles = particles.slice(-2000); // Only process last 2000 particles
+            visibleParticles.forEach(particle => {
                 particle.update();
                 particle.draw();
             });
@@ -1169,7 +1184,7 @@
             updateProgress();
             
             // Check if loading complete
-            if (loadingProgress >= 100 && iframe.complete) {
+            if (loadingProgress >= 100 || (iframe.complete && particles.length > 1000)) {
                 isLoading = false;
                 setTimeout(() => {
                     iframe.style.visibility = 'visible';
@@ -1191,17 +1206,18 @@
             // Continue animation until progress reaches 100%
         };
         
-        // Fallback
+        // Fallback timeout - auto proceed after 8 seconds
         window.addEventListener('load', function() {
             setTimeout(() => {
-                if (loadingScreen.style.display !== 'none' && !isLoading) {
+                if (loadingScreen.style.display !== 'none') {
+                    isLoading = false;
                     iframe.style.visibility = 'visible';
                     loadingScreen.style.opacity = '0';
                     setTimeout(() => {
                         loadingScreen.style.display = 'none';
                     }, 500);
                 }
-            }, 15000); // 15 second maximum for physics sim
+            }, 8000); // 8 second maximum
         });
         
         // Matrix switcher functionality
