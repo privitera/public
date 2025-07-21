@@ -983,28 +983,32 @@
         window.addEventListener('resize', resizeCanvas);
         
         // Physics configuration
-        const GRAVITY = 0.8;
-        const PARTICLE_SIZE = 4;
-        const SPAWN_RATE = 50;
-        const MAX_PARTICLES = 5000;
+        const GRAVITY = 1.2;
+        const PARTICLE_SIZE = 3;
+        const SPAWN_RATE = 80; // Higher spawn rate
+        const MAX_PARTICLES = 20000; // Run for longer
+        const COLUMN_WIDTH = PARTICLE_SIZE;
         
         const particles = [];
-        const heightMap = {}; // Track height at each x position
+        const columnHeights = {}; // Height of sand in each column
         let loadingProgress = 0;
         let isLoading = true;
         let particleCount = 0;
+        let startTime = Date.now();
         
-        // Initialize height map
-        function getHeightAt(x) {
-            const key = Math.floor(x / PARTICLE_SIZE) * PARTICLE_SIZE;
-            return heightMap[key] || canvas.height;
+        // Get column index from x position
+        function getColumn(x) {
+            return Math.floor(x / COLUMN_WIDTH);
         }
         
-        function setHeightAt(x, y) {
-            const key = Math.floor(x / PARTICLE_SIZE) * PARTICLE_SIZE;
-            if (!heightMap[key] || y < heightMap[key]) {
-                heightMap[key] = y;
-            }
+        // Get height of sand in a column
+        function getColumnHeight(col) {
+            return columnHeights[col] || canvas.height;
+        }
+        
+        // Set height of sand in a column
+        function setColumnHeight(col, height) {
+            columnHeights[col] = height;
         }
         
         const statusMessages = [
@@ -1063,41 +1067,41 @@
                 this.vy += GRAVITY;
                 this.y += this.vy;
                 
-                // Get ground height at current position
-                const groundHeight = getHeightAt(this.x);
+                // Get current column
+                const col = getColumn(this.x);
+                const centerHeight = getColumnHeight(col);
                 
-                // Check if hit the ground
-                if (this.y >= groundHeight - PARTICLE_SIZE) {
-                    // Find lowest point nearby (roll to lowest spot)
-                    let lowestX = this.x;
-                    let lowestHeight = groundHeight;
+                // Check if we're about to hit sand
+                if (this.y >= centerHeight - PARTICLE_SIZE * 2) {
+                    // Check adjacent columns (only 1-2 columns away for natural slope)
+                    let bestCol = col;
+                    let bestHeight = centerHeight;
                     
-                    // Check nearby positions
-                    for (let dx = -PARTICLE_SIZE * 3; dx <= PARTICLE_SIZE * 3; dx += PARTICLE_SIZE) {
-                        const checkX = this.x + dx;
-                        if (checkX < 0 || checkX > canvas.width) continue;
+                    // Check left and right columns
+                    for (let offset = -2; offset <= 2; offset++) {
+                        const checkCol = col + offset;
+                        const h = getColumnHeight(checkCol);
                         
-                        const h = getHeightAt(checkX);
-                        if (h > lowestHeight) {
-                            lowestHeight = h;
-                            lowestX = checkX;
+                        // Find the lowest column nearby
+                        if (h > bestHeight + PARTICLE_SIZE) {
+                            bestHeight = h;
+                            bestCol = checkCol;
                         }
                     }
                     
-                    // Move to lowest spot with some randomness
-                    if (lowestX !== this.x) {
-                        // Add randomness to prevent perfect stacking
-                        const randomOffset = (Math.random() - 0.5) * PARTICLE_SIZE;
-                        this.x = lowestX + randomOffset;
-                        
-                        // Ensure within bounds
-                        this.x = Math.max(PARTICLE_SIZE, Math.min(canvas.width - PARTICLE_SIZE, this.x));
+                    // If found a lower spot, roll there
+                    if (bestCol !== col) {
+                        this.x = bestCol * COLUMN_WIDTH + COLUMN_WIDTH / 2;
                     }
                     
-                    // Settle at this position
-                    this.y = getHeightAt(this.x) - PARTICLE_SIZE;
+                    // Settle at the top of the column
+                    const finalCol = getColumn(this.x);
+                    const finalHeight = getColumnHeight(finalCol);
+                    this.y = finalHeight - PARTICLE_SIZE;
                     this.settled = true;
-                    setHeightAt(this.x, this.y);
+                    
+                    // Update column height
+                    setColumnHeight(finalCol, this.y);
                 }
             }
             
@@ -1113,13 +1117,9 @@
         
         function spawnParticles() {
             for (let i = 0; i < SPAWN_RATE && particles.length < MAX_PARTICLES; i++) {
-                // Spawn from multiple points across the top for wider distribution
-                const spawnPoints = 5;
-                const spawnIndex = Math.floor(Math.random() * spawnPoints);
-                const spacing = canvas.width / (spawnPoints + 1);
-                const baseX = spacing * (spawnIndex + 1);
-                const x = baseX + (Math.random() - 0.5) * spacing * 0.5;
-                const y = -10;
+                // Single spawn point at center with tiny random offset
+                const x = canvas.width / 2 + (Math.random() - 0.5) * PARTICLE_SIZE;
+                const y = 0;
                 
                 particles.push(new Particle(x, y));
                 particleCount++;
@@ -1127,13 +1127,14 @@
         }
         
         function updateProgress() {
-            const settledCount = particles.filter(p => p.settled).length;
-            // Progress based on particles settled
-            loadingProgress = Math.min((settledCount / 1000) * 100, 100);
+            // Progress based on time elapsed (1 minute total)
+            const elapsed = Date.now() - startTime;
+            const duration = 60000; // 60 seconds
+            loadingProgress = Math.min((elapsed / duration) * 100, 100);
             loadingPercent.textContent = Math.floor(loadingProgress) + '%';
             
             // Update status message periodically
-            if (particleCount % 100 === 0) {
+            if (particleCount % 200 === 0) {
                 loadingStatus.textContent = statusMessages[Math.floor(Math.random() * statusMessages.length)];
             }
         }
@@ -1149,12 +1150,16 @@
                 spawnParticles();
             }
             
-            // Update and draw particles (limit to visible particles for performance)
-            const visibleParticles = particles.slice(-2000); // Only process last 2000 particles
-            visibleParticles.forEach(particle => {
+            // Update all particles but only draw recent ones
+            particles.forEach(particle => {
                 particle.update();
-                particle.draw();
             });
+            
+            // Only draw the most recent particles for performance
+            const visibleCount = Math.min(particles.length, 3000);
+            for (let i = particles.length - visibleCount; i < particles.length; i++) {
+                if (particles[i]) particles[i].draw();
+            }
             
             // Update progress
             updateProgress();
@@ -1189,19 +1194,17 @@
             requestAnimationFrame(animate);
         }, 10);
         
-        // Fallback timeout - auto proceed after 8 seconds
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                if (loadingScreen.style.display !== 'none') {
-                    isLoading = false;
-                    iframe.style.visibility = 'visible';
-                    loadingScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        loadingScreen.style.display = 'none';
-                    }, 500);
-                }
-            }, 8000); // 8 second maximum
-        });
+        // Auto proceed after 1 minute
+        setTimeout(() => {
+            if (loadingScreen.style.display !== 'none') {
+                isLoading = false;
+                iframe.style.visibility = 'visible';
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }
+        }, 60000); // 60 seconds
         
         // Matrix switcher functionality
         let currentMatrixVersion = 'authentic';
