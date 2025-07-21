@@ -978,8 +978,10 @@
         let PARTICLE_RADIUS = 25; // Start with much larger particles
         const SPAWN_DELAY = 30; // ms between spawns
         const GRAVITY = 0.4;
-        const FRICTION = 0.8;
-        const RESTITUTION = 0.1; // Low bounce
+        const FRICTION = 0.6; // More friction
+        const RESTITUTION = 0.05; // Very low bounce
+        const DAMPING = 0.98; // Velocity damping each frame
+        const SETTLE_THRESHOLD = 0.1; // Velocity below this = settled
         
         // State
         let startTime = Date.now();
@@ -1017,9 +1019,13 @@
                 this.char = Math.random() < 0.5 ? '0' : '1';
                 this.color = this.char === '0' ? '#0077BB' : '#33BBEE';
                 if (Math.random() < 0.01) this.color = '#FFD700';
+                this.isSettled = false;
             }
             
             update() {
+                // Skip update if settled
+                if (this.isSettled) return;
+                
                 // Apply gravity
                 this.vy += GRAVITY;
                 
@@ -1104,9 +1110,17 @@
                     }
                 }
                 
-                // Apply general friction and damping
-                this.vx *= 0.95;  // More aggressive horizontal damping
-                this.vy *= 0.98;  // Some vertical damping too
+                // Apply damping to all velocities
+                this.vx *= DAMPING;
+                this.vy *= DAMPING;
+                
+                // Check if particle should be considered settled
+                const totalVelocity = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                if (totalVelocity < SETTLE_THRESHOLD && this.y > canvas.height - 200) {
+                    this.isSettled = true;
+                    this.vx = 0;
+                    this.vy = 0;
+                }
                 
                 // Additional settling force - particles slow down over time
                 if (Math.abs(this.vx) < 0.1) this.vx = 0;
