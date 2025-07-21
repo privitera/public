@@ -976,17 +976,17 @@
         
         // Configuration
         const DURATION = 30000; // 30 seconds total
-        const PARTICLE_SIZE = 5;
-        const SPAWN_DELAY = 25; // ms between spawns
-        const GRAVITY = 0.3;
-        const MAX_SLOPE = 0.6; // Maximum slope before particles roll
+        const PARTICLE_RADIUS = 4; // Treat as circles
+        const SPAWN_DELAY = 30; // ms between spawns
+        const GRAVITY = 0.4;
+        const FRICTION = 0.8;
+        const RESTITUTION = 0.1; // Low bounce
         
         // State
         let startTime = Date.now();
         let lastSpawnTime = 0;
         let isRunning = true;
         const particles = [];
-        const heightMap = new Map(); // Track max height at each x position
         
         // Status messages
         const messages = [
@@ -1007,73 +1007,102 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
         
-        // Simple particle class
+        // Particle class with circular physics
         class SandParticle {
             constructor() {
-                this.x = canvas.width / 2;
+                this.x = canvas.width / 2 + (Math.random() - 0.5) * 2;
                 this.y = 0;
+                this.vx = 0;
                 this.vy = 0;
-                this.settled = false;
+                this.radius = PARTICLE_RADIUS;
                 this.char = Math.random() < 0.5 ? '0' : '1';
                 this.color = this.char === '0' ? '#0077BB' : '#33BBEE';
+                if (Math.random() < 0.01) this.color = '#FFD700';
             }
             
             update() {
-                if (this.settled) return;
-                
                 // Apply gravity
                 this.vy += GRAVITY;
+                
+                // Apply velocity
+                this.x += this.vx;
                 this.y += this.vy;
                 
-                // Check ground collision
-                const groundY = getHeightAt(this.x);
-                if (this.y >= groundY - PARTICLE_SIZE) {
-                    // Find best position to settle (lowest nearby point)
-                    let bestX = this.x;
-                    let lowestY = groundY;
-                    
-                    // Check nearby positions
-                    for (let dx = -PARTICLE_SIZE * 2; dx <= PARTICLE_SIZE * 2; dx += PARTICLE_SIZE) {
-                        const checkX = this.x + dx;
-                        const checkY = getHeightAt(checkX);
-                        if (checkY > lowestY) {
-                            lowestY = checkY;
-                            bestX = checkX;
-                        }
-                    }
-                    
-                    // Settle at best position
-                    this.x = bestX;
-                    this.y = lowestY - PARTICLE_SIZE;
-                    this.settled = true;
-                    this.vy = 0;
-                    
-                    // Update height map
-                    setHeightAt(this.x, this.y);
+                // Floor collision
+                if (this.y + this.radius > canvas.height) {
+                    this.y = canvas.height - this.radius;
+                    this.vy *= -RESTITUTION;
+                    this.vx *= FRICTION;
                 }
+                
+                // Wall collisions
+                if (this.x - this.radius < 0) {
+                    this.x = this.radius;
+                    this.vx *= -RESTITUTION;
+                }
+                if (this.x + this.radius > canvas.width) {
+                    this.x = canvas.width - this.radius;
+                    this.vx *= -RESTITUTION;
+                }
+                
+                // Check collisions with other particles
+                for (let other of particles) {
+                    if (other === this) continue;
+                    
+                    const dx = this.x - other.x;
+                    const dy = this.y - other.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const minDistance = this.radius + other.radius;
+                    
+                    if (distance < minDistance && distance > 0) {
+                        // Collision detected - separate particles
+                        const overlap = minDistance - distance;
+                        const separationX = (dx / distance) * overlap * 0.5;
+                        const separationY = (dy / distance) * overlap * 0.5;
+                        
+                        // Move particles apart
+                        this.x += separationX;
+                        this.y += separationY;
+                        other.x -= separationX;
+                        other.y -= separationY;
+                        
+                        // Calculate relative velocity
+                        const vxRel = this.vx - other.vx;
+                        const vyRel = this.vy - other.vy;
+                        
+                        // Don't resolve if velocities are separating
+                        const velocityAlongNormal = vxRel * (dx/distance) + vyRel * (dy/distance);
+                        if (velocityAlongNormal > 0) continue;
+                        
+                        // Apply collision response
+                        const impulse = velocityAlongNormal * RESTITUTION;
+                        const impulseX = impulse * (dx/distance);
+                        const impulseY = impulse * (dy/distance);
+                        
+                        this.vx -= impulseX;
+                        this.vy -= impulseY;
+                        other.vx += impulseX;
+                        other.vy += impulseY;
+                        
+                        // Apply friction to make particles settle
+                        this.vx *= FRICTION;
+                        this.vy *= FRICTION;
+                        other.vx *= FRICTION;
+                        other.vy *= FRICTION;
+                    }
+                }
+                
+                // Apply general friction
+                this.vx *= 0.99;
             }
             
             draw() {
-                ctx.globalAlpha = this.settled ? 0.7 : 1;
+                ctx.globalAlpha = 0.8;
                 ctx.fillStyle = this.color;
-                ctx.font = `${PARTICLE_SIZE * 1.5}px monospace`;
+                ctx.font = `${this.radius * 2}px monospace`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(this.char, this.x, this.y);
-            }
-        }
-        
-        // Height map functions
-        function getHeightAt(x) {
-            const key = Math.round(x / PARTICLE_SIZE) * PARTICLE_SIZE;
-            return heightMap.get(key) || canvas.height;
-        }
-        
-        function setHeightAt(x, y) {
-            const key = Math.round(x / PARTICLE_SIZE) * PARTICLE_SIZE;
-            const current = heightMap.get(key) || canvas.height;
-            if (y < current) {
-                heightMap.set(key, y);
             }
         }
         
@@ -1091,10 +1120,19 @@
             }
             
             // Update and draw particles
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            // Limit visible particles for performance
+            const maxVisible = 1500;
+            const startIdx = Math.max(0, particles.length - maxVisible);
+            
+            // Update all particles
+            for (let i = startIdx; i < particles.length; i++) {
+                particles[i].update();
+            }
+            
+            // Draw visible particles
+            for (let i = startIdx; i < particles.length; i++) {
+                particles[i].draw();
+            }
             
             // Update progress
             const elapsed = Date.now() - startTime;
