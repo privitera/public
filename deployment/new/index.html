@@ -1397,6 +1397,12 @@
         function animate(currentTime) {
             if (!isRunning) return;
             
+            // Ensure canvas is properly sized
+            if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
@@ -1414,13 +1420,17 @@
             
             // Update progress - now shows particle count instead of time
             const particleCount = particles.length;
-            loadingPercent.textContent = `${particleCount} PARTICLES`;
+            if (loadingPercent) {
+                loadingPercent.textContent = `${particleCount} PARTICLES`;
+            }
             
             // Update status message every 5 seconds
             const elapsed = Date.now() - startTime;
             if (Math.floor(elapsed / 5000) !== messageIndex) {
                 messageIndex = Math.floor(elapsed / 5000) % messages.length;
-                loadingStatus.textContent = messages[messageIndex];
+                if (loadingStatus) {
+                    loadingStatus.textContent = messages[messageIndex];
+                }
             }
             
             // Continue indefinitely
@@ -2191,6 +2201,10 @@
             particles.length = 0; // Clear existing particles
             startTime = Date.now();
             lastSpawnTime = 0;
+            
+            // Ensure canvas is properly sized
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
             
             // Show loading screen
             loadingScreen.style.display = 'block';
