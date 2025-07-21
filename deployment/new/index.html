@@ -975,13 +975,14 @@
         const loadingStatus = document.getElementById('loadingStatus');
         
         // Configuration
+        const VERSION = "v2.5"; // Version indicator
         let PARTICLE_RADIUS = 25; // Start with much larger particles
         const SPAWN_DELAY = 30; // ms between spawns
         const GRAVITY = 0.4;
-        const FRICTION = 0.3; // Much more friction
-        const RESTITUTION = 0.01; // Almost no bounce
-        const DAMPING = 0.92; // Heavy velocity damping each frame
-        const SETTLE_THRESHOLD = 0.2; // Higher threshold for settling
+        const FRICTION = 0.1; // EXTREME friction
+        const RESTITUTION = 0.001; // Virtually no bounce
+        const DAMPING = 0.85; // VERY heavy velocity damping each frame
+        const SETTLE_THRESHOLD = 0.3; // Even higher threshold for settling
         
         // State
         let startTime = Date.now();
@@ -1107,11 +1108,11 @@
                             other.vx += impulseX;
                             other.vy += impulseY;
                             
-                            // Apply very strong friction to make particles settle
-                            this.vx *= FRICTION * 0.5;  // Heavy friction during collisions
-                            this.vy *= FRICTION * 0.5;
-                            other.vx *= FRICTION * 0.5;
-                            other.vy *= FRICTION * 0.5;
+                            // Apply EXTREME friction to make particles settle
+                            this.vx *= FRICTION;  // 90% energy loss!
+                            this.vy *= FRICTION;
+                            other.vx *= FRICTION;
+                            other.vy *= FRICTION;
                         } else {
                             // While falling, only apply horizontal separation
                             this.vx += separationX * 0.1;
@@ -1216,6 +1217,19 @@
         `;
         skipHint.textContent = '[CLICK TO SKIP]';
         loadingScreen.appendChild(skipHint);
+        
+        // Add version indicator
+        const versionDiv = document.createElement('div');
+        versionDiv.style.cssText = `
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: rgba(0, 255, 0, 0.3);
+            font-family: monospace;
+            font-size: 10px;
+        `;
+        versionDiv.textContent = `SAND PHYSICS ${VERSION}`;
+        loadingScreen.appendChild(versionDiv);
         
         // Add size control hint
         const sizeHint = document.createElement('div');
