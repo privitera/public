@@ -549,31 +549,6 @@
         }
 
         /* Additional visual effects */
-        .data-stream {
-            position: fixed;
-            top: 0;
-            right: 20px;
-            width: 80px;
-            height: 100%;
-            overflow: hidden;
-            opacity: 0.1;
-            z-index: -1;
-            font-size: 10px;
-            color: var(--matrix-green);
-            font-family: 'VT323', monospace;
-        }
-
-        .data-stream span {
-            position: absolute;
-            top: -20px;
-            animation: data-fall linear infinite;
-        }
-
-        @keyframes data-fall {
-            to {
-                transform: translateY(100vh);
-            }
-        }
 
         /* Noise overlay */
         .noise {
@@ -689,11 +664,71 @@
             opacity: 0.1;
             display: none;
         }
+        
+        /* Loading screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .loading-text {
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .loading-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(0, 255, 255, 0.2);
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-cyan);
+            animation: loading-sweep 1.5s infinite;
+        }
+        
+        @keyframes loading-sweep {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
     </style>
 </head>
 <body>
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-text">Initializing Matrix</div>
+        <div class="loading-bar"></div>
+    </div>
+    
     <canvas id="matrix-bg"></canvas>
-    <iframe id="rezmason-matrix" src="https://rezmason.github.io/matrix/" frameborder="0"></iframe>
+    <iframe id="rezmason-matrix" src="https://rezmason.github.io/matrix/" frameborder="0" style="visibility: hidden;"></iframe>
     <!-- <div class="scanlines"></div> -->
     <div class="noise"></div>
     
@@ -725,8 +760,7 @@
         <div class="rolling-interference" style="animation-delay: 7s; animation-duration: 16s;"></div>
     </div>
     
-    <!-- Data streams -->
-    <div class="data-stream" id="dataStream"></div>
+    <!-- Data streams removed -->
     
     <!-- Floating UI elements -->
     <!-- Commented out for now
@@ -823,10 +857,32 @@
         // Ensure page starts at top on load
         window.scrollTo(0, 0);
         
+        // Handle loading screen
+        const iframe = document.getElementById('rezmason-matrix');
+        const loadingScreen = document.getElementById('loadingScreen');
+        
+        // Wait for iframe to load
+        iframe.onload = function() {
+            // Give it a moment to fully render
+            setTimeout(() => {
+                iframe.style.visibility = 'visible';
+                loadingScreen.style.display = 'none';
+            }, 500);
+        };
+        
+        // Fallback in case iframe loads very quickly
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                if (loadingScreen.style.display !== 'none') {
+                    iframe.style.visibility = 'visible';
+                    loadingScreen.style.display = 'none';
+                }
+            }, 2000);
+        });
+        
         // Matrix switcher functionality
         let currentMatrixVersion = 'authentic';
         let animationId = null;
-        let dataStreamInterval = null;
         
         function switchMatrix(version) {
             // Stop current animation
@@ -835,27 +891,16 @@
                 animationId = null;
             }
             
-            // Stop data stream
-            if (dataStreamInterval) {
-                clearInterval(dataStreamInterval);
-                dataStreamInterval = null;
-            }
-            
             const canvas = document.getElementById('matrix-bg');
             const iframe = document.getElementById('rezmason-matrix');
-            const dataStream = document.getElementById('dataStream');
             
             // Reset canvas
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Clear data stream
-            dataStream.innerHTML = '';
-            
             // Hide all versions first
             canvas.style.display = 'none';
             iframe.style.display = 'none';
-            dataStream.style.display = 'none';
             
             currentMatrixVersion = version;
             
@@ -863,15 +908,11 @@
                 case 'custom':
                     canvas.style.display = 'block';
                     canvas.style.opacity = '0.1';
-                    dataStream.style.display = 'block';
                     initCustomMatrix();
-                    startDataStream();
                     break;
                 case 'authentic':
                     iframe.style.display = 'block';
                     iframe.style.opacity = '0.1';
-                    dataStream.style.display = 'block';
-                    startDataStream();
                     break;
                 case 'minimal':
                     canvas.style.display = 'block';
@@ -1247,25 +1288,7 @@
         `;
         document.head.appendChild(konamiStyle);
         
-        // Data stream animation
-        function createDataStream() {
-            const stream = document.getElementById('dataStream');
-            const char = document.createElement('span');
-            char.textContent = Math.random() > 0.5 ? '1' : '0';
-            char.style.left = Math.random() * 100 + '%';
-            char.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            stream.appendChild(char);
-            
-            setTimeout(() => char.remove(), 10000);
-        }
-        
-        function startDataStream() {
-            if (!dataStreamInterval) {
-                dataStreamInterval = setInterval(createDataStream, 100);
-            }
-        }
-        
-        // Data stream is now managed by switchMatrix()
+        // Data stream removed
         
         // Update fake monitoring values - commented out for now
         /*
