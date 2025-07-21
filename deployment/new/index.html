@@ -973,6 +973,12 @@
             box-shadow: 0 0 15px var(--neon-cyan);
         }
         
+        #toggle-sand-timer:hover {
+            background: var(--neon-yellow) !important;
+            color: #000 !important;
+            box-shadow: 0 0 15px var(--neon-yellow) !important;
+        }
+        
         .value-display {
             color: var(--neon-yellow);
             min-width: 50px;
@@ -1071,6 +1077,9 @@
             <div class="control-group">
                 <label>URL:</label>
                 <input type="text" id="matrix-url" readonly style="width: 100%;">
+            </div>
+            <div class="control-group" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--neon-cyan);">
+                <button id="toggle-sand-timer" style="width: 100%; background: rgba(255, 255, 0, 0.1); border-color: var(--neon-yellow); color: var(--neon-yellow);">LAUNCH SAND TIMER</button>
             </div>
         </div>
     </div>
@@ -2170,6 +2179,120 @@
         
         // Initialize URL display
         resetConfig();
+        
+        // Sand Timer Toggle functionality
+        const sandTimerBtn = document.getElementById('toggle-sand-timer');
+        let sandTimerActive = false;
+        
+        // Function to start sand timer
+        function startSandTimer() {
+            sandTimerActive = true;
+            isRunning = true;
+            particles.length = 0; // Clear existing particles
+            startTime = Date.now();
+            lastSpawnTime = 0;
+            
+            // Show loading screen
+            loadingScreen.style.display = 'block';
+            loadingScreen.style.opacity = '1';
+            
+            // Hide control panel
+            controlPanel.style.display = 'none';
+            
+            // Add all the UI elements if they don't exist
+            if (!loadingScreen.querySelector('.skip-hint')) {
+                // Add skip hint
+                const skipHint = document.createElement('div');
+                skipHint.className = 'skip-hint';
+                skipHint.style.cssText = `
+                    position: absolute;
+                    top: 20px;
+                    right: 20px;
+                    color: rgba(0, 255, 0, 0.5);
+                    font-family: monospace;
+                    font-size: 12px;
+                    cursor: pointer;
+                `;
+                skipHint.textContent = '[CLICK TO SKIP]';
+                loadingScreen.appendChild(skipHint);
+                
+                // Add version indicator
+                const versionDiv = document.createElement('div');
+                versionDiv.className = 'version-indicator';
+                versionDiv.style.cssText = `
+                    position: absolute;
+                    top: 20px;
+                    left: 20px;
+                    color: rgba(0, 255, 0, 0.3);
+                    font-family: monospace;
+                    font-size: 10px;
+                `;
+                versionDiv.textContent = `SAND PHYSICS v2.6`;
+                loadingScreen.appendChild(versionDiv);
+                
+                // Add size control hint
+                const sizeHint = document.createElement('div');
+                sizeHint.className = 'size-hint';
+                sizeHint.style.cssText = `
+                    position: absolute;
+                    bottom: 20px;
+                    right: 20px;
+                    color: rgba(0, 255, 0, 0.5);
+                    font-family: monospace;
+                    font-size: 11px;
+                    text-align: right;
+                `;
+                sizeHint.innerHTML = '[+/-] PARTICLE SIZE<br>[SHIFT +/-] LARGE STEPS<br><span id="sizeDisplay">SIZE: 25</span>';
+                loadingScreen.appendChild(sizeHint);
+            }
+            
+            // Update size display reference
+            const sizeDisplay = document.getElementById('sizeDisplay');
+            
+            // Add click handler to loading screen
+            const clickHandler = () => {
+                isRunning = false;
+                sandTimerActive = false;
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    loadingScreen.removeEventListener('click', clickHandler);
+                }, 500);
+            };
+            loadingScreen.addEventListener('click', clickHandler);
+            
+            // Keyboard controls for particle size
+            const keyHandler = (e) => {
+                if (!isRunning || !sandTimerActive) return;
+                
+                if (e.key === '+' || e.key === '=') {
+                    const increment = e.shiftKey ? 10 : 1;
+                    PARTICLE_RADIUS = Math.min(PARTICLE_RADIUS + increment, 100);
+                    sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
+                    particles.forEach(p => p.radius = PARTICLE_RADIUS);
+                } else if (e.key === '-' || e.key === '_') {
+                    const decrement = e.shiftKey ? 10 : 1;
+                    PARTICLE_RADIUS = Math.max(PARTICLE_RADIUS - decrement, 2);
+                    sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
+                    particles.forEach(p => p.radius = PARTICLE_RADIUS);
+                }
+            };
+            document.addEventListener('keydown', keyHandler);
+            
+            // Store handler for cleanup
+            loadingScreen._keyHandler = keyHandler;
+            
+            // Start animation
+            try {
+                console.log('Sand timer starting...');
+                requestAnimationFrame(animate);
+            } catch (error) {
+                console.error('Animation error:', error);
+                clickHandler();
+            }
+        }
+        
+        sandTimerBtn.addEventListener('click', startSandTimer);
     </script>
 </body>
 </html>
