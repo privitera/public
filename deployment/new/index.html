@@ -983,21 +983,29 @@
         window.addEventListener('resize', resizeCanvas);
         
         // Physics configuration
-        const GRAVITY = 0.4;
-        const FRICTION = 0.7;
-        const BOUNCE = 0.05; // Very little bounce
-        const PARTICLE_SIZE = 3;
-        const SPAWN_RATE = 40; // particles per frame
-        const MAX_PARTICLES = 10000; // More particles for full screen
-        const ANGLE_OF_REPOSE = 35 * Math.PI / 180; // 35 degrees for sand
-        const SLIDE_THRESHOLD = Math.tan(ANGLE_OF_REPOSE); // tan(35°)
-        const SETTLE_VELOCITY = 0.2; // Velocity threshold for settling
-        const SPREAD_FACTOR = 3; // How much particles spread when landing
+        const GRAVITY = 0.8;
+        const PARTICLE_SIZE = 4;
+        const SPAWN_RATE = 50;
+        const MAX_PARTICLES = 5000;
         
         const particles = [];
+        const heightMap = {}; // Track height at each x position
         let loadingProgress = 0;
         let isLoading = true;
         let particleCount = 0;
+        
+        // Initialize height map
+        function getHeightAt(x) {
+            const key = Math.floor(x / PARTICLE_SIZE) * PARTICLE_SIZE;
+            return heightMap[key] || canvas.height;
+        }
+        
+        function setHeightAt(x, y) {
+            const key = Math.floor(x / PARTICLE_SIZE) * PARTICLE_SIZE;
+            if (!heightMap[key] || y < heightMap[key]) {
+                heightMap[key] = y;
+            }
+        }
         
         const statusMessages = [
             'STREAMING BINARY DATA...',
@@ -1039,16 +1047,12 @@
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.vx = (Math.random() - 0.5) * 1;
-                this.vy = Math.random() * 2;
+                this.vy = 0;
                 this.char = Math.random() < 0.5 ? '0' : '1';
                 this.settled = false;
-                this.age = 0;
-                this.glowing = Math.random() < 0.05;
                 this.color = this.char === '0' ? '#0077BB' : '#33BBEE';
-                if (Math.random() < 0.01) {
-                    this.color = '#FFD700'; // Golden particle
-                    this.glowing = true;
+                if (Math.random() < 0.02) {
+                    this.color = '#FFD700';
                 }
             }
             
@@ -1057,127 +1061,79 @@
                 
                 // Apply gravity
                 this.vy += GRAVITY;
-                
-                // Update position
-                this.x += this.vx;
                 this.y += this.vy;
                 
-                // Screen boundaries
-                if (this.x < PARTICLE_SIZE) {
-                    this.x = PARTICLE_SIZE;
-                    this.vx *= -BOUNCE;
-                }
-                if (this.x > canvas.width - PARTICLE_SIZE) {
-                    this.x = canvas.width - PARTICLE_SIZE;
-                    this.vx *= -BOUNCE;
-                }
+                // Get ground height at current position
+                const groundHeight = getHeightAt(this.x);
                 
-                // Floor collision
-                if (this.y > canvas.height - PARTICLE_SIZE) {
-                    this.y = canvas.height - PARTICLE_SIZE;
-                    this.vy = 0;
-                    this.vx *= FRICTION;
-                    this.settled = true;
-                    return;
-                }
-                
-                // Simple collision check with settled particles
-                for (let other of particles) {
-                    if (other === this || !other.settled) continue;
+                // Check if hit the ground
+                if (this.y >= groundHeight - PARTICLE_SIZE) {
+                    // Find lowest point nearby (roll to lowest spot)
+                    let lowestX = this.x;
+                    let lowestHeight = groundHeight;
                     
-                    const dx = this.x - other.x;
-                    const dy = this.y - other.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (dist < PARTICLE_SIZE * 2.5) {
-                        // Hit another particle
+                    // Check nearby positions
+                    for (let dx = -PARTICLE_SIZE * 3; dx <= PARTICLE_SIZE * 3; dx += PARTICLE_SIZE) {
+                        const checkX = this.x + dx;
+                        if (checkX < 0 || checkX > canvas.width) continue;
                         
-                        // Calculate impact angle
-                        const angle = Math.atan2(-dy, dx);
-                        
-                        // If hitting from the side, slide off
-                        if (Math.abs(angle) > Math.PI / 4 && Math.abs(angle) < 3 * Math.PI / 4) {
-                            // Landing on top - check if we should roll
-                            const centerDist = Math.abs(this.x - canvas.width / 2);
-                            const heightAboveGround = canvas.height - other.y;
-                            const slopeAngle = Math.atan2(heightAboveGround, centerDist);
-                            
-                            // Roll away from center if slope is steep
-                            if (slopeAngle > ANGLE_OF_REPOSE) {
-                                const rollDir = this.x > canvas.width / 2 ? 1 : -1;
-                                this.vx = rollDir * (2 + Math.random() * 2);
-                                this.vy = 1;
-                            } else {
-                                // Settle on top
-                                this.y = other.y - PARTICLE_SIZE * 2;
-                                this.vy = 0;
-                                this.vx *= 0.5;
-                                
-                                if (Math.abs(this.vx) < 0.3) {
-                                    this.settled = true;
-                                    this.vx = 0;
-                                }
-                            }
-                        } else {
-                            // Hit from side - bounce/slide
-                            this.vx = dx > 0 ? 1 : -1;
-                            this.vx *= (1 + Math.random());
+                        const h = getHeightAt(checkX);
+                        if (h > lowestHeight) {
+                            lowestHeight = h;
+                            lowestX = checkX;
                         }
-                        break;
                     }
+                    
+                    // Move to lowest spot with some randomness
+                    if (lowestX !== this.x) {
+                        // Add randomness to prevent perfect stacking
+                        const randomOffset = (Math.random() - 0.5) * PARTICLE_SIZE;
+                        this.x = lowestX + randomOffset;
+                        
+                        // Ensure within bounds
+                        this.x = Math.max(PARTICLE_SIZE, Math.min(canvas.width - PARTICLE_SIZE, this.x));
+                    }
+                    
+                    // Settle at this position
+                    this.y = getHeightAt(this.x) - PARTICLE_SIZE;
+                    this.settled = true;
+                    setHeightAt(this.x, this.y);
                 }
-                
-                // Apply friction to horizontal movement
-                this.vx *= FRICTION;
             }
             
             draw() {
-                ctx.save();
-                
-                // Glow effect
-                if (this.glowing) {
-                    ctx.shadowBlur = 8;
-                    ctx.shadowColor = this.color;
-                }
-                
-                // Draw character
                 ctx.fillStyle = this.color;
                 ctx.font = `${PARTICLE_SIZE * 2}px 'Share Tech Mono', monospace`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.globalAlpha = this.settled ? 0.7 : 0.9;
-                
+                ctx.globalAlpha = this.settled ? 0.6 : 0.9;
                 ctx.fillText(this.char, this.x, this.y);
-                
-                ctx.restore();
             }
         }
         
         function spawnParticles() {
             for (let i = 0; i < SPAWN_RATE && particles.length < MAX_PARTICLES; i++) {
-                // Spawn from center top with variable spread for more natural flow
-                const spreadAmount = 20 + Math.random() * 30;
-                const angle = Math.random() * Math.PI * 2;
-                const x = canvas.width / 2 + Math.cos(angle) * spreadAmount;
+                // Spawn from multiple points across the top for wider distribution
+                const spawnPoints = 5;
+                const spawnIndex = Math.floor(Math.random() * spawnPoints);
+                const spacing = canvas.width / (spawnPoints + 1);
+                const baseX = spacing * (spawnIndex + 1);
+                const x = baseX + (Math.random() - 0.5) * spacing * 0.5;
                 const y = -10;
                 
-                const particle = new Particle(x, y);
-                // Give particles slight outward velocity
-                particle.vx = (x - canvas.width / 2) * 0.01;
-                
-                particles.push(particle);
+                particles.push(new Particle(x, y));
                 particleCount++;
             }
         }
         
         function updateProgress() {
             const settledCount = particles.filter(p => p.settled).length;
-            // Progress based on particles settled (reach 100% when 25% of particles settle)
-            loadingProgress = Math.min((settledCount / (MAX_PARTICLES * 0.25)) * 100, 100);
+            // Progress based on particles settled
+            loadingProgress = Math.min((settledCount / 1000) * 100, 100);
             loadingPercent.textContent = Math.floor(loadingProgress) + '%';
             
             // Update status message periodically
-            if (particleCount % 200 === 0) {
+            if (particleCount % 100 === 0) {
                 loadingStatus.textContent = statusMessages[Math.floor(Math.random() * statusMessages.length)];
             }
         }
@@ -1219,16 +1175,19 @@
         }
         
         // Start loading iframe immediately
+        console.log('Starting to load Matrix iframe...');
         iframe.src = 'https://rezmason.github.io/matrix/';
         
         let iframeLoaded = false;
         iframe.onload = function() {
-            console.log('Matrix iframe loaded');
+            console.log('Matrix iframe loaded successfully');
             iframeLoaded = true;
         };
         
-        // Start animation
-        requestAnimationFrame(animate);
+        // Start animation after a tiny delay to ensure iframe starts loading
+        setTimeout(() => {
+            requestAnimationFrame(animate);
+        }, 10);
         
         // Fallback timeout - auto proceed after 8 seconds
         window.addEventListener('load', function() {
