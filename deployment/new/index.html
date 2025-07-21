@@ -857,8 +857,8 @@
             <span class="matrix-toggle">▶</span> MATRIX.VER
         </div>
         <div class="matrix-options">
-            <button class="matrix-option active" data-version="custom">CUSTOM</button>
-            <button class="matrix-option" data-version="authentic">AUTHENTIC</button>
+            <button class="matrix-option" data-version="custom">CUSTOM</button>
+            <button class="matrix-option active" data-version="authentic">AUTHENTIC</button>
             <button class="matrix-option" data-version="minimal">MINIMAL</button>
             <button class="matrix-option" data-version="off">OFF</button>
         </div>
@@ -1285,8 +1285,8 @@
             });
         }
         
-        // Don't load iframe yet - wait until user selects "AUTHENTIC"
-        // iframe.src = 'https://rezmason.github.io/matrix/';
+        // Start loading iframe immediately for authentic experience
+        iframe.src = 'https://rezmason.github.io/matrix/';
         
         if (ENABLE_LOADING_SCREEN) {
             // Start animation with error handling
@@ -1303,7 +1303,7 @@
         }
         
         // Matrix switcher functionality
-        let currentMatrixVersion = 'custom';  // Start with custom to avoid iframe load
+        let currentMatrixVersion = 'authentic';
         let animationId = null;
         
         function switchMatrix(version) {
@@ -1333,26 +1333,6 @@
                     initCustomMatrix();
                     break;
                 case 'authentic':
-                    // Lazy load iframe with optimized parameters
-                    if (!iframe.src) {
-                        console.log('Loading Rezmason Matrix...');
-                        // Show loading indicator
-                        const ctx = canvas.getContext('2d');
-                        ctx.fillStyle = '#00ff00';
-                        ctx.font = '20px monospace';
-                        ctx.fillText('LOADING AUTHENTIC MATRIX...', 50, 50);
-                        
-                        // Use operator version - simpler and faster than classic
-                        // Reduce columns for better performance
-                        // Slightly slower fall speed for less CPU usage
-                        iframe.src = 'https://rezmason.github.io/matrix/?version=operator&numColumns=80&fallSpeed=0.8';
-                        
-                        // Clear loading message when iframe loads
-                        iframe.onload = () => {
-                            ctx.clearRect(0, 0, canvas.width, canvas.height);
-                            console.log('Rezmason Matrix loaded');
-                        };
-                    }
                     iframe.style.display = 'block';
                     iframe.style.opacity = '0.1';
                     break;
@@ -1586,8 +1566,8 @@
             animationId = requestAnimationFrame(drawMinimal);
         }
         
-        // Initialize with custom matrix (no iframe load)
-        switchMatrix('custom');
+        // Initialize with authentic matrix
+        switchMatrix('authentic');
         
         // Randomized ASCII glitch effect
         function createRandomGlitch() {
