@@ -836,7 +836,8 @@
     </div>
     
     <canvas id="matrix-bg"></canvas>
-    <iframe id="rezmason-matrix" src="https://rezmason.github.io/matrix/" frameborder="0" style="visibility: hidden; display: block;"></iframe>
+    <!-- Iframe starts loading immediately but stays hidden -->
+    <iframe id="rezmason-matrix" frameborder="0" style="visibility: hidden; display: block;"></iframe>
     <!-- <div class="scanlines"></div> -->
     <div class="noise"></div>
     
@@ -1080,63 +1081,47 @@
                     return;
                 }
                 
-                // Check collision with settled particles
-                const nearbyParticles = particles.filter(other => {
-                    if (other === this || !other.settled) return false;
-                    const dx = Math.abs(this.x - other.x);
-                    const dy = Math.abs(this.y - other.y);
-                    return dx < PARTICLE_SIZE * 4 && dy < PARTICLE_SIZE * 4;
-                });
-                
-                for (let other of nearbyParticles) {
+                // Simple collision check with settled particles
+                for (let other of particles) {
+                    if (other === this || !other.settled) continue;
+                    
                     const dx = this.x - other.x;
                     const dy = this.y - other.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     
-                    if (dist < PARTICLE_SIZE * 2.2) {
-                        // Check if we should slide off
-                        const pileHeight = this.y - canvas.height;
-                        const distFromCenter = Math.abs(this.x - canvas.width / 2);
+                    if (dist < PARTICLE_SIZE * 2.5) {
+                        // Hit another particle
                         
-                        // Calculate local slope
-                        let leftHeight = canvas.height;
-                        let rightHeight = canvas.height;
+                        // Calculate impact angle
+                        const angle = Math.atan2(-dy, dx);
                         
-                        // Sample heights around particle
-                        nearbyParticles.forEach(p => {
-                            if (p.x < this.x && Math.abs(p.x - this.x) < PARTICLE_SIZE * 3) {
-                                leftHeight = Math.min(leftHeight, p.y);
-                            }
-                            if (p.x > this.x && Math.abs(p.x - this.x) < PARTICLE_SIZE * 3) {
-                                rightHeight = Math.min(rightHeight, p.y);
-                            }
-                        });
-                        
-                        const leftSlope = (this.y - leftHeight) / (PARTICLE_SIZE * 3);
-                        const rightSlope = (this.y - rightHeight) / (PARTICLE_SIZE * 3);
-                        
-                        // Slide if slope is too steep
-                        if (Math.abs(leftSlope) > SLIDE_THRESHOLD || Math.abs(rightSlope) > SLIDE_THRESHOLD) {
-                            // Slide downhill
-                            if (leftHeight > rightHeight) {
-                                this.vx = -SPREAD_FACTOR;
-                            } else {
-                                this.vx = SPREAD_FACTOR;
-                            }
-                            this.vy = 0.5;
-                            // Add some randomness to prevent patterns
-                            this.vx += (Math.random() - 0.5) * 0.5;
-                        } else {
-                            // Settle with slight spreading
-                            this.y = other.y - PARTICLE_SIZE * 1.9;
-                            this.vx *= 0.1;
-                            this.vy = 0;
+                        // If hitting from the side, slide off
+                        if (Math.abs(angle) > Math.PI / 4 && Math.abs(angle) < 3 * Math.PI / 4) {
+                            // Landing on top - check if we should roll
+                            const centerDist = Math.abs(this.x - canvas.width / 2);
+                            const heightAboveGround = canvas.height - other.y;
+                            const slopeAngle = Math.atan2(heightAboveGround, centerDist);
                             
-                            if (Math.abs(this.vx) < SETTLE_VELOCITY && Math.abs(this.vy) < SETTLE_VELOCITY) {
-                                this.settled = true;
-                                this.vx = 0;
+                            // Roll away from center if slope is steep
+                            if (slopeAngle > ANGLE_OF_REPOSE) {
+                                const rollDir = this.x > canvas.width / 2 ? 1 : -1;
+                                this.vx = rollDir * (2 + Math.random() * 2);
+                                this.vy = 1;
+                            } else {
+                                // Settle on top
+                                this.y = other.y - PARTICLE_SIZE * 2;
                                 this.vy = 0;
+                                this.vx *= 0.5;
+                                
+                                if (Math.abs(this.vx) < 0.3) {
+                                    this.settled = true;
+                                    this.vx = 0;
+                                }
                             }
+                        } else {
+                            // Hit from side - bounce/slide
+                            this.vx = dx > 0 ? 1 : -1;
+                            this.vx *= (1 + Math.random());
                         }
                         break;
                     }
@@ -1219,7 +1204,7 @@
             updateProgress();
             
             // Check if loading complete
-            if (loadingProgress >= 100 || (iframe.complete && particles.length > 1000)) {
+            if (loadingProgress >= 100 || (iframeLoaded && particles.length > 500)) {
                 isLoading = false;
                 setTimeout(() => {
                     iframe.style.visibility = 'visible';
@@ -1227,22 +1212,23 @@
                     setTimeout(() => {
                         loadingScreen.style.display = 'none';
                     }, 500);
-                }, 500);
+                }, 300);
             } else {
                 requestAnimationFrame(animate);
             }
         }
         
-        // Start animation
-        requestAnimationFrame(animate);
-        
         // Start loading iframe immediately
-        iframe.style.display = 'block';
+        iframe.src = 'https://rezmason.github.io/matrix/';
         
-        // Handle iframe load
+        let iframeLoaded = false;
         iframe.onload = function() {
             console.log('Matrix iframe loaded');
+            iframeLoaded = true;
         };
+        
+        // Start animation
+        requestAnimationFrame(animate);
         
         // Fallback timeout - auto proceed after 8 seconds
         window.addEventListener('load', function() {
