@@ -976,7 +976,7 @@
         
         // Configuration
         const DURATION = 30000; // 30 seconds total
-        const PARTICLE_RADIUS = 4; // Treat as circles
+        let PARTICLE_RADIUS = 4; // Treat as circles (now adjustable)
         const SPAWN_DELAY = 30; // ms between spawns
         const GRAVITY = 0.4;
         const FRICTION = 0.8;
@@ -1190,6 +1190,38 @@
         `;
         skipHint.textContent = '[CLICK TO SKIP]';
         loadingScreen.appendChild(skipHint);
+        
+        // Add size control hint
+        const sizeHint = document.createElement('div');
+        sizeHint.style.cssText = `
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(0, 255, 0, 0.5);
+            font-family: monospace;
+            font-size: 11px;
+            text-align: right;
+        `;
+        sizeHint.innerHTML = '[+/-] PARTICLE SIZE<br><span id="sizeDisplay">SIZE: 4</span>';
+        loadingScreen.appendChild(sizeHint);
+        const sizeDisplay = document.getElementById('sizeDisplay');
+        
+        // Keyboard controls for particle size
+        document.addEventListener('keydown', (e) => {
+            if (!isRunning) return;
+            
+            if (e.key === '+' || e.key === '=') {
+                PARTICLE_RADIUS = Math.min(PARTICLE_RADIUS + 1, 15);
+                sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
+                // Update existing particles
+                particles.forEach(p => p.radius = PARTICLE_RADIUS);
+            } else if (e.key === '-' || e.key === '_') {
+                PARTICLE_RADIUS = Math.max(PARTICLE_RADIUS - 1, 2);
+                sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
+                // Update existing particles
+                particles.forEach(p => p.radius = PARTICLE_RADIUS);
+            }
+        });
         
         // Start loading iframe
         iframe.src = 'https://rezmason.github.io/matrix/';
