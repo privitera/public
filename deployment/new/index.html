@@ -6,6 +6,9 @@
     <title>LINUX DEPLOYMENT</title>
     <!-- Updated: Fixed code block alignment and scroll position -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+    <!-- Preconnect to Matrix rain domain for faster loading -->
+    <link rel="preconnect" href="https://rezmason.github.io">
+    <link rel="dns-prefetch" href="https://rezmason.github.io">
     <style>
         /* Ensure proper initial positioning */
         html {
@@ -843,8 +846,8 @@
     </div>
     
     <canvas id="matrix-bg"></canvas>
-    <!-- Iframe starts loading immediately but stays hidden -->
-    <iframe id="rezmason-matrix" frameborder="0" style="visibility: hidden; display: block;"></iframe>
+    <!-- Iframe lazy-loaded only when needed -->
+    <iframe id="rezmason-matrix" frameborder="0" style="visibility: hidden; display: none;"></iframe>
     <!-- <div class="scanlines"></div> -->
     <div class="noise"></div>
     
@@ -854,8 +857,8 @@
             <span class="matrix-toggle">▶</span> MATRIX.VER
         </div>
         <div class="matrix-options">
-            <button class="matrix-option" data-version="custom">CUSTOM</button>
-            <button class="matrix-option active" data-version="authentic">AUTHENTIC</button>
+            <button class="matrix-option active" data-version="custom">CUSTOM</button>
+            <button class="matrix-option" data-version="authentic">AUTHENTIC</button>
             <button class="matrix-option" data-version="minimal">MINIMAL</button>
             <button class="matrix-option" data-version="off">OFF</button>
         </div>
@@ -1282,8 +1285,8 @@
             });
         }
         
-        // Start loading iframe
-        iframe.src = 'https://rezmason.github.io/matrix/';
+        // Don't load iframe yet - wait until user selects "AUTHENTIC"
+        // iframe.src = 'https://rezmason.github.io/matrix/';
         
         if (ENABLE_LOADING_SCREEN) {
             // Start animation with error handling
@@ -1300,7 +1303,7 @@
         }
         
         // Matrix switcher functionality
-        let currentMatrixVersion = 'authentic';
+        let currentMatrixVersion = 'custom';  // Start with custom to avoid iframe load
         let animationId = null;
         
         function switchMatrix(version) {
@@ -1330,6 +1333,26 @@
                     initCustomMatrix();
                     break;
                 case 'authentic':
+                    // Lazy load iframe with optimized parameters
+                    if (!iframe.src) {
+                        console.log('Loading Rezmason Matrix...');
+                        // Show loading indicator
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = '#00ff00';
+                        ctx.font = '20px monospace';
+                        ctx.fillText('LOADING AUTHENTIC MATRIX...', 50, 50);
+                        
+                        // Use operator version - simpler and faster than classic
+                        // Reduce columns for better performance
+                        // Slightly slower fall speed for less CPU usage
+                        iframe.src = 'https://rezmason.github.io/matrix/?version=operator&numColumns=80&fallSpeed=0.8';
+                        
+                        // Clear loading message when iframe loads
+                        iframe.onload = () => {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            console.log('Rezmason Matrix loaded');
+                        };
+                    }
                     iframe.style.display = 'block';
                     iframe.style.opacity = '0.1';
                     break;
@@ -1563,8 +1586,8 @@
             animationId = requestAnimationFrame(drawMinimal);
         }
         
-        // Initialize with authentic matrix
-        switchMatrix('authentic');
+        // Initialize with custom matrix (no iframe load)
+        switchMatrix('custom');
         
         // Randomized ASCII glitch effect
         function createRandomGlitch() {
