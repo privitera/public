@@ -979,6 +979,8 @@
         window.scrollTo(0, 0);
         
         // Sand Timer Loading Screen - Complete Refactor
+        const ENABLE_LOADING_SCREEN = false; // Single toggle for loading screen
+        
         const iframe = document.getElementById('rezmason-matrix');
         const loadingScreen = document.getElementById('loadingScreen');
         const canvas = document.getElementById('sandCanvas');
@@ -1214,88 +1216,88 @@
             }, 500);
         }
         
-        // Click to skip
-        loadingScreen.addEventListener('click', completeLoading);
-        
-        // Add skip hint
-        const skipHint = document.createElement('div');
-        skipHint.style.cssText = `
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: rgba(0, 255, 0, 0.5);
-            font-family: monospace;
-            font-size: 12px;
-            cursor: pointer;
-        `;
-        skipHint.textContent = '[CLICK TO SKIP]';
-        loadingScreen.appendChild(skipHint);
-        
-        // Add version indicator
-        const versionDiv = document.createElement('div');
-        versionDiv.style.cssText = `
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: rgba(0, 255, 0, 0.3);
-            font-family: monospace;
-            font-size: 10px;
-        `;
-        versionDiv.textContent = `SAND PHYSICS ${VERSION}`;
-        loadingScreen.appendChild(versionDiv);
-        
-        /* DISABLED - Part of loading screen
-        // Add size control hint
-        const sizeHint = document.createElement('div');
-        sizeHint.style.cssText = `
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            color: rgba(0, 255, 0, 0.5);
-            font-family: monospace;
-            font-size: 11px;
-            text-align: right;
-        `;
-        sizeHint.innerHTML = '[+/-] PARTICLE SIZE<br>[SHIFT +/-] LARGE STEPS<br><span id="sizeDisplay">SIZE: 25</span>';
-        loadingScreen.appendChild(sizeHint);
-        const sizeDisplay = document.getElementById('sizeDisplay');
-        
-        // Keyboard controls for particle size
-        document.addEventListener('keydown', (e) => {
-            if (!isRunning) return;
+        if (ENABLE_LOADING_SCREEN) {
+            // Click to skip
+            loadingScreen.addEventListener('click', completeLoading);
             
-            if (e.key === '+' || e.key === '=') {
-                const increment = e.shiftKey ? 10 : 1;
-                PARTICLE_RADIUS = Math.min(PARTICLE_RADIUS + increment, 100);
-                sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
-                // Update existing particles
-                particles.forEach(p => p.radius = PARTICLE_RADIUS);
-            } else if (e.key === '-' || e.key === '_') {
-                const decrement = e.shiftKey ? 10 : 1;
-                PARTICLE_RADIUS = Math.max(PARTICLE_RADIUS - decrement, 2);
-                sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
-                // Update existing particles
-                particles.forEach(p => p.radius = PARTICLE_RADIUS);
-            }
-        });
-        */
+            // Add skip hint
+            const skipHint = document.createElement('div');
+            skipHint.style.cssText = `
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                color: rgba(0, 255, 0, 0.5);
+                font-family: monospace;
+                font-size: 12px;
+                cursor: pointer;
+            `;
+            skipHint.textContent = '[CLICK TO SKIP]';
+            loadingScreen.appendChild(skipHint);
+            
+            // Add version indicator
+            const versionDiv = document.createElement('div');
+            versionDiv.style.cssText = `
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                color: rgba(0, 255, 0, 0.3);
+                font-family: monospace;
+                font-size: 10px;
+            `;
+            versionDiv.textContent = `SAND PHYSICS ${VERSION}`;
+            loadingScreen.appendChild(versionDiv);
+            
+            // Add size control hint
+            const sizeHint = document.createElement('div');
+            sizeHint.style.cssText = `
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                color: rgba(0, 255, 0, 0.5);
+                font-family: monospace;
+                font-size: 11px;
+                text-align: right;
+            `;
+            sizeHint.innerHTML = '[+/-] PARTICLE SIZE<br>[SHIFT +/-] LARGE STEPS<br><span id="sizeDisplay">SIZE: 25</span>';
+            loadingScreen.appendChild(sizeHint);
+            const sizeDisplay = document.getElementById('sizeDisplay');
+            
+            // Keyboard controls for particle size
+            document.addEventListener('keydown', (e) => {
+                if (!isRunning) return;
+                
+                if (e.key === '+' || e.key === '=') {
+                    const increment = e.shiftKey ? 10 : 1;
+                    PARTICLE_RADIUS = Math.min(PARTICLE_RADIUS + increment, 100);
+                    sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
+                    // Update existing particles
+                    particles.forEach(p => p.radius = PARTICLE_RADIUS);
+                } else if (e.key === '-' || e.key === '_') {
+                    const decrement = e.shiftKey ? 10 : 1;
+                    PARTICLE_RADIUS = Math.max(PARTICLE_RADIUS - decrement, 2);
+                    sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
+                    // Update existing particles
+                    particles.forEach(p => p.radius = PARTICLE_RADIUS);
+                }
+            });
+        }
         
         // Start loading iframe
-        console.log('Sand timer v2.6-debug starting...');
         iframe.src = 'https://rezmason.github.io/matrix/';
         
-        // Start animation with error handling
-        // TEMPORARILY DISABLED - Skip directly to main page
-        completeLoading();
-        /*
-        try {
-            console.log('Starting animation...');
-            requestAnimationFrame(animate);
-        } catch (error) {
-            console.error('Animation error:', error);
-            completeLoading(); // Skip to main page on error
+        if (ENABLE_LOADING_SCREEN) {
+            // Start animation with error handling
+            try {
+                console.log('Sand timer starting...');
+                requestAnimationFrame(animate);
+            } catch (error) {
+                console.error('Animation error:', error);
+                completeLoading(); // Skip to main page on error
+            }
+        } else {
+            // Skip loading screen entirely
+            completeLoading();
         }
-        */
         
         // Matrix switcher functionality
         let currentMatrixVersion = 'authentic';
