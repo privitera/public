@@ -389,13 +389,54 @@
             letter-spacing: 2px;
             position: relative;
             padding-left: 25px;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s ease;
+        }
+        
+        .step-header:hover {
+            color: var(--neon-cyan);
+        }
+        
+        .step-toggle {
+            display: inline-block;
+            transition: transform 0.2s ease;
+            font-family: monospace;
+            margin-right: 5px;
+            position: absolute;
+            left: 0;
+        }
+        
+        .step-box:not(.collapsed) .step-toggle {
+            transform: rotate(90deg);
+        }
+        
+        .step-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+            max-height: 500px;
+            opacity: 1;
+        }
+        
+        .step-box.collapsed .step-content {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        
+        .step-box.collapsed {
+            padding: 15px 20px;
+        }
+        
+        .step-box.collapsed .step-header {
+            margin-bottom: 0;
         }
 
         .step-header::before {
-            content: '>';
+            content: '';
             position: absolute;
             left: 0;
-            animation: blink 1s infinite;
         }
 
         @keyframes blink {
@@ -716,54 +757,64 @@
         </div>
 
 
-        <div class="step-box">
-            <h2 class="step-header">STAGE.001 // SYSTEM UPDATE</h2>
-            <p>Initialize system and prepare for deployment. This stage updates package repositories and upgrades all system components to ensure compatibility.</p>
-            <div class="code-block">
+        <div class="step-box collapsed">
+            <h2 class="step-header"><span class="step-toggle">▶</span> STAGE.001 // SYSTEM UPDATE</h2>
+            <div class="step-content">
+                <p>Initialize system and prepare for deployment. This stage updates package repositories and upgrades all system components to ensure compatibility.</p>
+                <div class="code-block">
 <button class="copy-btn" onclick="copyCode(this)">COPY</button>
 <code>sudo apt update && sudo apt upgrade -y</code>
+                </div>
             </div>
         </div>
 
-        <div class="step-box">
-            <h2 class="step-header">STAGE.002 // BOOTSTRAP INIT</h2>
-            <p>Download and execute Stage 1 setup script. This installs essential tools including Git and GitHub CLI for repository access.</p>
-            <div class="code-block">
+        <div class="step-box collapsed">
+            <h2 class="step-header"><span class="step-toggle">▶</span> STAGE.002 // BOOTSTRAP INIT</h2>
+            <div class="step-content">
+                <p>Download and execute Stage 1 setup script. This installs essential tools including Git and GitHub CLI for repository access.</p>
+                <div class="code-block">
 <button class="copy-btn" onclick="copyCode(this)">COPY</button>
 <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash</code>
+                </div>
             </div>
         </div>
 
-        <div class="step-box">
-            <h2 class="step-header">STAGE.003 // AUTH PROTOCOL</h2>
-            <p>Establish secure connection to GitHub. Authentication required for accessing deployment configurations.</p>
-            <div class="code-block">
+        <div class="step-box collapsed">
+            <h2 class="step-header"><span class="step-toggle">▶</span> STAGE.003 // AUTH PROTOCOL</h2>
+            <div class="step-content">
+                <p>Establish secure connection to GitHub. Authentication required for accessing deployment configurations.</p>
+                <div class="code-block">
 <button class="copy-btn" onclick="copyCode(this)">COPY</button>
 <code>gh auth login</code>
-            </div>
-            <div class="info-box">
-                <strong>PROTOCOL:</strong> Select GitHub.com → SSH → Generate new SSH key
+                </div>
+                <div class="info-box">
+                    <strong>PROTOCOL:</strong> Select GitHub.com → SSH → Generate new SSH key
+                </div>
             </div>
         </div>
 
-        <div class="step-box">
-            <h2 class="step-header">STAGE.004 // DEPLOY EXECUTE</h2>
-            <p>Execute Stage 2 deployment with interactive configuration selector. Choose from multiple deployment profiles.</p>
-            <div class="code-block">
+        <div class="step-box collapsed">
+            <h2 class="step-header"><span class="step-toggle">▶</span> STAGE.004 // DEPLOY EXECUTE</h2>
+            <div class="step-content">
+                <p>Execute Stage 2 deployment with interactive configuration selector. Choose from multiple deployment profiles.</p>
+                <div class="code-block">
 <button class="copy-btn" onclick="copyCode(this)">COPY</button>
 <code>wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
-            </div>
-            <div class="info-box">
-                <strong>ACCESS LEVEL:</strong> This stage requires private repository access
+                </div>
+                <div class="info-box">
+                    <strong>ACCESS LEVEL:</strong> This stage requires private repository access
+                </div>
             </div>
         </div>
 
-        <div class="step-box">
-            <h2 class="step-header">PROTOCOL.OMEGA // RAPID DEPLOYMENT</h2>
-            <p>Execute full deployment sequence in single command stream. For experienced operators only.</p>
-            <div class="code-block">
+        <div class="step-box collapsed">
+            <h2 class="step-header"><span class="step-toggle">▶</span> PROTOCOL.OMEGA // RAPID DEPLOYMENT</h2>
+            <div class="step-content">
+                <p>Execute full deployment sequence in single command stream. For experienced operators only.</p>
+                <div class="code-block">
 <button class="copy-btn" onclick="copyCode(this)">COPY</button>
 <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
+                </div>
             </div>
         </div>
     </div>
@@ -853,6 +904,15 @@
                     this.classList.add('active');
                     // Switch matrix version
                     switchMatrix(this.dataset.version);
+                });
+            });
+            
+            // Step box toggle functionality
+            const stepBoxes = document.querySelectorAll('.step-box');
+            stepBoxes.forEach(box => {
+                const header = box.querySelector('.step-header');
+                header.addEventListener('click', function() {
+                    box.classList.toggle('collapsed');
                 });
             });
         });
