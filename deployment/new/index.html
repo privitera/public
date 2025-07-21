@@ -1072,6 +1072,7 @@
                     // Count particles within density radius
                     if (distance < densityRadius) {
                         nearbyCount++;
+                    }
                     
                     if (distance < minDistance && distance > 0) {
                         // Collision detected - separate particles
@@ -1118,6 +1119,7 @@
                             this.vx += separationX * 0.1;
                             other.vx -= separationX * 0.1;
                         }
+                    }
                     }
                 }
                 
