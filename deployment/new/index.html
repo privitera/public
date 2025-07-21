@@ -1065,10 +1065,6 @@
                 <input type="checkbox" id="matrix-volumetric">
             </div>
             <div class="control-group">
-                <label>Camera:</label>
-                <input type="checkbox" id="matrix-camera">
-            </div>
-            <div class="control-group">
                 <button id="apply-matrix-config">APPLY</button>
                 <button id="reset-matrix-config">RESET</button>
             </div>
@@ -2055,7 +2051,6 @@
         const slantSlider = document.getElementById('matrix-slant');
         const rotationSlider = document.getElementById('matrix-rotation');
         const volumetricCheck = document.getElementById('matrix-volumetric');
-        const cameraCheck = document.getElementById('matrix-camera');
         
         // Default values
         const defaults = {
@@ -2064,8 +2059,7 @@
             fallSpeed: 1,
             slant: 0,
             glyphRotation: 0,
-            volumetric: false,
-            camera: false
+            volumetric: false
         };
         
         // Current configuration
@@ -2111,9 +2105,6 @@
             if (matrixConfig.volumetric) {
                 params.push('volumetric=true');
             }
-            if (matrixConfig.camera) {
-                params.push('camera=true');
-            }
             
             if (params.length > 0) {
                 url += '?' + params.join('&');
@@ -2130,7 +2121,6 @@
             matrixConfig.slant = parseInt(slantSlider.value);
             matrixConfig.glyphRotation = parseInt(rotationSlider.value);
             matrixConfig.volumetric = volumetricCheck.checked;
-            matrixConfig.camera = cameraCheck.checked;
             
             const url = buildMatrixURL();
             urlInput.value = url;
@@ -2154,7 +2144,6 @@
             rotationSlider.value = defaults.glyphRotation;
             rotationSlider.nextElementSibling.textContent = defaults.glyphRotation + '°';
             volumetricCheck.checked = defaults.volumetric;
-            cameraCheck.checked = defaults.camera;
             
             matrixConfig = {...defaults};
             urlInput.value = buildMatrixURL();
