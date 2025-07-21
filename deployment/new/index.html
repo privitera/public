@@ -1128,19 +1128,14 @@
             }
             
             // Update and draw particles
-            // Limit visible particles for performance
-            const maxVisible = 1500;
-            const startIdx = Math.max(0, particles.length - maxVisible);
-            
-            // Update all particles
-            for (let i = startIdx; i < particles.length; i++) {
-                particles[i].update();
+            // Update only recent particles for performance (settled ones don't need updates)
+            const updateCount = Math.min(particles.length, 500);
+            for (let i = particles.length - updateCount; i < particles.length; i++) {
+                if (particles[i]) particles[i].update();
             }
             
-            // Draw visible particles
-            for (let i = startIdx; i < particles.length; i++) {
-                particles[i].draw();
-            }
+            // Draw ALL particles
+            particles.forEach(p => p.draw());
             
             // Update progress - now shows particle count instead of time
             const particleCount = particles.length;
