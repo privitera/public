@@ -1271,6 +1271,9 @@
         iframe.src = 'https://rezmason.github.io/matrix/';
         
         // Start animation with error handling
+        // TEMPORARILY DISABLED - Skip directly to main page
+        completeLoading();
+        /*
         try {
             console.log('Starting animation...');
             requestAnimationFrame(animate);
@@ -1278,6 +1281,7 @@
             console.error('Animation error:', error);
             completeLoading(); // Skip to main page on error
         }
+        */
         
         // Matrix switcher functionality
         let currentMatrixVersion = 'authentic';
