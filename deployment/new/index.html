@@ -1043,15 +1043,21 @@
                     if (Math.abs(this.vy) < 0.5) this.vy = 0;
                 }
                 
-                // Wall collisions
+                // Wall collisions with heavy damping
                 if (this.x - this.radius < 0) {
                     this.x = this.radius;
-                    this.vx *= -RESTITUTION;
+                    this.vx *= -RESTITUTION * 0.5; // Extra energy loss at walls
+                    this.vy *= 0.8; // Slow down vertical movement too
                 }
                 if (this.x + this.radius > canvas.width) {
                     this.x = canvas.width - this.radius;
-                    this.vx *= -RESTITUTION;
+                    this.vx *= -RESTITUTION * 0.5; // Extra energy loss at walls
+                    this.vy *= 0.8; // Slow down vertical movement too
                 }
+                
+                // Count nearby particles for density-based damping
+                let nearbyCount = 0;
+                const densityRadius = this.radius * 3;
                 
                 // Check collisions with other particles
                 for (let other of particles) {
@@ -1061,6 +1067,10 @@
                     const dy = this.y - other.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
                     const minDistance = this.radius + other.radius;
+                    
+                    // Count particles within density radius
+                    if (distance < densityRadius) {
+                        nearbyCount++;
                     
                     if (distance < minDistance && distance > 0) {
                         // Collision detected - separate particles
@@ -1111,8 +1121,17 @@
                 }
                 
                 // Apply damping to all velocities
-                this.vx *= DAMPING;
-                this.vy *= DAMPING;
+                // More damping in crowded areas
+                const densityDamping = Math.max(0.8, 1 - (nearbyCount * 0.02));
+                this.vx *= DAMPING * densityDamping;
+                this.vy *= DAMPING * densityDamping;
+                
+                // Wall proximity damping - slow down near walls
+                const wallDistance = Math.min(this.x, canvas.width - this.x);
+                if (wallDistance < this.radius * 3) {
+                    this.vx *= 0.9;
+                    this.vy *= 0.95;
+                }
                 
                 // Check if particle should be considered settled
                 const totalVelocity = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
