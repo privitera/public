@@ -1244,6 +1244,7 @@
         versionDiv.textContent = `SAND PHYSICS ${VERSION}`;
         loadingScreen.appendChild(versionDiv);
         
+        /* DISABLED - Part of loading screen
         // Add size control hint
         const sizeHint = document.createElement('div');
         sizeHint.style.cssText = `
@@ -1277,6 +1278,7 @@
                 particles.forEach(p => p.radius = PARTICLE_RADIUS);
             }
         });
+        */
         
         // Start loading iframe
         console.log('Sand timer v2.6-debug starting...');
