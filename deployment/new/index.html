@@ -323,14 +323,15 @@
         .step-box {
             background: rgba(0, 0, 0, 0.85);
             border: 2px solid var(--neon-cyan);
-            margin: 20px 0;
-            padding: 20px;
+            margin: 18px 0;
+            padding: 18px;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
-            max-width: 900px;
+            max-width: 810px;
             margin-left: auto;
             margin-right: auto;
+            cursor: pointer;
         }
 
         .step-box::before {
@@ -375,23 +376,28 @@
             opacity: 1;
         }
         
+        .step-box:hover .step-header {
+            color: var(--neon-cyan);
+        }
+        
         .step-box p {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             line-height: 1.5;
-            margin-bottom: 10px;
+            margin-bottom: 9px;
+            pointer-events: none;
         }
 
         .step-header {
-            font-size: 1.4rem;
-            margin-bottom: 12px;
+            font-size: 1.3rem;
+            margin-bottom: 11px;
             color: var(--neon-yellow);
             text-transform: uppercase;
             letter-spacing: 2px;
             position: relative;
-            padding-left: 25px;
-            cursor: pointer;
+            padding-left: 23px;
             user-select: none;
             transition: color 0.2s ease;
+            pointer-events: none;
         }
         
         .step-header:hover {
@@ -426,7 +432,7 @@
         }
         
         .step-box.collapsed {
-            padding: 15px 20px;
+            padding: 14px 18px;
         }
         
         .step-box.collapsed .step-header {
@@ -448,13 +454,14 @@
         .code-block {
             background: rgba(0, 20, 0, 0.8);
             border: 1px solid var(--terminal-green);
-            padding: 12px;
-            margin: 12px 0;
+            padding: 11px;
+            margin: 11px 0;
             font-family: 'Share Tech Mono', monospace;
-            font-size: 13px;
+            font-size: 12px;
             position: relative;
             overflow-x: auto;
             white-space: pre;
+            pointer-events: auto;
         }
 
         /* Removed EXECUTE:// label to fix red artifact issue */
@@ -494,11 +501,12 @@
         .info-box {
             background: rgba(0, 255, 255, 0.05);
             border-left: 3px solid var(--neon-cyan);
-            padding: 10px 15px;
-            margin: 10px 0;
+            padding: 9px 14px;
+            margin: 9px 0;
             position: relative;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--neon-cyan);
+            pointer-events: none;
         }
 
         /* Floating UI elements */
@@ -665,7 +673,7 @@
             display: none;
         }
         
-        /* Loading screen */
+        /* Digital Sand Timer Loading Screen */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -678,53 +686,151 @@
             align-items: center;
             justify-content: center;
             flex-direction: column;
+            overflow: hidden;
+            transition: opacity 0.5s ease;
         }
         
-        .loading-text {
-            color: var(--neon-cyan);
-            font-size: 1.5rem;
-            font-family: 'Share Tech Mono', monospace;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            animation: pulse 1s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-        
-        .loading-bar {
-            width: 200px;
-            height: 2px;
-            background: rgba(0, 255, 255, 0.2);
-            margin-top: 20px;
+        .sand-timer-container {
             position: relative;
+            width: 600px;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--terminal-green);
+            border-radius: 0 0 300px 300px;
+            box-shadow: 
+                0 0 30px rgba(0, 255, 0, 0.3),
+                inset 0 0 100px rgba(0, 255, 0, 0.05);
             overflow: hidden;
         }
         
-        .loading-bar::after {
-            content: '';
+        /* Canvas for particle physics */
+        #sandCanvas {
             position: absolute;
             top: 0;
-            left: -100%;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: var(--neon-cyan);
-            animation: loading-sweep 1.5s infinite;
         }
         
-        @keyframes loading-sweep {
-            0% { left: -100%; }
-            100% { left: 100%; }
+        /* Digital hourglass frame */
+        .hourglass-frame {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
+        
+        .hourglass-frame::before,
+        .hourglass-frame::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 50px;
+            background: var(--terminal-green);
+            box-shadow: 0 0 10px var(--terminal-green);
+        }
+        
+        .hourglass-frame::before {
+            top: -50px;
+        }
+        
+        .hourglass-frame::after {
+            bottom: -50px;
+        }
+        
+        /* Funnel effect at top */
+        .sand-funnel {
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 20px;
+            background: linear-gradient(to bottom, 
+                var(--dark-bg) 0%,
+                transparent 100%);
+            clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+        }
+        
+        /* Glowing particles effect */
+        @keyframes particle-glow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        .loading-info {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--terminal-green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+        
+        .loading-percentage {
+            color: var(--neon-cyan);
+            font-weight: bold;
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        .loading-status {
+            margin-top: 8px;
+            font-size: 11px;
+            opacity: 0.7;
+            animation: status-pulse 2s infinite;
+        }
+        
+        @keyframes status-pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.9; }
+        }
+        
+        /* Binary stream decoration */
+        .binary-stream {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom,
+                transparent 0%,
+                var(--terminal-green) 50%,
+                transparent 100%);
+            opacity: 0.5;
+            animation: stream-flow 2s linear infinite;
+        }
+        
+        @keyframes stream-flow {
+            from { transform: translateX(-50%) translateY(-100px); }
+            to { transform: translateX(-50%) translateY(0); }
+        }
+        
+        /* Particle styles (applied via canvas drawing) */
+        .particle-zero { color: #0077BB; }
+        .particle-one { color: #33BBEE; }
+        .particle-special { color: #FFD700; }
     </style>
 </head>
 <body>
     <!-- Loading screen -->
     <div class="loading-screen" id="loadingScreen">
-        <div class="loading-text">Initializing Matrix</div>
-        <div class="loading-bar"></div>
+        <div class="binary-stream"></div>
+        <div class="sand-timer-container">
+            <div class="sand-funnel"></div>
+            <canvas id="sandCanvas"></canvas>
+            <div class="hourglass-frame"></div>
+        </div>
+        <div class="loading-info">
+            <div>SYSTEM INITIALIZATION <span class="loading-percentage" id="loadingPercent">0%</span></div>
+            <div class="loading-status" id="loadingStatus">STREAMING BINARY DATA...</div>
+        </div>
     </div>
     
     <canvas id="matrix-bg"></canvas>
@@ -857,27 +963,245 @@
         // Ensure page starts at top on load
         window.scrollTo(0, 0);
         
-        // Handle loading screen
+        // Digital Sand Timer Loading Implementation
         const iframe = document.getElementById('rezmason-matrix');
         const loadingScreen = document.getElementById('loadingScreen');
+        const canvas = document.getElementById('sandCanvas');
+        const ctx = canvas.getContext('2d');
+        const loadingPercent = document.getElementById('loadingPercent');
+        const loadingStatus = document.getElementById('loadingStatus');
         
-        // Wait for iframe to load
+        // Set canvas size
+        canvas.width = 600;
+        canvas.height = 400;
+        
+        // Physics configuration
+        const GRAVITY = 0.3;
+        const FRICTION = 0.95;
+        const BOUNCE = 0.3;
+        const PARTICLE_SIZE = 6;
+        const SPAWN_RATE = 15; // particles per frame
+        const MAX_PARTICLES = 3000;
+        
+        // Container shape (bowl)
+        const CONTAINER_CENTER_X = canvas.width / 2;
+        const CONTAINER_BOTTOM_Y = canvas.height - 20;
+        const CONTAINER_RADIUS = 280;
+        
+        const particles = [];
+        let loadingProgress = 0;
+        let isLoading = true;
+        let particleCount = 0;
+        
+        const statusMessages = [
+            'STREAMING BINARY DATA...',
+            'COMPILING DIGITAL PARTICLES...',
+            'INITIALIZING QUANTUM FLOW...',
+            'SYNCHRONIZING BIT STREAMS...',
+            'AGGREGATING DATA STRUCTURES...',
+            'CONSTRUCTING BINARY HEAP...',
+            'OPTIMIZING PARTICLE PHYSICS...',
+            'FINALIZING SYSTEM STATE...'
+        ];
+        
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = Math.random() * 2;
+                this.char = Math.random() < 0.5 ? '0' : '1';
+                this.settled = false;
+                this.age = 0;
+                this.glowing = Math.random() < 0.1;
+                this.color = this.char === '0' ? '#0077BB' : '#33BBEE';
+                if (Math.random() < 0.02) {
+                    this.color = '#FFD700'; // Golden particle
+                    this.glowing = true;
+                }
+            }
+            
+            update() {
+                if (this.settled) {
+                    this.age++;
+                    return;
+                }
+                
+                // Apply gravity
+                this.vy += GRAVITY;
+                
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Bowl collision detection
+                const dx = this.x - CONTAINER_CENTER_X;
+                const dy = this.y - CONTAINER_BOTTOM_Y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                // Check if particle hit the bowl edge
+                if (distance > CONTAINER_RADIUS - PARTICLE_SIZE) {
+                    // Calculate normal vector
+                    const nx = dx / distance;
+                    const ny = dy / distance;
+                    
+                    // Reflect velocity
+                    const dot = this.vx * nx + this.vy * ny;
+                    this.vx -= 2 * dot * nx;
+                    this.vy -= 2 * dot * ny;
+                    
+                    // Apply bounce and friction
+                    this.vx *= BOUNCE * FRICTION;
+                    this.vy *= BOUNCE;
+                    
+                    // Push particle back inside
+                    const overlap = distance - (CONTAINER_RADIUS - PARTICLE_SIZE);
+                    this.x -= nx * overlap;
+                    this.y -= ny * overlap;
+                }
+                
+                // Floor collision (for center pile)
+                if (this.y > CONTAINER_BOTTOM_Y - PARTICLE_SIZE) {
+                    this.y = CONTAINER_BOTTOM_Y - PARTICLE_SIZE;
+                    this.vy *= -BOUNCE;
+                    this.vx *= FRICTION;
+                    
+                    // Check if particle should settle
+                    if (Math.abs(this.vy) < 0.5 && Math.abs(this.vx) < 0.5) {
+                        this.settled = true;
+                        this.vx = 0;
+                        this.vy = 0;
+                    }
+                }
+                
+                // Particle-to-particle collision (simplified)
+                for (let other of particles) {
+                    if (other === this || !other.settled) continue;
+                    
+                    const dx = this.x - other.x;
+                    const dy = this.y - other.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < PARTICLE_SIZE * 1.5) {
+                        // Simple separation
+                        this.x += dx / dist * 0.5;
+                        this.y += dy / dist * 0.5;
+                        this.vx *= FRICTION;
+                        this.vy *= -BOUNCE * 0.5;
+                        
+                        if (Math.abs(this.vy) < 1) {
+                            this.settled = true;
+                            this.vx = 0;
+                            this.vy = 0;
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            draw() {
+                ctx.save();
+                
+                // Glow effect
+                if (this.glowing) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = this.color;
+                }
+                
+                // Draw character
+                ctx.fillStyle = this.color;
+                ctx.font = `${PARTICLE_SIZE * 1.5}px 'Share Tech Mono', monospace`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.globalAlpha = this.settled ? 0.8 : 1;
+                
+                ctx.fillText(this.char, this.x, this.y);
+                
+                ctx.restore();
+            }
+        }
+        
+        function spawnParticles() {
+            for (let i = 0; i < SPAWN_RATE && particles.length < MAX_PARTICLES; i++) {
+                const x = CONTAINER_CENTER_X + (Math.random() - 0.5) * 50;
+                const y = 10;
+                particles.push(new Particle(x, y));
+                particleCount++;
+            }
+        }
+        
+        function updateProgress() {
+            const settledCount = particles.filter(p => p.settled).length;
+            loadingProgress = Math.min((settledCount / MAX_PARTICLES) * 200, 100);
+            loadingPercent.textContent = Math.floor(loadingProgress) + '%';
+            
+            // Update status message periodically
+            if (particleCount % 100 === 0) {
+                loadingStatus.textContent = statusMessages[Math.floor(Math.random() * statusMessages.length)];
+            }
+        }
+        
+        function animate() {
+            if (!isLoading) return;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw bowl outline
+            ctx.strokeStyle = 'rgba(0, 255, 0, 0.1)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(CONTAINER_CENTER_X, CONTAINER_BOTTOM_Y, CONTAINER_RADIUS, 0, Math.PI, true);
+            ctx.stroke();
+            
+            // Spawn new particles
+            if (particles.length < MAX_PARTICLES) {
+                spawnParticles();
+            }
+            
+            // Update and draw particles
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            // Update progress
+            updateProgress();
+            
+            // Check if loading complete
+            if (loadingProgress >= 100 && iframe.complete) {
+                isLoading = false;
+                setTimeout(() => {
+                    iframe.style.visibility = 'visible';
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }, 500);
+            } else {
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        // Start animation
+        requestAnimationFrame(animate);
+        
+        // Handle iframe load
         iframe.onload = function() {
-            // Give it a moment to fully render
-            setTimeout(() => {
-                iframe.style.visibility = 'visible';
-                loadingScreen.style.display = 'none';
-            }, 500);
+            // Continue animation until progress reaches 100%
         };
         
-        // Fallback in case iframe loads very quickly
+        // Fallback
         window.addEventListener('load', function() {
             setTimeout(() => {
-                if (loadingScreen.style.display !== 'none') {
+                if (loadingScreen.style.display !== 'none' && !isLoading) {
                     iframe.style.visibility = 'visible';
-                    loadingScreen.style.display = 'none';
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
                 }
-            }, 2000);
+            }, 15000); // 15 second maximum for physics sim
         });
         
         // Matrix switcher functionality
@@ -948,12 +1272,24 @@
                 });
             });
             
-            // Step box toggle functionality
+            // Step box toggle functionality - only one open at a time
             const stepBoxes = document.querySelectorAll('.step-box');
             stepBoxes.forEach(box => {
-                const header = box.querySelector('.step-header');
-                header.addEventListener('click', function() {
-                    box.classList.toggle('collapsed');
+                box.addEventListener('click', function(e) {
+                    // Don't toggle if clicking on a button or link inside
+                    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+                        return;
+                    }
+                    
+                    const wasCollapsed = this.classList.contains('collapsed');
+                    
+                    // Collapse all boxes
+                    stepBoxes.forEach(b => b.classList.add('collapsed'));
+                    
+                    // If this box was collapsed, expand it
+                    if (wasCollapsed) {
+                        this.classList.remove('collapsed');
+                    }
                 });
             });
         });
