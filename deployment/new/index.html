@@ -693,7 +693,7 @@
 </head>
 <body>
     <canvas id="matrix-bg"></canvas>
-    <iframe id="rezmason-matrix" src="https://rezmason.github.io/matrix/" frameborder="0"></iframe>
+    <iframe id="rezmason-matrix" frameborder="0" loading="lazy"></iframe>
     <!-- <div class="scanlines"></div> -->
     <div class="noise"></div>
     
@@ -703,8 +703,8 @@
             <span class="matrix-toggle">▶</span> MATRIX.VER
         </div>
         <div class="matrix-options">
-            <button class="matrix-option" data-version="custom">CUSTOM</button>
-            <button class="matrix-option active" data-version="authentic">AUTHENTIC</button>
+            <button class="matrix-option active" data-version="custom">CUSTOM</button>
+            <button class="matrix-option" data-version="authentic">AUTHENTIC</button>
             <button class="matrix-option" data-version="minimal">MINIMAL</button>
             <button class="matrix-option" data-version="off">OFF</button>
         </div>
@@ -824,9 +824,10 @@
         window.scrollTo(0, 0);
         
         // Matrix switcher functionality
-        let currentMatrixVersion = 'authentic';
+        let currentMatrixVersion = 'custom';  // Start with custom for instant loading
         let animationId = null;
         let dataStreamInterval = null;
+        let iframeLoaded = false;
         
         function switchMatrix(version) {
             // Stop current animation
@@ -868,6 +869,16 @@
                     startDataStream();
                     break;
                 case 'authentic':
+                    // Lazy load iframe source on first use
+                    if (!iframeLoaded) {
+                        iframe.src = 'https://rezmason.github.io/matrix/';
+                        iframeLoaded = true;
+                        // Show loading indicator briefly
+                        iframe.style.opacity = '0.05';
+                        iframe.onload = function() {
+                            iframe.style.opacity = '0.1';
+                        };
+                    }
                     iframe.style.display = 'block';
                     iframe.style.opacity = '0.1';
                     dataStream.style.display = 'block';
@@ -934,7 +945,7 @@
             const matrixArray = matrix.split("");
             
             const fontSize = 10;
-            const columns = canvas.width / fontSize;
+            const columns = Math.min(canvas.width / fontSize, 200); // Cap columns for performance
             
             const drops = [];
             for(let x = 0; x < columns; x++) {
@@ -1038,8 +1049,8 @@
             animationId = requestAnimationFrame(drawMinimal);
         }
         
-        // Initialize with authentic matrix
-        switchMatrix('authentic');
+        // Initialize with custom matrix for instant loading
+        switchMatrix('custom');
         
         // Randomized ASCII glitch effect
         function createRandomGlitch() {
