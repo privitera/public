@@ -832,6 +832,132 @@
         .particle-zero { color: #0077BB; }
         .particle-one { color: #33BBEE; }
         .particle-special { color: #FFD700; }
+        
+        /* Secret Matrix Control Panel */
+        #matrix-control-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 20px;
+            z-index: 10000;
+            min-width: 400px;
+            box-shadow: 0 0 40px var(--neon-cyan);
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        .control-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--neon-cyan);
+            padding-bottom: 10px;
+        }
+        
+        .control-panel-header h3 {
+            color: var(--neon-cyan);
+            margin: 0;
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        .close-panel {
+            background: none;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 8px;
+            transition: all 0.3s;
+        }
+        
+        .close-panel:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-group label {
+            color: var(--neon-green);
+            min-width: 120px;
+            text-align: right;
+        }
+        
+        .control-group input[type="range"] {
+            flex: 1;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-green));
+            height: 4px;
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--neon-yellow);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--neon-yellow);
+        }
+        
+        .control-group select {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 5px 10px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        
+        .control-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .control-group button {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 8px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        
+        .control-group button:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+        
+        .value-display {
+            color: var(--neon-yellow);
+            min-width: 50px;
+            text-align: left;
+        }
+        
+        #matrix-url {
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-green);
+            padding: 5px;
+            font-family: inherit;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -865,6 +991,62 @@
     </div>
     <div class="ac-interference"></div>
     <div class="beat-interference"></div>
+    
+    <!-- Secret Matrix Control Panel -->
+    <div id="matrix-control-panel" style="display: none;">
+        <div class="control-panel-header">
+            <h3>MATRIX.CONFIG</h3>
+            <button class="close-panel">×</button>
+        </div>
+        <div class="control-panel-content">
+            <div class="control-group">
+                <label>Version:</label>
+                <select id="matrix-version">
+                    <option value="classic">Classic</option>
+                    <option value="megacity">Megacity</option>
+                    <option value="operator">Operator</option>
+                    <option value="nightmare">Nightmare</option>
+                    <option value="paradise">Paradise</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>Columns:</label>
+                <input type="range" id="matrix-columns" min="20" max="200" value="100">
+                <span class="value-display">100</span>
+            </div>
+            <div class="control-group">
+                <label>Fall Speed:</label>
+                <input type="range" id="matrix-speed" min="-2" max="2" step="0.1" value="1">
+                <span class="value-display">1.0</span>
+            </div>
+            <div class="control-group">
+                <label>Slant:</label>
+                <input type="range" id="matrix-slant" min="-500" max="500" value="0">
+                <span class="value-display">0</span>
+            </div>
+            <div class="control-group">
+                <label>Glyph Rotation:</label>
+                <input type="range" id="matrix-rotation" min="0" max="360" value="0">
+                <span class="value-display">0°</span>
+            </div>
+            <div class="control-group">
+                <label>Volumetric:</label>
+                <input type="checkbox" id="matrix-volumetric">
+            </div>
+            <div class="control-group">
+                <label>Camera:</label>
+                <input type="checkbox" id="matrix-camera">
+            </div>
+            <div class="control-group">
+                <button id="apply-matrix-config">APPLY</button>
+                <button id="reset-matrix-config">RESET</button>
+            </div>
+            <div class="control-group">
+                <label>URL:</label>
+                <input type="text" id="matrix-url" readonly style="width: 100%;">
+            </div>
+        </div>
+    </div>
     
     <!-- Dynamic Glitch lines -->
     <div class="glitch-wrapper" id="glitchContainer">
@@ -1810,6 +1992,147 @@
                 window.scrollTo(0, 0);
             }, 100);
         });
+        
+        // Secret Matrix Control Panel functionality
+        const controlPanel = document.getElementById('matrix-control-panel');
+        const closeBtn = document.querySelector('.close-panel');
+        const applyBtn = document.getElementById('apply-matrix-config');
+        const resetBtn = document.getElementById('reset-matrix-config');
+        const urlInput = document.getElementById('matrix-url');
+        
+        // Control inputs
+        const versionSelect = document.getElementById('matrix-version');
+        const columnsSlider = document.getElementById('matrix-columns');
+        const speedSlider = document.getElementById('matrix-speed');
+        const slantSlider = document.getElementById('matrix-slant');
+        const rotationSlider = document.getElementById('matrix-rotation');
+        const volumetricCheck = document.getElementById('matrix-volumetric');
+        const cameraCheck = document.getElementById('matrix-camera');
+        
+        // Default values
+        const defaults = {
+            version: 'classic',
+            numColumns: 100,
+            fallSpeed: 1,
+            slant: 0,
+            glyphRotation: 0,
+            volumetric: false,
+            camera: false
+        };
+        
+        // Current configuration
+        let matrixConfig = {...defaults};
+        
+        // Update value displays
+        columnsSlider.addEventListener('input', (e) => {
+            e.target.nextElementSibling.textContent = e.target.value;
+        });
+        
+        speedSlider.addEventListener('input', (e) => {
+            e.target.nextElementSibling.textContent = parseFloat(e.target.value).toFixed(1);
+        });
+        
+        slantSlider.addEventListener('input', (e) => {
+            e.target.nextElementSibling.textContent = e.target.value;
+        });
+        
+        rotationSlider.addEventListener('input', (e) => {
+            e.target.nextElementSibling.textContent = e.target.value + '°';
+        });
+        
+        // Build URL from configuration
+        function buildMatrixURL() {
+            let url = 'https://rezmason.github.io/matrix/';
+            const params = [];
+            
+            if (matrixConfig.version !== 'classic') {
+                params.push(`version=${matrixConfig.version}`);
+            }
+            if (matrixConfig.numColumns !== 100) {
+                params.push(`numColumns=${matrixConfig.numColumns}`);
+            }
+            if (matrixConfig.fallSpeed !== 1) {
+                params.push(`fallSpeed=${matrixConfig.fallSpeed}`);
+            }
+            if (matrixConfig.slant !== 0) {
+                params.push(`slant=${matrixConfig.slant}`);
+            }
+            if (matrixConfig.glyphRotation !== 0) {
+                params.push(`glyphRotation=${matrixConfig.glyphRotation}`);
+            }
+            if (matrixConfig.volumetric) {
+                params.push('volumetric=true');
+            }
+            if (matrixConfig.camera) {
+                params.push('camera=true');
+            }
+            
+            if (params.length > 0) {
+                url += '?' + params.join('&');
+            }
+            
+            return url;
+        }
+        
+        // Apply configuration
+        function applyConfig() {
+            matrixConfig.version = versionSelect.value;
+            matrixConfig.numColumns = parseInt(columnsSlider.value);
+            matrixConfig.fallSpeed = parseFloat(speedSlider.value);
+            matrixConfig.slant = parseInt(slantSlider.value);
+            matrixConfig.glyphRotation = parseInt(rotationSlider.value);
+            matrixConfig.volumetric = volumetricCheck.checked;
+            matrixConfig.camera = cameraCheck.checked;
+            
+            const url = buildMatrixURL();
+            urlInput.value = url;
+            
+            // Apply to iframe if AUTHENTIC is active
+            if (currentMatrixVersion === 'authentic') {
+                const iframe = document.getElementById('rezmason-matrix');
+                iframe.src = url;
+            }
+        }
+        
+        // Reset to defaults
+        function resetConfig() {
+            versionSelect.value = defaults.version;
+            columnsSlider.value = defaults.numColumns;
+            columnsSlider.nextElementSibling.textContent = defaults.numColumns;
+            speedSlider.value = defaults.fallSpeed;
+            speedSlider.nextElementSibling.textContent = defaults.fallSpeed.toFixed(1);
+            slantSlider.value = defaults.slant;
+            slantSlider.nextElementSibling.textContent = defaults.slant;
+            rotationSlider.value = defaults.glyphRotation;
+            rotationSlider.nextElementSibling.textContent = defaults.glyphRotation + '°';
+            volumetricCheck.checked = defaults.volumetric;
+            cameraCheck.checked = defaults.camera;
+            
+            matrixConfig = {...defaults};
+            urlInput.value = buildMatrixURL();
+        }
+        
+        // Event listeners
+        applyBtn.addEventListener('click', applyConfig);
+        resetBtn.addEventListener('click', resetConfig);
+        closeBtn.addEventListener('click', () => {
+            controlPanel.style.display = 'none';
+        });
+        
+        // Secret key combination to open panel: Ctrl+Shift+M
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+                e.preventDefault();
+                controlPanel.style.display = controlPanel.style.display === 'none' ? 'block' : 'none';
+                if (controlPanel.style.display === 'block') {
+                    // Update URL display
+                    urlInput.value = buildMatrixURL();
+                }
+            }
+        });
+        
+        // Initialize URL display
+        resetConfig();
     </script>
 </body>
 </html>
