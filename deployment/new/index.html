@@ -975,7 +975,7 @@
         const loadingStatus = document.getElementById('loadingStatus');
         
         // Configuration
-        let PARTICLE_RADIUS = 4; // Treat as circles (now adjustable)
+        let PARTICLE_RADIUS = 25; // Start with much larger particles
         const SPAWN_DELAY = 30; // ms between spawns
         const GRAVITY = 0.4;
         const FRICTION = 0.8;
@@ -1127,20 +1127,11 @@
                 lastSpawnTime = currentTime;
             }
             
-            // Update and draw particles
-            // Limit visible particles for performance
-            const maxVisible = 1500;
-            const startIdx = Math.max(0, particles.length - maxVisible);
-            
-            // Update all particles
-            for (let i = startIdx; i < particles.length; i++) {
-                particles[i].update();
-            }
-            
-            // Draw visible particles
-            for (let i = startIdx; i < particles.length; i++) {
-                particles[i].draw();
-            }
+            // Update and draw ALL particles - no limits
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
             
             // Update progress - now shows particle count instead of time
             const particleCount = particles.length;
@@ -1195,7 +1186,7 @@
             font-size: 11px;
             text-align: right;
         `;
-        sizeHint.innerHTML = '[+/-] PARTICLE SIZE<br><span id="sizeDisplay">SIZE: 4</span>';
+        sizeHint.innerHTML = '[+/-] PARTICLE SIZE<br>[SHIFT +/-] LARGE STEPS<br><span id="sizeDisplay">SIZE: 25</span>';
         loadingScreen.appendChild(sizeHint);
         const sizeDisplay = document.getElementById('sizeDisplay');
         
@@ -1204,12 +1195,14 @@
             if (!isRunning) return;
             
             if (e.key === '+' || e.key === '=') {
-                PARTICLE_RADIUS = Math.min(PARTICLE_RADIUS + 1, 15);
+                const increment = e.shiftKey ? 10 : 1;
+                PARTICLE_RADIUS = Math.min(PARTICLE_RADIUS + increment, 100);
                 sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
                 // Update existing particles
                 particles.forEach(p => p.radius = PARTICLE_RADIUS);
             } else if (e.key === '-' || e.key === '_') {
-                PARTICLE_RADIUS = Math.max(PARTICLE_RADIUS - 1, 2);
+                const decrement = e.shiftKey ? 10 : 1;
+                PARTICLE_RADIUS = Math.max(PARTICLE_RADIUS - decrement, 2);
                 sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
                 // Update existing particles
                 particles.forEach(p => p.radius = PARTICLE_RADIUS);
