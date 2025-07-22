@@ -1213,7 +1213,7 @@
         const VERSION = "v2.6-debug"; // Debug version
         let PARTICLE_RADIUS = 25; // Start with much larger particles
         const SPAWN_DELAY = 30; // ms between spawns
-        const GRAVITY = 0.4;
+        const GRAVITY = 0.8; // Increased gravity for more realistic falling
         const FRICTION = 0.1; // EXTREME friction
         const RESTITUTION = 0.001; // Virtually no bounce
         const DAMPING = 0.85; // VERY heavy velocity damping each frame
@@ -1412,11 +1412,23 @@
                 lastSpawnTime = currentTime;
             }
             
-            // Update and draw ALL particles - no limits
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            // Update and draw particles with performance limits
+            const maxVisibleParticles = 2000; // Limit for performance
+            
+            // Update all particles
+            particles.forEach(p => p.update());
+            
+            // Draw only visible particles (most recent ones)
+            const startIdx = Math.max(0, particles.length - maxVisibleParticles);
+            for (let i = startIdx; i < particles.length; i++) {
+                particles[i].draw();
+            }
+            
+            // Clean up very old particles that are settled and off-screen
+            if (particles.length > maxVisibleParticles * 1.5) {
+                const toRemove = particles.length - maxVisibleParticles;
+                particles.splice(0, toRemove);
+            }
             
             // Update progress - now shows particle count instead of time
             const particleCount = particles.length;
@@ -2275,6 +2287,17 @@
             };
             loadingScreen.addEventListener('click', clickHandler);
             
+            // Function to unsettle particles when size changes
+            const relaxParticles = () => {
+                particles.forEach(p => {
+                    if (p.isSettled && p.y < canvas.height - p.radius - 10) {
+                        // Unsettle particles that are now floating
+                        p.isSettled = false;
+                        p.vy = 0.1; // Small downward velocity to restart falling
+                    }
+                });
+            };
+            
             // Keyboard controls for particle size
             const keyHandler = (e) => {
                 if (!isRunning || !sandTimerActive) return;
@@ -2284,11 +2307,13 @@
                     PARTICLE_RADIUS = Math.min(PARTICLE_RADIUS + increment, 100);
                     sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
                     particles.forEach(p => p.radius = PARTICLE_RADIUS);
+                    relaxParticles();
                 } else if (e.key === '-' || e.key === '_') {
                     const decrement = e.shiftKey ? 10 : 1;
                     PARTICLE_RADIUS = Math.max(PARTICLE_RADIUS - decrement, 2);
                     sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
                     particles.forEach(p => p.radius = PARTICLE_RADIUS);
+                    relaxParticles();
                 }
             };
             document.addEventListener('keydown', keyHandler);
