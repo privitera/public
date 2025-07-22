@@ -721,6 +721,29 @@
             text-shadow: 0 0 5px var(--neon-pink);
             box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
         }
+        
+        .matrix-terminal-btn {
+            display: block;
+            background: transparent;
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 4px 8px;
+            margin: 2px 0;
+            font-size: 9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Share Tech Mono', monospace;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .matrix-terminal-btn:hover {
+            background: var(--neon-green);
+            color: #000;
+            text-shadow: 0 0 5px var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+        }
 
         .matrix-option:hover:not(.active) {
             border-color: var(--neon-cyan);
@@ -1047,8 +1070,9 @@
             <button class="matrix-option" data-version="off">OFF</button>
             <button class="matrix-config-btn" style="margin-top: 10px; width: 100%;">CONFIG</button>
             <button class="matrix-sand-btn" style="margin-top: 5px; width: 100%;">SAND</button>
+            <button class="matrix-terminal-btn" style="margin-top: 5px; width: 100%;">TERM</button>
             <div style="font-size: 10px; color: var(--neon-cyan); opacity: 0.5; margin-top: 10px; text-align: center; line-height: 1.4;">
-                [CTRL+SHIFT+M]<br>[CTRL+SHIFT+S]
+                [CTRL+SHIFT+M]<br>[CTRL+SHIFT+S]<br>[CTRL+SHIFT+T]
             </div>
         </div>
     </div>
@@ -1237,10 +1261,10 @@
         const loadingStatus = document.getElementById('loadingStatus');
         
         // Configuration
-        const VERSION = "v2.6-debug"; // Debug version
+        const VERSION = "v2.7-fixed"; // Fixed physics version
         let PARTICLE_RADIUS = 25; // Start with much larger particles
         const SPAWN_DELAY = 30; // ms between spawns
-        const GRAVITY = 0.8; // Increased gravity for more realistic falling
+        const GRAVITY = 1.2; // Much faster falling
         const FRICTION = 0.1; // EXTREME friction
         const RESTITUTION = 0.001; // Virtually no bounce
         const DAMPING = 0.85; // VERY heavy velocity damping each frame
@@ -1297,8 +1321,10 @@
                 this.y += this.vy;
                 
                 // Floor collision with strong damping
-                if (this.y + this.radius > canvas.height) {
-                    this.y = canvas.height - this.radius;
+                // Use actual text height for proper floor collision
+                const textBuffer = this.radius * 0.7; // Text sits slightly above geometric center
+                if (this.y + textBuffer > canvas.height) {
+                    this.y = canvas.height - textBuffer;
                     this.vy *= -RESTITUTION * 0.3;  // Very little bounce
                     this.vx *= FRICTION * 0.7;  // Strong friction on ground contact
                     
@@ -1416,6 +1442,9 @@
                 ctx.font = `${this.radius * 2}px monospace`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
+                // Account for text metrics - characters have actual height
+                const metrics = ctx.measureText(this.char);
+                const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
                 ctx.fillText(this.char, this.x, this.y);
             }
         }
@@ -2294,7 +2323,7 @@
                     font-family: monospace;
                     font-size: 10px;
                 `;
-                versionDiv.textContent = `SAND PHYSICS v2.6`;
+                versionDiv.textContent = `SAND PHYSICS ${VERSION}`;
                 loadingScreen.appendChild(versionDiv);
                 
                 // Add size control hint
