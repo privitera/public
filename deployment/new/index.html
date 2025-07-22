@@ -744,6 +744,29 @@
             text-shadow: 0 0 5px var(--neon-green);
             box-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
         }
+        
+        .matrix-physics-btn {
+            display: block;
+            background: transparent;
+            border: 1px solid var(--neon-red);
+            color: var(--neon-red);
+            padding: 4px 8px;
+            margin: 2px 0;
+            font-size: 9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Share Tech Mono', monospace;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .matrix-physics-btn:hover {
+            background: var(--neon-red);
+            color: #000;
+            text-shadow: 0 0 5px var(--neon-red);
+            box-shadow: 0 0 10px var(--neon-red), 0 0 20px var(--neon-red);
+        }
 
         .matrix-option:hover:not(.active) {
             border-color: var(--neon-cyan);
@@ -1052,6 +1075,14 @@
         </div>
     </div>
     
+    <!-- Alternative loading screens container -->
+    <div id="alt-loading-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 9999; background: #000;">
+        <!-- Terminal loader -->
+        <div id="terminal-loader" style="display: none; width: 100%; height: 100%;"></div>
+        <!-- Physics loader -->
+        <div id="physics-loader" style="display: none; width: 100%; height: 100%;"></div>
+    </div>
+    
     <canvas id="matrix-bg"></canvas>
     <!-- Iframe lazy-loaded only when needed -->
     <iframe id="rezmason-matrix" frameborder="0" style="visibility: hidden; display: none;"></iframe>
@@ -1071,8 +1102,9 @@
             <button class="matrix-config-btn" style="margin-top: 10px; width: 100%;">CONFIG</button>
             <button class="matrix-sand-btn" style="margin-top: 5px; width: 100%;">SAND</button>
             <button class="matrix-terminal-btn" style="margin-top: 5px; width: 100%;">TERM</button>
+            <button class="matrix-physics-btn" style="margin-top: 5px; width: 100%;">PHYS</button>
             <div style="font-size: 10px; color: var(--neon-cyan); opacity: 0.5; margin-top: 10px; text-align: center; line-height: 1.4;">
-                [CTRL+SHIFT+M]<br>[CTRL+SHIFT+S]<br>[CTRL+SHIFT+T]
+                [CTRL+SHIFT+M]<br>[CTRL+SHIFT+S]<br>[CTRL+SHIFT+T]<br>[CTRL+SHIFT+P]
             </div>
         </div>
     </div>
@@ -1651,6 +1683,8 @@
             const options = switcher.querySelectorAll('.matrix-option');
             const configBtn = document.querySelector('.matrix-config-btn');
             const sandBtn = document.querySelector('.matrix-sand-btn');
+            const termBtn = document.querySelector('.matrix-terminal-btn');
+            const physBtn = document.querySelector('.matrix-physics-btn');
             
             // Toggle collapsed state
             title.addEventListener('click', function(e) {
@@ -1676,6 +1710,20 @@
             sandBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 startSandTimer();
+                switcher.classList.add('collapsed');
+            });
+            
+            // Terminal button launches terminal loader
+            termBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                startTerminalLoader();
+                switcher.classList.add('collapsed');
+            });
+            
+            // Physics button launches Matter.js loader
+            physBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                startPhysicsLoader();
                 switcher.classList.add('collapsed');
             });
             
@@ -2267,6 +2315,16 @@
                 e.preventDefault();
                 startSandTimer();
             }
+            // Ctrl+Shift+T for Terminal loader
+            else if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+                e.preventDefault();
+                startTerminalLoader();
+            }
+            // Ctrl+Shift+P for Physics loader
+            else if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+                e.preventDefault();
+                startPhysicsLoader();
+            }
         });
         
         // Initialize URL display
@@ -2402,6 +2460,268 @@
         }
         
         sandTimerBtn.addEventListener('click', startSandTimer);
+        
+        // Terminal Loader Implementation
+        function startTerminalLoader() {
+            const container = document.getElementById('alt-loading-container');
+            const terminalDiv = document.getElementById('terminal-loader');
+            
+            // Show containers
+            container.style.display = 'block';
+            terminalDiv.style.display = 'block';
+            
+            // Clear previous content
+            terminalDiv.innerHTML = `
+                <div style="width: 80%; max-width: 800px; margin: 50px auto; color: var(--neon-green); font-family: 'Share Tech Mono', monospace;">
+                    <div style="border: 2px solid var(--neon-green); padding: 20px; background: rgba(0, 20, 0, 0.9); box-shadow: 0 0 30px var(--neon-green);">
+                        <div style="margin-bottom: 20px; font-size: 14px; color: var(--neon-cyan);">[SYSTEM BOOT SEQUENCE INITIATED]</div>
+                        <div id="terminal-output" style="font-size: 12px; line-height: 1.6;"></div>
+                        <div id="terminal-cursor" style="display: inline-block; width: 10px; height: 16px; background: var(--neon-green); animation: blink 1s infinite;"></div>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px; opacity: 0.5; font-size: 12px;">[CLICK TO SKIP]</div>
+                </div>
+                <style>
+                    @keyframes blink {
+                        0%, 50% { opacity: 1; }
+                        51%, 100% { opacity: 0; }
+                    }
+                </style>
+            `;
+            
+            // Terminal commands to type
+            const commands = [
+                { text: '> Initializing quantum matrix processor...', delay: 0, color: 'var(--neon-cyan)' },
+                { text: '[OK] Quantum entanglement established', delay: 1500, color: 'var(--neon-green)' },
+                { text: '> Loading neural network drivers...', delay: 500, color: 'var(--neon-cyan)' },
+                { text: '[....    ] 25%', delay: 400, color: 'var(--neon-yellow)' },
+                { text: '[......  ] 50%', delay: 400, color: 'var(--neon-yellow)', replace: true },
+                { text: '[....... ] 75%', delay: 400, color: 'var(--neon-yellow)', replace: true },
+                { text: '[........] 100%', delay: 400, color: 'var(--neon-green)', replace: true },
+                { text: '> Establishing secure connection to mainframe...', delay: 600, color: 'var(--neon-cyan)' },
+                { text: '[WARNING] Firewall breach detected', delay: 1200, color: 'var(--neon-red)' },
+                { text: '> Activating countermeasures...', delay: 500, color: 'var(--neon-cyan)' },
+                { text: '[OK] Threat neutralized', delay: 1000, color: 'var(--neon-green)' },
+                { text: '> Compiling deployment protocols...', delay: 600, color: 'var(--neon-cyan)' },
+                { text: '> Synchronizing distributed nodes...', delay: 800, color: 'var(--neon-cyan)' },
+                { text: '[OK] All systems operational', delay: 1000, color: 'var(--neon-green)' },
+                { text: '', delay: 500 },
+                { text: 'SYSTEM READY', delay: 500, color: 'var(--neon-yellow)', centered: true }
+            ];
+            
+            const output = document.getElementById('terminal-output');
+            const cursor = document.getElementById('terminal-cursor');
+            let commandIndex = 0;
+            let charIndex = 0;
+            let currentLine = null;
+            let isTyping = true;
+            
+            function typeCommand() {
+                if (!isTyping) return;
+                
+                if (commandIndex >= commands.length) {
+                    // All done - wait a moment then close
+                    setTimeout(() => {
+                        if (isTyping) closeTerminalLoader();
+                    }, 2000);
+                    return;
+                }
+                
+                const command = commands[commandIndex];
+                
+                if (charIndex === 0) {
+                    // Start new line
+                    if (command.replace && currentLine) {
+                        currentLine.textContent = '';
+                    } else {
+                        currentLine = document.createElement('div');
+                        if (command.centered) {
+                            currentLine.style.textAlign = 'center';
+                            currentLine.style.fontSize = '20px';
+                            currentLine.style.marginTop = '20px';
+                        }
+                        output.appendChild(currentLine);
+                    }
+                    currentLine.style.color = command.color || 'var(--neon-green)';
+                }
+                
+                if (charIndex < command.text.length) {
+                    currentLine.textContent += command.text[charIndex];
+                    charIndex++;
+                    setTimeout(typeCommand, 20 + Math.random() * 30); // Typing speed variation
+                } else {
+                    // Line complete
+                    charIndex = 0;
+                    commandIndex++;
+                    setTimeout(typeCommand, command.delay || 100);
+                }
+            }
+            
+            // Start typing
+            setTimeout(typeCommand, 500);
+            
+            // Click to close
+            function closeTerminalLoader() {
+                isTyping = false;
+                terminalDiv.style.opacity = '0';
+                terminalDiv.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    terminalDiv.style.display = 'none';
+                    container.style.display = 'none';
+                    terminalDiv.style.opacity = '1';
+                    terminalDiv.innerHTML = '';
+                }, 500);
+            }
+            
+            container.addEventListener('click', closeTerminalLoader);
+        }
+        
+        // Physics Loader Implementation (Matter.js)
+        function startPhysicsLoader() {
+            const container = document.getElementById('alt-loading-container');
+            const physicsDiv = document.getElementById('physics-loader');
+            
+            // Show containers
+            container.style.display = 'block';
+            physicsDiv.style.display = 'block';
+            
+            // Create canvas for Matter.js
+            physicsDiv.innerHTML = `
+                <canvas id="matter-canvas" style="width: 100%; height: 100%;"></canvas>
+                <div style="position: absolute; top: 20px; left: 20px; color: var(--neon-cyan); font-family: 'Share Tech Mono', monospace; font-size: 12px;">
+                    MATTER.JS PHYSICS v0.19<br>
+                    <span style="color: var(--neon-yellow);">[CLICK TO SKIP]</span>
+                </div>
+                <div style="position: absolute; bottom: 20px; right: 20px; color: var(--neon-green); font-family: 'Share Tech Mono', monospace; font-size: 11px;">
+                    PARTICLES: <span id="particle-count">0</span>
+                </div>
+            `;
+            
+            // Load Matter.js dynamically
+            if (!window.Matter) {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js';
+                script.onload = () => initMatterPhysics();
+                document.head.appendChild(script);
+            } else {
+                initMatterPhysics();
+            }
+            
+            function initMatterPhysics() {
+                const canvas = document.getElementById('matter-canvas');
+                const Engine = Matter.Engine,
+                    Render = Matter.Render,
+                    World = Matter.World,
+                    Bodies = Matter.Bodies,
+                    Body = Matter.Body,
+                    Events = Matter.Events;
+                
+                // Create engine
+                const engine = Engine.create();
+                engine.world.gravity.y = 1;
+                
+                // Create renderer
+                const render = Render.create({
+                    canvas: canvas,
+                    engine: engine,
+                    options: {
+                        width: window.innerWidth,
+                        height: window.innerHeight,
+                        wireframes: false,
+                        background: 'transparent'
+                    }
+                });
+                
+                // Create walls
+                const walls = [
+                    Bodies.rectangle(window.innerWidth/2, window.innerHeight + 25, window.innerWidth, 50, { 
+                        isStatic: true,
+                        render: { fillStyle: 'transparent' }
+                    }),
+                    Bodies.rectangle(-25, window.innerHeight/2, 50, window.innerHeight, { 
+                        isStatic: true,
+                        render: { fillStyle: 'transparent' }
+                    }),
+                    Bodies.rectangle(window.innerWidth + 25, window.innerHeight/2, 50, window.innerHeight, { 
+                        isStatic: true,
+                        render: { fillStyle: 'transparent' }
+                    })
+                ];
+                World.add(engine.world, walls);
+                
+                // Particle counter
+                let particleCount = 0;
+                const countDisplay = document.getElementById('particle-count');
+                
+                // Create particles
+                const particles = [];
+                const colors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00'];
+                
+                const spawnParticle = () => {
+                    if (particleCount < 200) { // Limit particles for performance
+                        const size = 10 + Math.random() * 20;
+                        const particle = Bodies.circle(
+                            window.innerWidth/2 + (Math.random() - 0.5) * 100,
+                            -50,
+                            size,
+                            {
+                                restitution: 0.6,
+                                friction: 0.1,
+                                density: 0.01,
+                                render: {
+                                    fillStyle: colors[Math.floor(Math.random() * colors.length)],
+                                    strokeStyle: 'transparent'
+                                }
+                            }
+                        );
+                        
+                        // Add glow effect
+                        particle.render.sprite = {
+                            texture: 'data:image/svg+xml;base64,' + btoa(`
+                                <svg width="${size*4}" height="${size*4}" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <radialGradient id="glow">
+                                            <stop offset="0%" style="stop-color:${particle.render.fillStyle};stop-opacity:1" />
+                                            <stop offset="50%" style="stop-color:${particle.render.fillStyle};stop-opacity:0.5" />
+                                            <stop offset="100%" style="stop-color:${particle.render.fillStyle};stop-opacity:0" />
+                                        </radialGradient>
+                                    </defs>
+                                    <circle cx="${size*2}" cy="${size*2}" r="${size*2}" fill="url(#glow)" />
+                                </svg>
+                            `)
+                        };
+                        
+                        particles.push(particle);
+                        World.add(engine.world, particle);
+                        particleCount++;
+                        countDisplay.textContent = particleCount;
+                    }
+                };
+                
+                // Spawn particles over time
+                const spawnInterval = setInterval(spawnParticle, 100);
+                
+                // Run engine
+                Engine.run(engine);
+                Render.run(render);
+                
+                // Click to close
+                function closePhysicsLoader() {
+                    clearInterval(spawnInterval);
+                    Render.stop(render);
+                    Engine.clear(engine);
+                    physicsDiv.style.opacity = '0';
+                    physicsDiv.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        physicsDiv.style.display = 'none';
+                        container.style.display = 'none';
+                        physicsDiv.style.opacity = '1';
+                        physicsDiv.innerHTML = '';
+                    }, 500);
+                }
+                
+                container.addEventListener('click', closePhysicsLoader);
+            }
+        }
     </script>
 </body>
 </html>
