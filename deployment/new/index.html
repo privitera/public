@@ -1271,7 +1271,7 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
         
-        // Particle class with circular physics
+        // Particle class with rectangular bounding box physics
         class SandParticle {
             constructor() {
                 this.x = canvas.width / 2 + (Math.random() - 0.5) * 2;
@@ -1279,6 +1279,9 @@
                 this.vx = 0;
                 this.vy = 0;
                 this.radius = PARTICLE_RADIUS;
+                // Character bounding box is roughly square
+                this.width = PARTICLE_RADIUS * 1.2;  // Characters are wider than radius
+                this.height = PARTICLE_RADIUS * 1.8; // Characters are taller
                 this.char = Math.random() < 0.5 ? '0' : '1';
                 this.color = this.char === '0' ? '#0077BB' : '#33BBEE';
                 if (Math.random() < 0.01) this.color = '#FFD700';
@@ -1297,8 +1300,8 @@
                 this.y += this.vy;
                 
                 // Floor collision with strong damping
-                if (this.y + this.radius > canvas.height) {
-                    this.y = canvas.height - this.radius;
+                if (this.y + this.height/2 > canvas.height) {
+                    this.y = canvas.height - this.height/2;
                     this.vy *= -RESTITUTION * 0.3;  // Very little bounce
                     this.vx *= FRICTION * 0.7;  // Strong friction on ground contact
                     
@@ -1307,13 +1310,13 @@
                 }
                 
                 // Wall collisions with heavy damping
-                if (this.x - this.radius < 0) {
-                    this.x = this.radius;
+                if (this.x - this.width/2 < 0) {
+                    this.x = this.width/2;
                     this.vx *= -RESTITUTION * 0.5; // Extra energy loss at walls
                     this.vy *= 0.8; // Slow down vertical movement too
                 }
-                if (this.x + this.radius > canvas.width) {
-                    this.x = canvas.width - this.radius;
+                if (this.x + this.width/2 > canvas.width) {
+                    this.x = canvas.width - this.width/2;
                     this.vx *= -RESTITUTION * 0.5; // Extra energy loss at walls
                     this.vy *= 0.8; // Slow down vertical movement too
                 }
@@ -1322,31 +1325,40 @@
                 let nearbyCount = 0;
                 const densityRadius = this.radius * 3;
                 
-                // Check collisions with other particles
+                // Check collisions with other particles using bounding boxes
                 for (let other of particles) {
                     if (other === this) continue;
                     
                     const dx = this.x - other.x;
                     const dy = this.y - other.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    const minDistance = this.radius + other.radius;
                     
                     // Count particles within density radius
                     if (distance < densityRadius) {
                         nearbyCount++;
                     }
                     
-                    if (distance < minDistance && distance > 0) {
-                        // Collision detected - separate particles
-                        const overlap = minDistance - distance;
-                        const separationX = (dx / distance) * overlap * 0.5;
-                        const separationY = (dy / distance) * overlap * 0.5;
+                    // Check bounding box collision
+                    const xOverlap = Math.abs(dx) < (this.width + other.width) / 2;
+                    const yOverlap = Math.abs(dy) < (this.height + other.height) / 2;
+                    
+                    if (xOverlap && yOverlap) {
+                        // Calculate overlap amounts
+                        const xOverlapAmount = (this.width + other.width) / 2 - Math.abs(dx);
+                        const yOverlapAmount = (this.height + other.height) / 2 - Math.abs(dy);
                         
-                        // Move particles apart
-                        this.x += separationX;
-                        this.y += separationY;
-                        other.x -= separationX;
-                        other.y -= separationY;
+                        // Separate along the axis with smallest overlap
+                        if (xOverlapAmount < yOverlapAmount) {
+                            // Separate horizontally
+                            const separationX = xOverlapAmount * 0.5 * Math.sign(dx);
+                            this.x += separationX;
+                            other.x -= separationX;
+                        } else {
+                            // Separate vertically
+                            const separationY = yOverlapAmount * 0.5 * Math.sign(dy);
+                            this.y += separationY;
+                            other.y -= separationY;
+                        }
                         
                         // Calculate relative velocity
                         const vxRel = this.vx - other.vx;
@@ -2331,7 +2343,7 @@
             // Function to unsettle particles when size changes
             const relaxParticles = () => {
                 particles.forEach(p => {
-                    if (p.isSettled && p.y < canvas.height - p.radius - 10) {
+                    if (p.isSettled && p.y < canvas.height - p.height/2 - 10) {
                         // Unsettle particles that are now floating
                         p.isSettled = false;
                         p.vy = 0.1; // Small downward velocity to restart falling
@@ -2347,13 +2359,21 @@
                     const increment = e.shiftKey ? 10 : 1;
                     PARTICLE_RADIUS = Math.min(PARTICLE_RADIUS + increment, 100);
                     sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
-                    particles.forEach(p => p.radius = PARTICLE_RADIUS);
+                    particles.forEach(p => {
+                        p.radius = PARTICLE_RADIUS;
+                        p.width = PARTICLE_RADIUS * 1.2;
+                        p.height = PARTICLE_RADIUS * 1.8;
+                    });
                     relaxParticles();
                 } else if (e.key === '-' || e.key === '_') {
                     const decrement = e.shiftKey ? 10 : 1;
                     PARTICLE_RADIUS = Math.max(PARTICLE_RADIUS - decrement, 2);
                     sizeDisplay.textContent = `SIZE: ${PARTICLE_RADIUS}`;
-                    particles.forEach(p => p.radius = PARTICLE_RADIUS);
+                    particles.forEach(p => {
+                        p.radius = PARTICLE_RADIUS;
+                        p.width = PARTICLE_RADIUS * 1.2;
+                        p.height = PARTICLE_RADIUS * 1.8;
+                    });
                     relaxParticles();
                 }
             };
