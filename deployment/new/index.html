@@ -698,6 +698,29 @@
             text-shadow: 0 0 5px var(--neon-yellow);
             box-shadow: 0 0 10px var(--neon-yellow), 0 0 20px var(--neon-yellow);
         }
+        
+        .matrix-sand-btn {
+            display: block;
+            background: transparent;
+            border: 1px solid var(--neon-pink);
+            color: var(--neon-pink);
+            padding: 4px 8px;
+            margin: 2px 0;
+            font-size: 9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Share Tech Mono', monospace;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .matrix-sand-btn:hover {
+            background: var(--neon-pink);
+            color: #000;
+            text-shadow: 0 0 5px var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+        }
 
         .matrix-option:hover:not(.active) {
             border-color: var(--neon-cyan);
@@ -1023,6 +1046,10 @@
             <button class="matrix-option" data-version="minimal">MINIMAL</button>
             <button class="matrix-option" data-version="off">OFF</button>
             <button class="matrix-config-btn" style="margin-top: 10px; width: 100%;">CONFIG</button>
+            <button class="matrix-sand-btn" style="margin-top: 5px; width: 100%;">SAND</button>
+            <div style="font-size: 10px; color: var(--neon-cyan); opacity: 0.5; margin-top: 10px; text-align: center;">
+                [CTRL+SHIFT+M] • [CTRL+SHIFT+S]
+            </div>
         </div>
     </div>
     <div class="ac-interference"></div>
@@ -1594,6 +1621,7 @@
             const title = switcher.querySelector('.matrix-switcher-title');
             const options = switcher.querySelectorAll('.matrix-option');
             const configBtn = document.querySelector('.matrix-config-btn');
+            const sandBtn = document.querySelector('.matrix-sand-btn');
             
             // Toggle collapsed state
             title.addEventListener('click', function(e) {
@@ -1612,6 +1640,13 @@
             configBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 controlPanel.style.display = 'block';
+                switcher.classList.add('collapsed');
+            });
+            
+            // Sand button launches sand timer
+            sandBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                startSandTimer();
                 switcher.classList.add('collapsed');
             });
             
@@ -2187,8 +2222,9 @@
             controlPanel.style.display = 'none';
         });
         
-        // Secret key combination to open panel: Ctrl+Shift+M
+        // Secret key combinations
         document.addEventListener('keydown', (e) => {
+            // Ctrl+Shift+M for Matrix config panel
             if (e.ctrlKey && e.shiftKey && e.key === 'M') {
                 e.preventDefault();
                 controlPanel.style.display = controlPanel.style.display === 'none' ? 'block' : 'none';
@@ -2196,6 +2232,11 @@
                     // Update URL display
                     urlInput.value = buildMatrixURL();
                 }
+            }
+            // Ctrl+Shift+S for Sand timer
+            else if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+                e.preventDefault();
+                startSandTimer();
             }
         });
         
