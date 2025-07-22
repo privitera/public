@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LINUX DEPLOYMENT</title>
     <!-- Updated: Fixed code block alignment and scroll position -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='20' fill='%2300ffff'%3EI%3C/text%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
     <!-- Preconnect to Matrix rain domain for faster loading -->
     <link rel="preconnect" href="https://rezmason.github.io">
@@ -767,6 +768,28 @@
             text-shadow: 0 0 5px var(--neon-red);
             box-shadow: 0 0 10px var(--neon-red), 0 0 20px var(--neon-red);
         }
+        
+        .matrix-glitch-btn {
+            display: block;
+            background: transparent;
+            border: 1px solid var(--neon-magenta);
+            color: var(--neon-magenta);
+            padding: 4px 8px;
+            margin: 2px 0;
+            font-size: 9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Share Tech Mono', monospace;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .matrix-glitch-btn:hover {
+            background: var(--neon-magenta);
+            color: #000;
+            text-shadow: 0 0 5px var(--neon-magenta);
+            box-shadow: 0 0 10px var(--neon-magenta), 0 0 20px var(--neon-magenta);
+        }
 
         .matrix-option:hover:not(.active) {
             border-color: var(--neon-cyan);
@@ -1081,6 +1104,8 @@
         <div id="terminal-loader" style="display: none; width: 100%; height: 100%;"></div>
         <!-- Physics loader -->
         <div id="physics-loader" style="display: none; width: 100%; height: 100%;"></div>
+        <!-- Glitch loader -->
+        <div id="glitch-loader" style="display: none; width: 100%; height: 100%;"></div>
     </div>
     
     <canvas id="matrix-bg"></canvas>
@@ -1103,8 +1128,9 @@
             <button class="matrix-sand-btn" style="margin-top: 5px; width: 100%;">SAND</button>
             <button class="matrix-terminal-btn" style="margin-top: 5px; width: 100%;">TERM</button>
             <button class="matrix-physics-btn" style="margin-top: 5px; width: 100%;">PHYS</button>
+            <button class="matrix-glitch-btn" style="margin-top: 5px; width: 100%;">GLITCH</button>
             <div style="font-size: 10px; color: var(--neon-cyan); opacity: 0.5; margin-top: 10px; text-align: center; line-height: 1.4;">
-                [CTRL+SHIFT+M]<br>[CTRL+SHIFT+S]<br>[CTRL+SHIFT+T]<br>[CTRL+SHIFT+P]
+                [CTRL+SHIFT+M]<br>[CTRL+SHIFT+S]<br>[CTRL+SHIFT+T]<br>[CTRL+SHIFT+P]<br>[CTRL+SHIFT+G]
             </div>
         </div>
     </div>
@@ -1685,6 +1711,7 @@
             const sandBtn = document.querySelector('.matrix-sand-btn');
             const termBtn = document.querySelector('.matrix-terminal-btn');
             const physBtn = document.querySelector('.matrix-physics-btn');
+            const glitchBtn = document.querySelector('.matrix-glitch-btn');
             
             // Toggle collapsed state
             title.addEventListener('click', function(e) {
@@ -1724,6 +1751,13 @@
             physBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 startPhysicsLoader();
+                switcher.classList.add('collapsed');
+            });
+            
+            // Glitch button launches glitch effects loader
+            glitchBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                startGlitchLoader();
                 switcher.classList.add('collapsed');
             });
             
@@ -2325,6 +2359,11 @@
                 e.preventDefault();
                 startPhysicsLoader();
             }
+            // Ctrl+Shift+G for Glitch loader
+            else if (e.ctrlKey && e.shiftKey && e.key === 'G') {
+                e.preventDefault();
+                startGlitchLoader();
+            }
         });
         
         // Initialize URL display
@@ -2586,13 +2625,15 @@
             
             // Create canvas for Matter.js
             physicsDiv.innerHTML = `
-                <canvas id="matter-canvas" style="width: 100%; height: 100%;"></canvas>
-                <div style="position: absolute; top: 20px; left: 20px; color: var(--neon-cyan); font-family: 'Share Tech Mono', monospace; font-size: 12px;">
-                    MATTER.JS PHYSICS v0.19<br>
-                    <span style="color: var(--neon-yellow);">[CLICK TO SKIP]</span>
-                </div>
-                <div style="position: absolute; bottom: 20px; right: 20px; color: var(--neon-green); font-family: 'Share Tech Mono', monospace; font-size: 11px;">
-                    PARTICLES: <span id="particle-count">0</span>
+                <div style="position: relative; width: 100%; height: 100%; background: #000;">
+                    <canvas id="matter-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></canvas>
+                    <div style="position: absolute; top: 20px; left: 20px; color: var(--neon-cyan); font-family: 'Share Tech Mono', monospace; font-size: 12px; z-index: 10;">
+                        MATTER.JS PHYSICS v0.19<br>
+                        <span style="color: var(--neon-yellow);">[CLICK TO SKIP]</span>
+                    </div>
+                    <div style="position: absolute; bottom: 20px; right: 20px; color: var(--neon-green); font-family: 'Share Tech Mono', monospace; font-size: 11px; z-index: 10;">
+                        PARTICLES: <span id="particle-count">0</span>
+                    </div>
                 </div>
             `;
             
@@ -2607,108 +2648,97 @@
             }
             
             function initMatterPhysics() {
+                console.log('Initializing Matter.js physics...');
                 const canvas = document.getElementById('matter-canvas');
-                const Engine = Matter.Engine,
-                    Render = Matter.Render,
-                    World = Matter.World,
-                    Bodies = Matter.Bodies,
-                    Body = Matter.Body,
-                    Events = Matter.Events;
+                if (!canvas) {
+                    console.error('Canvas not found!');
+                    return;
+                }
+                
+                // Set canvas size first
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
                 
                 // Create engine
-                const engine = Engine.create();
-                engine.world.gravity.y = 1;
+                const engine = Matter.Engine.create();
                 
-                // Create renderer
-                const render = Render.create({
+                // Create renderer with minimal options
+                const render = Matter.Render.create({
                     canvas: canvas,
                     engine: engine,
                     options: {
                         width: window.innerWidth,
                         height: window.innerHeight,
                         wireframes: false,
-                        background: 'transparent'
+                        background: '#000'
                     }
                 });
                 
-                // Create walls
-                const walls = [
-                    Bodies.rectangle(window.innerWidth/2, window.innerHeight + 25, window.innerWidth, 50, { 
+                console.log('Renderer created:', render);
+                
+                // Create ground
+                const ground = Matter.Bodies.rectangle(
+                    window.innerWidth / 2, 
+                    window.innerHeight - 25, 
+                    window.innerWidth, 
+                    50, 
+                    { 
                         isStatic: true,
-                        render: { fillStyle: 'transparent' }
-                    }),
-                    Bodies.rectangle(-25, window.innerHeight/2, 50, window.innerHeight, { 
-                        isStatic: true,
-                        render: { fillStyle: 'transparent' }
-                    }),
-                    Bodies.rectangle(window.innerWidth + 25, window.innerHeight/2, 50, window.innerHeight, { 
-                        isStatic: true,
-                        render: { fillStyle: 'transparent' }
-                    })
-                ];
-                World.add(engine.world, walls);
+                        render: {
+                            fillStyle: '#444'
+                        }
+                    }
+                );
+                Matter.World.add(engine.world, ground);
+                
+                // Create a simple test box
+                const box = Matter.Bodies.rectangle(400, 200, 80, 80, {
+                    render: {
+                        fillStyle: '#ff0000'
+                    }
+                });
+                Matter.World.add(engine.world, box);
+                
+                // Run the renderer
+                Matter.Render.run(render);
+                
+                // Create runner
+                const runner = Matter.Runner.create();
+                Matter.Runner.run(runner, engine);
                 
                 // Particle counter
                 let particleCount = 0;
                 const countDisplay = document.getElementById('particle-count');
-                
-                // Create particles
-                const particles = [];
                 const colors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00'];
                 
-                const spawnParticle = () => {
-                    if (particleCount < 200) { // Limit particles for performance
-                        const size = 10 + Math.random() * 20;
-                        const particle = Bodies.circle(
-                            window.innerWidth/2 + (Math.random() - 0.5) * 100,
-                            -50,
-                            size,
+                // Spawn particles
+                const spawnInterval = setInterval(() => {
+                    if (particleCount < 100) {
+                        const particle = Matter.Bodies.circle(
+                            window.innerWidth/2 + (Math.random() - 0.5) * 200,
+                            50,
+                            Math.random() * 20 + 10,
                             {
-                                restitution: 0.6,
-                                friction: 0.1,
-                                density: 0.01,
+                                restitution: 0.8,
                                 render: {
-                                    fillStyle: colors[Math.floor(Math.random() * colors.length)],
-                                    strokeStyle: 'transparent'
+                                    fillStyle: colors[Math.floor(Math.random() * colors.length)]
                                 }
                             }
                         );
-                        
-                        // Add glow effect
-                        particle.render.sprite = {
-                            texture: 'data:image/svg+xml;base64,' + btoa(`
-                                <svg width="${size*4}" height="${size*4}" xmlns="http://www.w3.org/2000/svg">
-                                    <defs>
-                                        <radialGradient id="glow">
-                                            <stop offset="0%" style="stop-color:${particle.render.fillStyle};stop-opacity:1" />
-                                            <stop offset="50%" style="stop-color:${particle.render.fillStyle};stop-opacity:0.5" />
-                                            <stop offset="100%" style="stop-color:${particle.render.fillStyle};stop-opacity:0" />
-                                        </radialGradient>
-                                    </defs>
-                                    <circle cx="${size*2}" cy="${size*2}" r="${size*2}" fill="url(#glow)" />
-                                </svg>
-                            `)
-                        };
-                        
-                        particles.push(particle);
-                        World.add(engine.world, particle);
+                        Matter.World.add(engine.world, particle);
                         particleCount++;
-                        countDisplay.textContent = particleCount;
+                        if (countDisplay) {
+                            countDisplay.textContent = particleCount;
+                        }
                     }
-                };
-                
-                // Spawn particles over time
-                const spawnInterval = setInterval(spawnParticle, 100);
-                
-                // Run engine
-                Engine.run(engine);
-                Render.run(render);
+                }, 200);
                 
                 // Click to close
                 function closePhysicsLoader() {
                     clearInterval(spawnInterval);
-                    Render.stop(render);
-                    Engine.clear(engine);
+                    Matter.Runner.stop(runner);
+                    Matter.Render.stop(render);
+                    Matter.Engine.clear(engine);
                     physicsDiv.style.opacity = '0';
                     physicsDiv.style.transition = 'opacity 0.5s';
                     setTimeout(() => {
@@ -2721,6 +2751,172 @@
                 
                 container.addEventListener('click', closePhysicsLoader);
             }
+        }
+        
+        // Glitch Effects Loader Implementation
+        function startGlitchLoader() {
+            const container = document.getElementById('alt-loading-container');
+            const glitchDiv = document.getElementById('glitch-loader');
+            
+            // Show containers
+            container.style.display = 'block';
+            glitchDiv.style.display = 'block';
+            
+            // Create glitch effect HTML
+            glitchDiv.innerHTML = `
+                <div style="position: relative; width: 100%; height: 100%; overflow: hidden; background: #000;">
+                    <div class="glitch-container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                        <h1 class="glitch-text" data-text="LOADING SYSTEM" style="
+                            font-family: 'Share Tech Mono', monospace;
+                            font-size: 48px;
+                            color: var(--neon-cyan);
+                            position: relative;
+                            letter-spacing: 5px;
+                            animation: glitch 2s infinite;
+                        ">LOADING SYSTEM</h1>
+                        <div class="glitch-progress" style="
+                            width: 300px;
+                            height: 4px;
+                            background: rgba(0, 255, 255, 0.1);
+                            border: 1px solid var(--neon-cyan);
+                            margin: 20px auto;
+                            position: relative;
+                            overflow: hidden;
+                        ">
+                            <div class="glitch-bar" style="
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                height: 100%;
+                                width: 0%;
+                                background: var(--neon-cyan);
+                                animation: loadProgress 3s ease-out forwards;
+                            "></div>
+                        </div>
+                        <p style="color: var(--neon-yellow); font-size: 14px; margin-top: 20px; opacity: 0.8;">
+                            [CLICK TO SKIP]
+                        </p>
+                    </div>
+                    
+                    <style>
+                        @keyframes glitch {
+                            0%, 100% {
+                                text-shadow: 
+                                    0.05em 0 0 var(--neon-magenta),
+                                    -0.05em -0.025em 0 var(--neon-cyan),
+                                    0.025em 0.05em 0 var(--neon-yellow);
+                                animation-timing-function: cubic-bezier(.86, 0, .07, 1);
+                            }
+                            14.3% {
+                                text-shadow: 
+                                    0.05em 0 0 var(--neon-magenta),
+                                    -0.05em -0.025em 0 var(--neon-cyan),
+                                    0.025em 0.05em 0 var(--neon-yellow);
+                                animation-timing-function: cubic-bezier(.86, 0, .07, 1);
+                            }
+                            15.7% {
+                                text-shadow: 
+                                    -0.05em -0.025em 0 var(--neon-magenta),
+                                    0.025em 0.025em 0 var(--neon-cyan),
+                                    -0.05em -0.05em 0 var(--neon-yellow);
+                                animation-timing-function: cubic-bezier(.86, 0, .07, 1);
+                            }
+                            49% {
+                                text-shadow: 
+                                    -0.05em -0.025em 0 var(--neon-magenta),
+                                    0.025em 0.025em 0 var(--neon-cyan),
+                                    -0.05em -0.05em 0 var(--neon-yellow);
+                                animation-timing-function: cubic-bezier(.86, 0, .07, 1);
+                            }
+                            50% {
+                                text-shadow: 
+                                    0.025em 0.05em 0 var(--neon-magenta),
+                                    0.05em 0 0 var(--neon-cyan),
+                                    0 -0.05em 0 var(--neon-yellow);
+                                animation-timing-function: cubic-bezier(.86, 0, .07, 1);
+                            }
+                            99% {
+                                text-shadow: 
+                                    0.025em 0.05em 0 var(--neon-magenta),
+                                    0.05em 0 0 var(--neon-cyan),
+                                    0 -0.05em 0 var(--neon-yellow);
+                                animation-timing-function: cubic-bezier(.86, 0, .07, 1);
+                            }
+                        }
+                        
+                        @keyframes loadProgress {
+                            0% { width: 0%; }
+                            100% { width: 100%; }
+                        }
+                        
+                        .glitch-text::before,
+                        .glitch-text::after {
+                            content: attr(data-text);
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                        }
+                        
+                        .glitch-text::before {
+                            animation: glitchTop 0.3s linear infinite alternate-reverse;
+                            clip: rect(0, 900px, 30px, 0);
+                            background: black;
+                        }
+                        
+                        .glitch-text::after {
+                            animation: glitchBottom 0.2s linear infinite alternate-reverse;
+                            clip: rect(30px, 900px, 100px, 0);
+                            background: black;
+                        }
+                        
+                        @keyframes glitchTop {
+                            0%, 100% { clip: rect(0, 900px, 30px, 0); }
+                            50% { clip: rect(0, 900px, 35px, 0); transform: translate(-2px, -2px); }
+                        }
+                        
+                        @keyframes glitchBottom {
+                            0%, 100% { clip: rect(40px, 900px, 100px, 0); }
+                            50% { clip: rect(35px, 900px, 100px, 0); transform: translate(2px, 2px); }
+                        }
+                    </style>
+                    
+                    <!-- RGB split effect -->
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
+                        <div style="position: absolute; width: 100%; height: 100%; background: linear-gradient(to right, 
+                            rgba(255, 0, 0, 0.05) 0%, 
+                            transparent 10%, 
+                            transparent 90%, 
+                            rgba(0, 255, 255, 0.05) 100%); animation: rgbSplit 3s infinite;"></div>
+                    </div>
+                    
+                    <style>
+                        @keyframes rgbSplit {
+                            0%, 100% { transform: translateX(0); }
+                            25% { transform: translateX(-2px); }
+                            75% { transform: translateX(2px); }
+                        }
+                    </style>
+                </div>
+            `;
+            
+            // Auto-close after 3 seconds
+            setTimeout(() => closeGlitchLoader(), 3000);
+            
+            // Click to close
+            function closeGlitchLoader() {
+                glitchDiv.style.opacity = '0';
+                glitchDiv.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    glitchDiv.style.display = 'none';
+                    container.style.display = 'none';
+                    glitchDiv.style.opacity = '1';
+                    glitchDiv.innerHTML = '';
+                }, 500);
+            }
+            
+            container.addEventListener('click', closeGlitchLoader);
         }
     </script>
 </body>
