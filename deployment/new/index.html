@@ -2732,8 +2732,16 @@
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
                 
-                // Create engine
+                // Create engine with more realistic settings
                 const engine = Matter.Engine.create();
+                engine.world.gravity.scale = 0.001; // Normal gravity
+                engine.world.gravity.y = 1;
+                
+                // Add damping to reduce jitter
+                engine.timing.timeScale = 1;
+                engine.constraintIterations = 10; // More iterations for stability
+                engine.positionIterations = 10;
+                engine.velocityIterations = 10;
                 
                 // Create renderer with minimal options
                 const render = Matter.Render.create({
@@ -2788,8 +2796,13 @@
                 ];
                 Matter.World.add(engine.world, walls);
                 
-                // Create a simple test box
+                // Create a simple test box with realistic physics
                 const box = Matter.Bodies.rectangle(400, 200, 80, 80, {
+                    restitution: 0.1,
+                    friction: 0.8,
+                    frictionStatic: 0.9,
+                    frictionAir: 0.01,
+                    density: 0.002,
                     render: {
                         fillStyle: '#ff0000'
                     }
@@ -2802,6 +2815,10 @@
                 // Create runner
                 const runner = Matter.Runner.create();
                 Matter.Runner.run(runner, engine);
+                
+                // Enable sleeping to reduce jitter when settled
+                engine.enableSleeping = true;
+                Matter.Sleeping.set(engine.world, true);
                 
                 // Particle system setup
                 let particleCount = 0;
@@ -2881,9 +2898,12 @@
                             50,
                             particleSize,
                             {
-                                restitution: 0.8,
-                                friction: 0.1,
-                                density: 0.001,
+                                restitution: 0.1, // Much less bouncy (was 0.8)
+                                friction: 0.8, // Much more friction (was 0.1)
+                                frictionStatic: 0.9, // High static friction
+                                frictionAir: 0.01, // Air resistance
+                                density: 0.002, // Slightly heavier
+                                slop: 0.05, // Allows settling
                                 render: {
                                     fillStyle: colors[Math.floor(Math.random() * colors.length)]
                                 }
