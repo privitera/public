@@ -145,8 +145,10 @@ fi
 echo -e "${YELLOW}Creating system directories...${NC}"
 sudo mkdir -p /var/lib/battery-flasher
 sudo mkdir -p /var/log/battery-flasher
-# Keep root ownership since deploy.sh runs as root
-sudo chmod 755 /var/lib/battery-flasher /var/log/battery-flasher
+# Ensure directories are writable by both root and user
+sudo chmod 777 /var/lib/battery-flasher /var/log/battery-flasher
+# Remove any existing config that might have wrong permissions
+sudo rm -f /var/lib/battery-flasher/hardware_config.json
 
 # Execute the deployment script
 echo -e "${YELLOW}Running deployment script...${NC}"
