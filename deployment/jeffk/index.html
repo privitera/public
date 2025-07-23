@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HELLO MY NAEM IS JEFFK AND I AM H3RE 2 HELP U DEPLOY UR COMPTUER!!!!!</title>
+    <style>
+        body {
+            background: #FFFF00 url('data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==');
+            color: #FF0000;
+            font-family: "Comic Sans MS", "Times New Roman", cursive;
+            margin: 0;
+            padding: 20px;
+            cursor: url('data:image/x-icon;base64,AAACAAEAICAAAAAAAACoEAAAFgAAACgAAAAgAAAAQAAAAAEAIAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='), auto;
+        }
+        
+        /* MARQUEE EVERYWHERE!!!! */
+        .marquee-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #00FF00;
+            border-bottom: 5px solid #FF00FF;
+            padding: 10px 0;
+            z-index: 9999;
+            overflow: hidden;
+        }
+        
+        .marquee-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 15s linear infinite;
+            font-size: 24px;
+            font-weight: bold;
+            color: #0000FF;
+            text-shadow: 2px 2px #FFFF00;
+        }
+        
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+        
+        /* BLINK TAG SIMULATION BECUZ HTML5 HAETS FUN */
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .blink {
+            animation: blink 0.5s infinite;
+        }
+        
+        /* MAIN CONTAENT */
+        .main-container {
+            max-width: 800px;
+            margin: 80px auto 0;
+            background: #00FFFF;
+            border: 10px ridge #FF00FF;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* ROTATING GIFS EVERYWHERE */
+        .corner-gif {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .corner-gif.top-left { top: -50px; left: -50px; }
+        .corner-gif.top-right { top: -50px; right: -50px; }
+        .corner-gif.bottom-left { bottom: -50px; left: -50px; }
+        .corner-gif.bottom-right { bottom: -50px; right: -50px; }
+        
+        /* TITLE THAT HURTS UR EYES */
+        .main-title {
+            font-size: 48px;
+            color: #FF0000;
+            text-align: center;
+            text-shadow: 5px 5px #00FF00, 10px 10px #0000FF;
+            transform: skew(-5deg, -2deg);
+            margin: 20px 0;
+            font-family: "Impact", "Arial Black", sans-serif;
+        }
+        
+        /* JEFFK STYLE TEXT */
+        .jeffk-text {
+            font-size: 18px;
+            color: #FF00FF;
+            background: #FFFF00;
+            padding: 10px;
+            margin: 10px 0;
+            border: 3px dashed #00FF00;
+            transform: rotate(-1deg);
+        }
+        
+        /* STEPS BUT MAKE THEM TERRIBLE */
+        .step-box {
+            background: linear-gradient(45deg, #FF0000, #00FF00, #0000FF, #FFFF00);
+            border: 5px double #000000;
+            margin: 20px 0;
+            padding: 15px;
+            position: relative;
+            overflow: visible;
+        }
+        
+        .step-box::before {
+            content: "NEW!!!";
+            position: absolute;
+            top: -15px;
+            right: 10px;
+            background: #FF0000;
+            color: #FFFF00;
+            padding: 5px 10px;
+            border: 3px solid #00FF00;
+            transform: rotate(15deg);
+            font-weight: bold;
+            animation: blink 0.3s infinite;
+        }
+        
+        .step-header {
+            font-size: 24px;
+            color: #0000FF;
+            background: #FFFF00;
+            padding: 5px;
+            text-align: center;
+            border: 3px solid #FF00FF;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        /* CODE BLOCKS JEFFK STYLE */
+        .code-block {
+            background: #000000;
+            color: #00FF00;
+            border: 5px ridge #FF00FF;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: "Courier New", monospace;
+            font-size: 14px;
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .code-block::before {
+            content: "COPY THIS U NOOB ---->";
+            position: absolute;
+            top: -20px;
+            left: 10px;
+            color: #FF0000;
+            font-weight: bold;
+            background: #FFFF00;
+            padding: 2px 5px;
+        }
+        
+        /* BUTTONS THAT LOOK LIKE 1999 */
+        .copy-button {
+            background: linear-gradient(to bottom, #FFFFFF, #CCCCCC);
+            border: 3px outset #999999;
+            color: #000000;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: "Arial", sans-serif;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+        
+        .copy-button:active {
+            border-style: inset;
+        }
+        
+        /* RANDOM FLOATING IMAGES */
+        .floating-img {
+            position: fixed;
+            animation: float-around 20s infinite ease-in-out;
+            z-index: 100;
+        }
+        
+        @keyframes float-around {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(200px, 100px) scale(1.5) rotate(45deg); }
+            50% { transform: translate(-100px, 200px) scale(0.8) rotate(-30deg); }
+            75% { transform: translate(150px, -100px) scale(1.2) rotate(180deg); }
+        }
+        
+        /* FOOTER WITH WEBRING */
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            background: #FF00FF;
+            padding: 20px;
+            border: 10px groove #00FF00;
+        }
+        
+        .counter {
+            background: #000000;
+            color: #00FF00;
+            padding: 10px;
+            display: inline-block;
+            font-family: "Courier New", monospace;
+            font-size: 20px;
+            border: 3px solid #00FF00;
+            margin: 10px;
+        }
+        
+        /* TABLES FOR LAYOUT LIKE ITS 1999 */
+        .layout-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 5px solid #FF0000;
+        }
+        
+        .layout-table td {
+            padding: 10px;
+            border: 3px solid #00FF00;
+            background: #FFFF00;
+        }
+        
+        /* WORDART STYLE */
+        .wordart {
+            font-size: 36px;
+            font-weight: bold;
+            background: linear-gradient(to bottom, #FF0000, #FFFF00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 3px 3px 0 #000000;
+            transform: perspective(100px) rotateY(10deg);
+            display: inline-block;
+        }
+        
+        /* SCROLLBAR STYLING JEFFK STYLE */
+        ::-webkit-scrollbar {
+            width: 20px;
+            height: 20px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #FF00FF;
+            border: 2px solid #00FF00;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(#FF0000, #00FF00, #0000FF);
+            border: 2px solid #FFFF00;
+        }
+    </style>
+</head>
+<body>
+    <!-- MARQUEE AT TOP -->
+    <div class="marquee-container">
+        <div class="marquee-text">
+            *** WELCOM TO JEFFKS DEPLOY PAGE!!!! *** BEST VIEWED IN NETSCAPE NAVIGATOR 4.0 *** THIS SITE IS UNDER CONSTRUCTION *** EMAIL ME AT JEFFK@GEOCITIES.COM *** SIGN MY GUESTBOOK!!! ***
+        </div>
+    </div>
+    
+    <!-- FLOATING IMAGES -->
+    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+         class="floating-img" style="top: 100px; left: 50px; width: 80px; height: 80px; background: #FF00FF;">
+    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+         class="floating-img" style="top: 200px; right: 100px; width: 60px; height: 60px; background: #00FF00; animation-delay: 5s;">
+    
+    <div class="main-container">
+        <!-- CORNER GIFS -->
+        <div class="corner-gif top-left" style="background: #FF0000;"></div>
+        <div class="corner-gif top-right" style="background: #00FF00;"></div>
+        <div class="corner-gif bottom-left" style="background: #0000FF;"></div>
+        <div class="corner-gif bottom-right" style="background: #FFFF00;"></div>
+        
+        <h1 class="main-title blink">D3PL0Y UR COMPUETR!!!!!!</h1>
+        
+        <div class="jeffk-text">
+            <marquee>HELLO MY NAEM IS JEFFK AND TODAY I WILL TEACH U HOW 2 MEAK UR COMPUTER DO THE THING WITH THE DEPLOYMENT AND THE GITHUB!!!!!</marquee>
+        </div>
+        
+        <table class="layout-table">
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <div class="wordart">SUPAR DEPLOYMENT GUIDE</div>
+                </td>
+            </tr>
+            <tr>
+                <td width="30%" style="background: #00FFFF;">
+                    <b>REQIUREMENTS:</b><br>
+                    - COMPUTAR<br>
+                    - INTERNET EXPLROER<br>
+                    - SUDO POWERS<br>
+                    - GITHUB ACOUNT<br>
+                    - 486 OR BETTAR<br>
+                </td>
+                <td style="background: #FF00FF;">
+                    <div class="blink" style="font-size: 24px; color: #FFFF00;">
+                        IMPORTNAT: BACK UP UR FILES FIRST OR ELSE!!!!
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
+        <div class="step-box">
+            <div class="step-header blink">STEP NUMBER ONE (1) - UPDATE UR COMPUETR</div>
+            <div class="jeffk-text">
+                ok so first u gotta update ur linux or else it wont work and u will be sad :( :( :(
+            </div>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode(this)">CLCIK ME</button>
+                <code>sudo apt update && sudo apt upgrade -y</code>
+            </div>
+            <div style="background: #00FF00; padding: 10px; margin: 10px 0; border: 3px dashed #FF0000;">
+                <b>PRO TIP FROM JEFFK:</b> this makes ur computer go BRRRRRRR and updates all teh things!!! if it doesnt work try turning it off and on again LOL!!!!
+            </div>
+        </div>
+        
+        <div class="step-box">
+            <div class="step-header">STEP NUMERO DOS (2) - GET THE STAGE ONE SCRIPT</div>
+            <div class="jeffk-text">
+                now we download teh script that does the thing!!! its like magic but for computers!!! STAGE 1 IS BEST STAGE!!!!!
+            </div>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode(this)">COPY DIS</button>
+                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash</code>
+            </div>
+            <marquee style="background: #FFFF00; padding: 5px;">
+                THIS INSTALLS GIT AND GITHUB CLI AND OTHER COOL STUFF THAT MAKES UR COMPUTER SMART!!!!
+            </marquee>
+        </div>
+        
+        <div class="step-box">
+            <div class="step-header">STEP THREE (3) - LOGIN TO TEH GITHUBS</div>
+            <div class="jeffk-text">
+                ok now u gotta login to github dot com!!! its where all the 1337 haxxors keep their codes!!! DONT FORGET UR PASSWORD OR ELSE!!!!
+            </div>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode(this)">COPPY</button>
+                <code>gh auth login</code>
+            </div>
+            <table style="width: 100%; background: #00FFFF; border: 3px solid #FF0000; margin: 10px 0;">
+                <tr>
+                    <td style="padding: 10px;">
+                        <b class="blink">IMPOTRANT CHOICES:</b><br>
+                        1) Pick GitHub.com (NOT THE ENTERPRISE ONE UNLESS UR A BUSINESS MAN)<br>
+                        2) Pick SSH (its more secure then a bank vault!!!)<br>
+                        3) Generate new key (or use old one if u already got one)<br>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="step-box">
+            <div class="step-header">STEP FOUR (4) - RUN STAGE 2 (THE SEQUEL!!!)</div>
+            <div class="jeffk-text">
+                NOW FOR THE GRAND FINALE!!! stage 2 is where the REAL magic happens!!! it has a menu and everything!!! ITS LIKE A VIDEO GAME BUT FOR NERDS!!!!
+            </div>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode(this)">CLIK HERE</button>
+                <code>wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
+            </div>
+            <div style="background: #FF0000; color: #FFFF00; padding: 10px; border: 5px double #00FF00; text-align: center; font-size: 20px;">
+                <div class="blink">⚠️ TOP SECRET AREA ⚠️</div>
+                THIS PART HAS UR PRIVATE CONFIGS SO DONT SHARE IT WITH STRANGERS ON THE INTERNET!!!!
+            </div>
+        </div>
+        
+        <div class="step-box">
+            <div class="step-header">BONUS ROUND - ONE LINE TO RULE THEM ALL!!!!!</div>
+            <div class="jeffk-text">
+                for all u POWER USERS out there (u know who u are) heres how to do EVERYTHING IN ONE LINE!!! its like a cheat code for deployment!!!!
+            </div>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode(this)">ULTRACOPY</button>
+                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
+            </div>
+            <marquee direction="right" style="background: #00FF00; color: #FF0000; font-size: 24px; padding: 10px;">
+                ⚡⚡⚡ DANGER ZONE - ONLY FOR 1337 HAXX0RS ⚡⚡⚡
+            </marquee>
+        </div>
+        
+        <div class="footer">
+            <div class="counter blink">
+                VISITOR COUNTER: 0031337
+            </div>
+            <br>
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                 style="width: 88px; height: 31px; background: linear-gradient(45deg, #FF0000, #00FF00, #0000FF);">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                 style="width: 88px; height: 31px; background: #FFFF00; margin: 0 10px;">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                 style="width: 88px; height: 31px; background: #00FFFF;">
+            <br><br>
+            <div style="background: #000000; color: #00FF00; padding: 10px; font-family: monospace;">
+                THIS SITE IS PART OF THE JEFFK WEBRING<br>
+                [&lt;&lt; PREV] [RANDOM] [NEXT &gt;&gt;]<br>
+                <br>
+                BEST VIEWED WITH EYES<br>
+                MADE WITH NOTEPAD.EXE<br>
+                © 1999 JEFFK PRODUCTIONS<br>
+                <br>
+                <div class="blink">SIGN MY GUESTBOOK!!!</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // JEFFK STYLE COPY FUNCTION
+        function copyCode(btn) {
+            var code = btn.parentElement.querySelector('code');
+            var text = code.textContent;
+            
+            // CREATE TEXTAREA
+            var textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                btn.innerHTML = 'COPYED!!!';
+                btn.style.background = '#00FF00';
+                
+                // MAKE IT SPIN
+                btn.style.animation = 'spin 0.5s linear';
+                
+                setTimeout(function() {
+                    btn.innerHTML = 'COPY AGAN';
+                    btn.style.background = 'linear-gradient(to bottom, #FFFFFF, #CCCCCC)';
+                    btn.style.animation = '';
+                }, 2000);
+                
+                // RANDOM ALERT
+                if (Math.random() > 0.7) {
+                    alert('GOOD JOB U COPYED THE CODE!!! UR A REAL HACKER NOW!!!!');
+                }
+            } catch(e) {
+                alert('OH NO IT DIDNT WORK!!! TRY AGAIN OR USE CTRL+C LIKE A NOOB!!!');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+        
+        // RANDOM JEFFK MESSAGES
+        var messages = [
+            'DONT FORGET TO DEFRAG UR HARD DRIVE!!!!',
+            'I ONCE HACKED THE PENTAGON WITH VISUAL BASIC!!!!',
+            'MY DAD WORKS AT MICROSOFT AND HE WILL BAN U!!!!',
+            'LINUX IS BETTER THEN WINDOWS FIGHT ME IRL!!!!',
+            'I USE ARCH BTW (JUST KIDDING I USE UBUNTU LOL)',
+            'PRESS ALT+F4 FOR FREE RAM!!!!',
+            'DELETE SYSTEM32 TO MAKE UR COMPUTER FASTER!!!!',
+            'I KNOW KUNG FU AND HTML!!!!',
+            'MY COMPUTER HAS 69420 MEGAHURTZ!!!!',
+            'I CAN HAX U THROUGH UR SCREEN!!!!'
+        ];
+        
+        setInterval(function() {
+            if (Math.random() > 0.8) {
+                var msg = messages[Math.floor(Math.random() * messages.length)];
+                console.log('JEFFK SEZ: ' + msg);
+            }
+        }, 5000);
+        
+        // KONAMI CODE BUT JEFFK STYLE
+        var jeffkCode = ['j','e','f','f','k'];
+        var jeffkIndex = 0;
+        
+        document.addEventListener('keypress', function(e) {
+            if (e.key === jeffkCode[jeffkIndex]) {
+                jeffkIndex++;
+                if (jeffkIndex === jeffkCode.length) {
+                    document.body.style.animation = 'spin 1s linear infinite';
+                    alert('U FOUND THE SECRET!!! UR NOW A MEMBER OF THE JEFFK FAN CLUB!!!!');
+                    jeffkIndex = 0;
+                }
+            } else {
+                jeffkIndex = 0;
+            }
+        });
+        
+        // MAKE RANDOM THINGS BLINK
+        setInterval(function() {
+            var elements = document.querySelectorAll('*');
+            var randomElement = elements[Math.floor(Math.random() * elements.length)];
+            randomElement.classList.add('blink');
+            setTimeout(function() {
+                randomElement.classList.remove('blink');
+            }, 1000);
+        }, 3000);
+        
+        // ADD MORE MARQUEES BECAUSE WHY NOT
+        setTimeout(function() {
+            var newMarquee = document.createElement('marquee');
+            newMarquee.style.position = 'fixed';
+            newMarquee.style.bottom = '0';
+            newMarquee.style.width = '100%';
+            newMarquee.style.background = '#FF00FF';
+            newMarquee.style.color = '#FFFF00';
+            newMarquee.style.fontSize = '20px';
+            newMarquee.style.padding = '10px';
+            newMarquee.innerHTML = 'THIS WEBSITE LOADS BEST ON A 56K MODEM!!!! ALSO MY HAMSTER RUNS MY WEB SERVER!!!!';
+            document.body.appendChild(newMarquee);
+        }, 2000);
+    </script>
+</body>
+</html>

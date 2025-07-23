@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal System Deployment</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --primary: #00ff88;
+            --secondary: #00ccff;
+            --accent: #ff00ff;
+            --bg-dark: #0a0a0a;
+            --bg-light: #1a1a1a;
+            --text: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-dark);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-grid {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glitch 2s infinite;
+            position: relative;
+        }
+
+        @keyframes glitch {
+            0%, 100% { text-shadow: 2px 2px 0 var(--accent); }
+            25% { text-shadow: -2px -2px 0 var(--secondary); }
+            50% { text-shadow: 2px -2px 0 var(--primary); }
+            75% { text-shadow: -2px 2px 0 var(--accent); }
+        }
+
+        .subtitle {
+            margin-top: 1rem;
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+
+        /* System Requirements */
+        .requirements {
+            background: var(--bg-light);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .requirements h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .requirements ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        .requirements li::before {
+            content: "▸ ";
+            color: var(--secondary);
+        }
+
+        /* Steps */
+        .step {
+            background: var(--bg-light);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+        }
+
+        .step-header {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .step-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: var(--bg-dark);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block:hover {
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .code-block code {
+            color: var(--primary);
+            font-size: 0.9rem;
+            white-space: pre;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary);
+            color: var(--bg-dark);
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .copy-btn.copied {
+            background: var(--accent);
+        }
+
+        /* Info boxes */
+        .info-box {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--secondary);
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .warning-box {
+            background: rgba(255, 0, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        /* Feature grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature {
+            background: var(--bg-light);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            border-color: var(--secondary);
+            transform: translateY(-5px);
+        }
+
+        .feature h3 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .step {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1 class="title">SYSTEM DEPLOYMENT</h1>
+            <p class="subtitle">Universal System Bootstrap</p>
+        </header>
+
+        <div class="requirements">
+            <h2>[SYSTEM.REQUIREMENTS]</h2>
+            <ul>
+                <li>Ubuntu/Debian/Raspberry Pi OS</li>
+                <li>Sudo access</li>
+                <li>Internet connection</li>
+                <li>GitHub account</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <div class="step-header">[STEP.01] // PREPARATION</div>
+            <div class="step-description">
+                Ensure your system is up to date before deployment.
+            </div>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                <code>sudo apt update && sudo apt upgrade -y</code>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-header">[STEP.02] // STAGE.1.BOOTSTRAP</div>
+            <div class="step-description">
+                Download and execute the Stage 1 setup script. This installs GitHub CLI and prepares your system for private repository access.
+            </div>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash</code>
+            </div>
+            <div class="info-box">
+                <strong>What Stage 1 does:</strong> Installs git, GitHub CLI, and configures authentication helpers.
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-header">[STEP.03] // GITHUB.AUTH</div>
+            <div class="step-description">
+                Authenticate with GitHub to enable access to private repositories. Run as your regular user.
+            </div>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                <code>gh auth login</code>
+            </div>
+            <div class="info-box">
+                Select: <strong>GitHub.com</strong> → <strong>SSH</strong> → <strong>Generate new key</strong>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-header">[STEP.04] // STAGE.2.DEPLOYMENT</div>
+            <div class="step-description">
+                Run your Stage 2 deployment script. This will launch an interactive TUI where you can select your deployment configuration.
+            </div>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                <code>wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
+            </div>
+            <div class="warning-box">
+                <strong>Note:</strong> Stage 2 contains your private configurations and deployment options.
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>Minimal Bootstrap</h3>
+                <p>Stage 1 only installs essentials for GitHub access</p>
+            </div>
+            <div class="feature">
+                <h3>Interactive TUI</h3>
+                <p>Stage 2 provides menu-driven configuration</p>
+            </div>
+            <div class="feature">
+                <h3>Private Configs</h3>
+                <p>Sensitive settings stay in private repos</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-header">[OPTIONAL] // QUICK.START</div>
+            <div class="step-description">
+                For experienced users: One-liner to run Stage 1 and authenticate.
+            </div>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.parentElement.querySelector('code');
+            const textArea = document.createElement('textarea');
+            textArea.value = codeBlock.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            btn.textContent = 'COPIED';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = 'COPY';
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

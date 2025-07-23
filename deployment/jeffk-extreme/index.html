@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="JEFFK - MASTER HAXOR AND COMPUTER GENIUS">
+    <meta name="keywords" content="JEFFK, HACKING, DEPLOYMENT, LINUX, 1337, WAREZ, MP3Z, DOOM, QUAKE">
+    <meta name="description" content="JEFFKS OFFICAL DEPLOYEMENT PAGE - OVER 9000 VISITORS!!!!!">
+    <title>☠️💀 JEFFK'S ULTRA MEGA DEPLOYMENT SYSTEM 3000 TURBO EDITION 💀☠️ [NETSCAPE ONLY]</title>
+    
+    <style>
+        /* JEFFK DOESNT NEED ORGANIZED CSS */
+        body {
+            background: #FF00FF;
+            background-image: 
+                repeating-linear-gradient(45deg, #FF0000, #00FF00 10px, #0000FF 20px),
+                repeating-linear-gradient(-45deg, #FFFF00, #00FFFF 15px, #FF00FF 30px);
+            color: #00FF00;
+            font-family: "Comic Sans MS", "Papyrus", "Chiller", cursive;
+            margin: 0;
+            cursor: crosshair;
+            overflow-x: auto;
+            min-height: 200vh; /* MAKE IT TALL FOR MORE CHAOS */
+        }
+        
+        /* SCROLLBAR CHAOS */
+        ::-webkit-scrollbar {
+            width: 30px;
+            height: 30px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: linear-gradient(90deg, #FF0000, #00FF00, #0000FF);
+            border: 5px ridge #FFFF00;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #FF00FF;
+            border: 3px outset #00FFFF;
+            border-radius: 0;
+        }
+        
+        /* FALLING MATRIX LETTERS BUT IN COMIC SANS */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .matrix-column {
+            position: absolute;
+            top: -100%;
+            font-family: "Comic Sans MS";
+            font-size: 20px;
+            animation: matrix-fall linear infinite;
+            color: #00FF00;
+            text-shadow: 0 0 10px #00FF00;
+        }
+        
+        @keyframes matrix-fall {
+            to { transform: translateY(200vh); }
+        }
+        
+        /* MULTIPLE MARQUEES EVERYWHERE */
+        .marquee-top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #FF0000;
+            color: #FFFF00;
+            font-size: 30px;
+            padding: 10px 0;
+            z-index: 9999;
+            overflow: hidden;
+            border-bottom: 10px ridge #00FF00;
+            text-shadow: 3px 3px #000000;
+        }
+        
+        .marquee-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #0000FF;
+            color: #00FF00;
+            font-size: 25px;
+            padding: 15px 0;
+            z-index: 9998;
+            border-top: 8px groove #FF00FF;
+        }
+        
+        .marquee-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 20s linear infinite;
+            font-weight: bold;
+        }
+        
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+        
+        /* BLINKING EVERYTHING */
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+        
+        @keyframes seizure {
+            0% { background: #FF0000; }
+            25% { background: #00FF00; }
+            50% { background: #0000FF; }
+            75% { background: #FFFF00; }
+            100% { background: #FF00FF; }
+        }
+        
+        .blink { animation: blink 0.5s infinite; }
+        .seizure { animation: seizure 0.1s infinite; }
+        
+        /* MAIN CHAOS CONTAINER */
+        .chaos-container {
+            max-width: 1200px;
+            margin: 100px auto;
+            position: relative;
+            transform: rotate(-2deg);
+        }
+        
+        /* FRAMESET SIMULATION */
+        .frame-top {
+            background: #00FFFF;
+            border: 10px ridge #FF0000;
+            padding: 20px;
+            margin: 20px;
+            transform: skew(2deg, -1deg);
+            box-shadow: 10px 10px 0 #000000;
+        }
+        
+        .frame-left {
+            position: fixed;
+            left: 0;
+            top: 100px;
+            width: 200px;
+            height: calc(100vh - 200px);
+            background: linear-gradient(to bottom, #FFFF00, #FF00FF);
+            border-right: 15px groove #00FF00;
+            overflow-y: auto;
+            z-index: 100;
+            padding: 20px;
+        }
+        
+        /* SPINNING SKULLS */
+        .skull {
+            display: inline-block;
+            font-size: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* TITLE THAT HURTS */
+        .mega-title {
+            font-size: 72px;
+            text-align: center;
+            color: #FF0000;
+            text-shadow: 
+                5px 5px 0 #00FF00,
+                10px 10px 0 #0000FF,
+                15px 15px 0 #FFFF00,
+                20px 20px 0 #FF00FF,
+                25px 25px 10px #000000;
+            transform: perspective(500px) rotateY(15deg) rotateX(-10deg);
+            margin: 50px 0;
+            font-family: "Impact", "Arial Black";
+            letter-spacing: 10px;
+        }
+        
+        /* POPUP WINDOWS REFERENCE */
+        .fake-popup {
+            position: fixed;
+            background: #C0C0C0;
+            border: 3px outset #FFFFFF;
+            box-shadow: 10px 10px 0 rgba(0,0,0,0.5);
+            z-index: 1000;
+            font-family: "MS Sans Serif", sans-serif;
+        }
+        
+        .popup-title {
+            background: linear-gradient(to right, #000080, #1084D0);
+            color: white;
+            padding: 2px 5px;
+            font-weight: bold;
+            cursor: move;
+        }
+        
+        .popup-content {
+            padding: 20px;
+            background: #C0C0C0;
+            color: #000000;
+        }
+        
+        /* JEFFK CONTENT BOXES */
+        .jeffk-box {
+            background: #FFFF00;
+            border: 10px double #FF0000;
+            margin: 30px;
+            padding: 20px;
+            position: relative;
+            transform: rotate(1deg);
+            font-size: 20px;
+            color: #FF00FF;
+            overflow: visible;
+        }
+        
+        .jeffk-box::before {
+            content: "!!!NEW!!!";
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            background: #FF0000;
+            color: #FFFF00;
+            padding: 5px 15px;
+            border: 5px ridge #00FF00;
+            transform: rotate(25deg);
+            font-size: 24px;
+            animation: blink 0.2s infinite;
+        }
+        
+        .jeffk-box::after {
+            content: "CLICK HERE";
+            position: absolute;
+            bottom: -25px;
+            left: 50px;
+            background: #00FF00;
+            color: #FF0000;
+            padding: 10px;
+            border: 3px solid #0000FF;
+            animation: bounce 0.5s infinite;
+            cursor: pointer;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* DEPLOYMENT STEPS JEFFK STYLE */
+        .deploy-step {
+            background: linear-gradient(135deg, #FF0000, #00FF00, #0000FF, #FFFF00, #FF00FF);
+            border: 15px ridge #000000;
+            margin: 40px 20px;
+            padding: 30px;
+            position: relative;
+            transform: skew(-1deg, 1deg);
+        }
+        
+        .step-title {
+            font-size: 36px;
+            color: #FFFFFF;
+            background: #000000;
+            padding: 10px;
+            text-align: center;
+            border: 5px dashed #FFFF00;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            animation: rainbow-text 2s infinite;
+        }
+        
+        @keyframes rainbow-text {
+            0% { color: #FF0000; }
+            20% { color: #FF7F00; }
+            40% { color: #FFFF00; }
+            60% { color: #00FF00; }
+            80% { color: #0000FF; }
+            100% { color: #FF00FF; }
+        }
+        
+        /* CODE BLOCKS */
+        .code-block-jeffk {
+            background: #000000;
+            color: #00FF00;
+            border: 10px groove #FF00FF;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: "Courier New", monospace;
+            position: relative;
+            font-size: 18px;
+            overflow-x: auto;
+            transform: rotate(-0.5deg);
+        }
+        
+        .code-block-jeffk::before {
+            content: "COPY THIS CODE OR I WILL HACK U";
+            position: absolute;
+            top: -30px;
+            left: 20px;
+            background: #FFFF00;
+            color: #FF0000;
+            padding: 5px 10px;
+            font-weight: bold;
+            border: 3px solid #00FF00;
+            animation: shake 0.2s infinite;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        /* COPY BUTTONS */
+        .copy-btn-jeffk {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(to bottom, #FFFFFF 0%, #E0E0E0 50%, #C0C0C0 100%);
+            border: 3px outset #999999;
+            color: #000000;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 2px 2px 0 #000000;
+        }
+        
+        .copy-btn-jeffk:active {
+            border-style: inset;
+            transform: translate(1px, 1px);
+        }
+        
+        /* TESTIMONIALS */
+        .testimonial {
+            background: #00FFFF;
+            border: 8px dashed #FF0000;
+            padding: 20px;
+            margin: 20px;
+            font-style: italic;
+            position: relative;
+            transform: rotate(-1deg);
+        }
+        
+        .testimonial::before {
+            content: "⭐⭐⭐⭐⭐";
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 30px;
+            animation: spin 3s linear infinite;
+        }
+        
+        /* NAVIGATION CHAOS */
+        .nav-chaos {
+            position: sticky;
+            top: 60px;
+            background: linear-gradient(90deg, #FF0000, #00FF00, #0000FF, #FFFF00);
+            padding: 20px;
+            text-align: center;
+            z-index: 500;
+            border: 10px ridge #FF00FF;
+            transform: skew(1deg, 0);
+        }
+        
+        .nav-chaos a {
+            color: #FFFFFF;
+            background: #000000;
+            padding: 10px 20px;
+            margin: 0 10px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            border: 3px solid #FFFF00;
+            display: inline-block;
+            transform: rotate(-2deg);
+        }
+        
+        .nav-chaos a:hover {
+            animation: seizure 0.1s infinite;
+            transform: scale(1.5) rotate(180deg);
+        }
+        
+        /* FLOATING GIFS */
+        .float-gif {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            background: #FF00FF;
+            border: 5px solid #00FF00;
+            animation: float-crazy 20s infinite;
+            z-index: 200;
+        }
+        
+        @keyframes float-crazy {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(300px, 200px) rotate(90deg) scale(1.5); }
+            50% { transform: translate(-200px, 400px) rotate(180deg) scale(0.5); }
+            75% { transform: translate(100px, -300px) rotate(270deg) scale(2); }
+            100% { transform: translate(0, 0) rotate(360deg) scale(1); }
+        }
+        
+        /* AWARDS SECTION */
+        .awards {
+            background: #FFFF00;
+            border: 20px groove #FF0000;
+            padding: 30px;
+            margin: 40px;
+            text-align: center;
+            transform: rotate(2deg);
+        }
+        
+        .award {
+            display: inline-block;
+            width: 88px;
+            height: 31px;
+            background: linear-gradient(45deg, #FF0000, #00FF00, #0000FF);
+            margin: 10px;
+            border: 3px solid #000000;
+            animation: pulse 0.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* GUESTBOOK */
+        .guestbook {
+            background: #FF00FF;
+            border: 15px ridge #00FF00;
+            padding: 30px;
+            margin: 40px;
+            color: #FFFF00;
+            font-size: 24px;
+            text-align: center;
+            position: relative;
+        }
+        
+        /* WEBRING */
+        .webring {
+            background: #000000;
+            color: #00FF00;
+            border: 10px groove #FF00FF;
+            padding: 20px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 18px;
+            margin: 40px;
+        }
+        
+        /* ASCII ART */
+        .ascii-art {
+            font-family: monospace;
+            font-size: 12px;
+            color: #00FF00;
+            background: #000000;
+            padding: 20px;
+            white-space: pre;
+            overflow-x: auto;
+            border: 5px solid #FF00FF;
+            text-align: center;
+        }
+        
+        /* MOUSE TRAIL */
+        .mouse-trail {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            font-size: 20px;
+            animation: fade-out 1s forwards;
+        }
+        
+        @keyframes fade-out {
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+        
+        /* TABLE CHAOS */
+        .chaos-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 10px;
+            transform: rotate(-1deg);
+        }
+        
+        .chaos-table td {
+            background: #FFFF00;
+            border: 5px ridge #FF0000;
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: #0000FF;
+        }
+        
+        .chaos-table td:nth-child(odd) {
+            background: #00FFFF;
+            transform: rotate(1deg);
+        }
+        
+        .chaos-table td:nth-child(even) {
+            background: #FF00FF;
+            transform: rotate(-1deg);
+        }
+        
+        /* COUNTER */
+        .visitor-counter {
+            background: #000000;
+            color: #00FF00;
+            font-family: "Courier New", monospace;
+            font-size: 30px;
+            padding: 20px;
+            border: 10px ridge #FF00FF;
+            display: inline-block;
+            margin: 20px;
+        }
+        
+        /* DOWNLOAD BARS */
+        .fake-download {
+            background: #C0C0C0;
+            border: 3px inset #808080;
+            padding: 20px;
+            margin: 20px;
+            font-family: "MS Sans Serif", sans-serif;
+        }
+        
+        .progress-bar {
+            background: #FFFFFF;
+            border: 2px inset #808080;
+            height: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: repeating-linear-gradient(90deg, #000080, #000080 10px, #0000FF 10px, #0000FF 20px);
+            height: 100%;
+            width: 0%;
+            animation: fake-progress 5s infinite;
+        }
+        
+        @keyframes fake-progress {
+            0% { width: 0%; }
+            90% { width: 95%; }
+            100% { width: 95%; }
+        }
+        
+        /* NEWS TICKER */
+        .news-ticker {
+            background: #000000;
+            color: #FFFF00;
+            padding: 10px;
+            font-size: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            border: 5px solid #FF0000;
+        }
+        
+        .news-ticker span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 30s linear infinite;
+        }
+        
+        @keyframes ticker {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+    </style>
+</head>
+<body class="seizure">
+    <!-- MATRIX BACKGROUND -->
+    <div class="matrix-bg" id="matrix-container"></div>
+    
+    <!-- TOP MARQUEE -->
+    <div class="marquee-top">
+        <marquee behavior="alternate" scrollamount="15">
+            <span class="skull">💀</span> WELCOM 2 JEFFKS DEPLOYMENT PAGE <span class="skull">💀</span> I AM A COMPUTER GENIUS <span class="skull">💀</span> MY DAD OWNS MICROSOFT <span class="skull">💀</span> BEST VIEWED IN NETSCAPE 2.0 <span class="skull">💀</span>
+        </marquee>
+    </div>
+    
+    <!-- BOTTOM MARQUEE -->
+    <div class="marquee-bottom">
+        <marquee direction="right" scrollamount="10">
+            *** DOWNLOAD MORE RAM AT WWW.DOWNLOADMORERAM.COM *** I HACKED THE FBI YESTERDAY *** SIGN MY GUESTBOOK OR ELSE *** THIS SITE HAS WON 69420 AWARDS ***
+        </marquee>
+    </div>
+    
+    <!-- LEFT FRAME -->
+    <div class="frame-left">
+        <h2 class="blink" style="color: #FF0000;">NAVIGATION</h2>
+        <p><a href="#nowhere" style="color: #0000FF;">HOME</a></p>
+        <p><a href="#nowhere" style="color: #FF00FF;">ABOUT JEFFK</a></p>
+        <p><a href="#nowhere" style="color: #00FF00;">MY HACKS</a></p>
+        <p><a href="#nowhere" style="color: #FFFF00;">WAREZ</a></p>
+        <p><a href="#nowhere" style="color: #00FFFF;">MP3Z</a></p>
+        <p><a href="#nowhere" style="color: #FF0000;">DEPLOYMENT</a></p>
+        <p><a href="#nowhere" style="color: #0000FF;">GUESTBOOK</a></p>
+        <br>
+        <div class="blink" style="background: #FF0000; color: #FFFF00; padding: 10px;">
+            VISITOR #<span id="counter">0031337</span>
+        </div>
+        <br>
+        <div style="background: #00FF00; color: #FF0000; padding: 10px; animation: spin 5s linear infinite;">
+            UNDER<br>CONSTRUCTION
+        </div>
+    </div>
+    
+    <!-- FLOATING GIFS -->
+    <div class="float-gif" style="top: 150px; left: 50px;"></div>
+    <div class="float-gif" style="top: 300px; right: 100px; animation-delay: 5s; background: #FFFF00;"></div>
+    <div class="float-gif" style="bottom: 200px; left: 200px; animation-delay: 10s; background: #00FFFF;"></div>
+    
+    <!-- FAKE POPUP 1 -->
+    <div class="fake-popup" style="top: 200px; right: 300px; transform: rotate(-5deg);">
+        <div class="popup-title">⚠️ WARNING ⚠️</div>
+        <div class="popup-content">
+            YOUR COMPUTER IS 2 SLOW!!!<br>
+            CLICK HERE 2 DOWNLOAD<br>
+            MORE SPEED!!!<br>
+            <button style="margin-top: 10px;">OK</button>
+        </div>
+    </div>
+    
+    <!-- FAKE POPUP 2 -->
+    <div class="fake-popup" style="bottom: 300px; left: 250px; transform: rotate(3deg);">
+        <div class="popup-title">🎉 CONGRATULATIONS 🎉</div>
+        <div class="popup-content">
+            U R THE 1,000,000th<br>
+            VISITOR!!!!<br>
+            CLICK TO CLAIM UR PRIZE<br>
+            <button style="margin-top: 10px;">CLAIM</button>
+        </div>
+    </div>
+    
+    <!-- MAIN CHAOS -->
+    <div class="chaos-container">
+        
+        <!-- MEGA TITLE -->
+        <h1 class="mega-title blink">
+            JEFFK'S<br>
+            DEPLOYMENT<br>
+            SYSTEM!!!
+        </h1>
+        
+        <!-- ASCII ART -->
+        <div class="ascii-art">
+    ┌─┐ ┌─┐ ┌─┐ ┌─┐ ┬┌─
+    │ │ ├┤  ├┤  ├┤  ├┴┐
+    └┘  └─┘ └   └   ┴ ┴
+    
+    ╦ ╦╔═╗╔═╗╦╔═╔═╗╦═╗
+    ╠═╣╠═╣║  ╠╩╗║╣ ╠╦╝
+    ╩ ╩╩ ╩╚═╝╩ ╩╚═╝╩╚═
+        </div>
+        
+        <!-- NAV CHAOS -->
+        <div class="nav-chaos">
+            <a href="#step1" class="blink">STEP 1</a>
+            <a href="#step2" style="animation: spin 2s linear infinite;">STEP 2</a>
+            <a href="#step3" class="seizure">STEP 3</a>
+            <a href="#step4" style="animation: bounce 0.5s infinite;">STEP 4</a>
+            <a href="#win" class="blink">WIN!!!</a>
+        </div>
+        
+        <!-- NEWS TICKER -->
+        <div class="news-ticker">
+            <span>+++ BREAKING: JEFFK HACKS PENTAGON WITH HTML +++ SCIENTISTS BAFFLED BY JEFFKS IQ OF 9001 +++ NEW STUDY SHOWS LINUX MAKES U SMARTER +++ JEFFK DEFEATS CHUCK NORRIS IN CODING BATTLE +++ MICROSOFT BEGS JEFFK TO WORK FOR THEM (HE SAID NO) +++</span>
+        </div>
+        
+        <!-- INTRO BOX -->
+        <div class="jeffk-box seizure">
+            <marquee behavior="alternate" scrollamount="20">
+                HELLO!!!! MY NAEM IS JEFFK AND I AM HERE 2 TEACH U HOW 2 DEPLOY UR LINUX!!!!
+            </marquee>
+            <p>ok so my frend bob (he lives in canada u dont know him) told me that LINUX is teh best operating system 4 REAL HACKERS like me!!! i use it 2 hack into teh FBI and NASA and download SECRET FILES about ALIENS!!!! also i can make my computer go SUPER FAST (over 9000 gigahurtz!!!!)</p>
+            <p class="blink" style="font-size: 30px; color: #FF0000;">BUT FIRST U NEED 2 DEPLOY IT RIGHT OR ELSE UR COMPUTER WILL EXPLODE!!!!!!</p>
+        </div>
+        
+        <!-- COMPUTER SPECS -->
+        <div class="frame-top">
+            <h2 style="text-align: center; font-size: 36px; color: #FF0000;" class="blink">JEFFKS COMPUTER SPECS</h2>
+            <table class="chaos-table">
+                <tr>
+                    <td class="seizure">CPU</td>
+                    <td>Intel Pentium 69 @ 420.69 GHz (OVERCLOCKED 2 9001 GHz)</td>
+                </tr>
+                <tr>
+                    <td class="blink">RAM</td>
+                    <td>1337 TB DDR69 (DOWNLOADED FROM INTERNET)</td>
+                </tr>
+                <tr>
+                    <td style="animation: spin 1s linear infinite;">GPU</td>
+                    <td>NVIDIA RTX 9090 Ti SUPER MEGA ULTRA (FROM TEH FUTURE)</td>
+                </tr>
+                <tr>
+                    <td class="seizure">STORAGE</td>
+                    <td>∞ PETABYTES (I HACKED GOOGLE AND STOLE THEIR CLOUD)</td>
+                </tr>
+                <tr>
+                    <td class="blink">OS</td>
+                    <td>JEFFK LINUX EXTREME EDITION (I MADE IT MYSELF)</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- STEP 1 -->
+        <div class="deploy-step" id="step1">
+            <div class="step-title blink">STEP 1: UPDAT UR COMPUETR!!!</div>
+            <div class="jeffk-box">
+                <p>OK SO FIRST THING U GOTTA DO IS UPDATE UR LINUX!!!! this is VERY IMPORTNAT becuz if u dont update then teh HACKERS will get in ur computer and steal ur HOMEWORK and ur MOM will be MAD at u!!!!!</p>
+                <marquee>MY MOM ONCE GOT MAD AT ME 4 NOT UPDATING AND SHE TOOK AWAY MY NINTENDO 64 FOR A WHOLE WEEK!!!!!</marquee>
+            </div>
+            <div class="code-block-jeffk">
+                <button class="copy-btn-jeffk" onclick="copyCodeJeffk(this)">COPY OR DIE</button>
+                <code>sudo apt update && sudo apt upgrade -y</code>
+            </div>
+            <div class="testimonial seizure">
+                "i ran this command and my computer got 200% faster!!! now i can download mp3s in only 3 hours instead of 6!!!! THANKS JEFFK!!!!" - xXx_L33T_H4X0R_xXx
+            </div>
+        </div>
+        
+        <!-- FAKE DOWNLOAD -->
+        <div class="fake-download">
+            <h3>DOWNLOADING EXTRA RAM...</h3>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <p>Time remaining: 99:99:99</p>
+        </div>
+        
+        <!-- STEP 2 -->
+        <div class="deploy-step" id="step2">
+            <div class="step-title">STEP 2: GET TEH STAGE 1 SCRIPT!!! (ITS LIKE A VIDEO GAME)</div>
+            <div class="jeffk-box">
+                <p class="blink" style="font-size: 24px;">THIS PART IS SUPER IMPORTANT PAY ATENTION!!!!!</p>
+                <p>ok so now we need 2 download teh MAGIC SCRIPT that does all teh hard work 4 u!!! i wrote this script myself (with help from my friend steve who is a REAL PROGRAMMER at MICROSOFT but dont tell anyone)</p>
+                <p>this script will install GIT and GITHUB which r tools that REAL HACKERS use 2 share their SECRET CODES!!! i use github 2 store my VIRUS COLLECTION (over 9000 viruses!!!!)</p>
+            </div>
+            <div class="code-block-jeffk">
+                <button class="copy-btn-jeffk" onclick="copyCodeJeffk(this)">CLICK ME NOW</button>
+                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash</code>
+            </div>
+            <div style="background: #00FF00; color: #FF0000; padding: 20px; border: 10px dashed #0000FF; margin: 20px 0;">
+                <h3 class="blink">⚠️ WARNING FROM JEFFK ⚠️</h3>
+                <p>MAKE SURE U TYPE THIS EXACTLY RIGHT OR ELSE UR COMPUTER WILL TURN INTO A TOASTER!!!! one time i typed it wrong and my computer started making TOAST and my mom was like "JEFFK WHAT DID U DO" and i was like "I WAS TRYING 2 HACK THE MAINFRAME MOM"</p>
+            </div>
+        </div>
+        
+        <!-- AWARDS -->
+        <div class="awards">
+            <h2 class="seizure" style="font-size: 40px;">JEFFKS AWARDS</h2>
+            <div class="award"></div>
+            <div class="award" style="background: #FFFF00;"></div>
+            <div class="award" style="background: #00FFFF;"></div>
+            <div class="award" style="background: #FF00FF;"></div>
+            <div class="award"></div>
+            <p class="blink">BEST WEBSITE 1999 - GEOCITIES</p>
+            <p>COOLEST HACKER 2000 - MY MOM</p>
+            <p class="seizure">MOST VIRUSES DOWNLOADED - LIMEWIRE</p>
+        </div>
+        
+        <!-- STEP 3 -->
+        <div class="deploy-step" id="step3">
+            <div class="step-title seizure">STEP 3: LOGIN 2 GITHUB (WHERE TEH HACKERS LIVE)</div>
+            <div class="jeffk-box">
+                <p>NOW U GOTTA LOGIN 2 GITHUB!!! github is like FACEBOOK but 4 HACKERS and PROGRAMMERS!!! all teh cool kids use it 2 share their CODES and HACKS!!!</p>
+                <p class="blink" style="font-size: 28px; color: #0000FF;">I HAVE OVER 9000 FOLLOWERS ON GITHUB (they all want 2 learn my SECRETS)</p>
+            </div>
+            <div class="code-block-jeffk">
+                <button class="copy-btn-jeffk" onclick="copyCodeJeffk(this)">SMASH DAT BUTTON</button>
+                <code>gh auth login</code>
+            </div>
+            <table style="width: 100%; margin: 20px 0;" class="chaos-table">
+                <tr>
+                    <td colspan="2" class="seizure" style="font-size: 24px;">JEFFKS PRO TIPS 4 GITHUB LOGIN</td>
+                </tr>
+                <tr>
+                    <td class="blink">TIP #1</td>
+                    <td>Pick GitHub.com (NOT teh enterprise one unless ur a BUSINESS MAN in a SUIT)</td>
+                </tr>
+                <tr>
+                    <td style="animation: spin 2s linear infinite;">TIP #2</td>
+                    <td>Use SSH becuz its MORE SECURE then a BANK VAULT!!! (i know becuz i hacked a bank once)</td>
+                </tr>
+                <tr>
+                    <td class="seizure">TIP #3</td>
+                    <td>Generate a NEW KEY or else teh HACKERS will steal ur old one!!!</td>
+                </tr>
+                <tr>
+                    <td class="blink">TIP #4</td>
+                    <td>DONT FORGET UR PASSWORD!!! write it on a STICKY NOTE and put it on ur MONITOR</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- TESTIMONIALS -->
+        <div class="frame-top seizure">
+            <h2 style="text-align: center; font-size: 36px;" class="blink">WHAT PPL R SAYING ABOUT JEFFK</h2>
+            <div class="testimonial">
+                "jeffk taught me how 2 hack and now i work 4 teh CIA!!! thanks jeffk!!!" - anonymous_hacker_69
+            </div>
+            <div class="testimonial" style="background: #FF00FF; color: #FFFF00;">
+                "i followed jeffks guide and my computer grew ARMS and LEGS and now it does my homework 4 me!!!" - coolguy2000
+            </div>
+            <div class="testimonial" style="background: #00FF00; color: #FF0000;">
+                "JEFFK IS A COMPUTER GENIUS!!! he helped me download a car!!!" - l33t_m4st3r
+            </div>
+        </div>
+        
+        <!-- STEP 4 -->
+        <div class="deploy-step" id="step4">
+            <div class="step-title">STEP 4: RUN STAGE 2 (THIS IS WHERE TEH MAGIC HAPPENS!!!!)</div>
+            <div class="jeffk-box seizure">
+                <p style="font-size: 30px;" class="blink">GET READY 4 TEH MOST EPIC PART!!!!!</p>
+                <p>ok so now we run STAGE 2 which is like STAGE 1 but BETTER and MORE EXTREME!!!! it has a MENU SYSTEM like a VIDEO GAME where u can pick what kind of HACKER u want 2 be!!!</p>
+                <marquee direction="right" scrollamount="25">DO U WANT 2 BE A WEB HACKER? A GAME HACKER? A NASA HACKER? U CAN CHOOSE!!!!!</marquee>
+            </div>
+            <div class="code-block-jeffk">
+                <button class="copy-btn-jeffk" onclick="copyCodeJeffk(this)">ULTIMATE BUTTON</button>
+                <code>wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
+            </div>
+            <div style="background: #FF0000; color: #FFFF00; padding: 30px; border: 20px double #00FF00; text-align: center; font-size: 28px; margin: 20px 0;" class="blink">
+                ⚠️⚠️⚠️ TOP SECRET AREA ⚠️⚠️⚠️<br>
+                THIS PART HAS UR PRIVATE CONFIGS!!!<br>
+                DONT LET TEH FBI SEE THIS OR THEY WILL ARREST U!!!!<br>
+                (i know becuz they tried 2 arrest me once but i was 2 fast)
+            </div>
+        </div>
+        
+        <!-- BONUS ROUND -->
+        <div class="deploy-step seizure" id="win">
+            <div class="step-title blink">BONUS ROUND: ONE LINE 2 RULE THEM ALL!!!! (4 EXTREME HACKERS ONLY)</div>
+            <div class="jeffk-box">
+                <p style="font-size: 32px; color: #FF0000;" class="blink">⚠️ DANGER ZONE ⚠️</p>
+                <p>OK SO THIS IS 4 PPL WHO R ALREADY 1337 HACKERS AND DONT NEED INSTRUCTIONS!!! this command does EVERYTHING IN ONE LINE!!! its like a CHEAT CODE but 4 LINUX!!!</p>
+                <p>I INVENTED THIS COMMAND WHEN I WAS ONLY 5 YEARS OLD!!! my teacher was like "JEFFK HOW R U SO SMART" and i was like "I JUST DOWNLOAD MORE BRAIN CELLS FROM TEH INTERNET"</p>
+            </div>
+            <div class="code-block-jeffk">
+                <button class="copy-btn-jeffk" onclick="copyCodeJeffk(this)">GODMODE ACTIVATE</button>
+                <code>wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash && gh auth login && wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh</code>
+            </div>
+            <marquee behavior="alternate" scrollamount="30" style="font-size: 36px; color: #FF0000; background: #FFFF00; padding: 20px;">
+                ⚡⚡⚡ MAXIMUM OVERDRIVE ⚡⚡⚡ USE AT UR OWN RISK ⚡⚡⚡ NOT RESPONSIBLE 4 EXPLOSIONS ⚡⚡⚡
+            </marquee>
+        </div>
+        
+        <!-- GUESTBOOK -->
+        <div class="guestbook blink">
+            <h2 style="font-size: 48px;">SIGN MY GUESTBOOK!!!</h2>
+            <p>B TEH FIRST 2 SIGN!!! (only 894572 ppl have signed so far)</p>
+            <form onsubmit="return false;">
+                <input type="text" placeholder="UR NAME" style="font-size: 24px; padding: 10px; margin: 10px;">
+                <br>
+                <textarea placeholder="TELL ME HOW COOL I AM" style="font-size: 20px; padding: 10px; margin: 10px;" rows="5" cols="50"></textarea>
+                <br>
+                <button style="font-size: 30px; padding: 20px; background: #00FF00; color: #FF0000; border: 5px solid #0000FF;">SUBMIT</button>
+            </form>
+        </div>
+        
+        <!-- WEBRING -->
+        <div class="webring">
+            <h3 class="blink">JEFFK IS PART OF THE ELITE HACKER WEBRING</h3>
+            <p>[&lt;&lt; PREV: BILLY'S VIRUS COLLECTION] [RANDOM] [NEXT: HOW 2 HACK UR SCHOOL &gt;&gt;]</p>
+            <br>
+            <p>MEMBER SINCE: 1996</p>
+            <p>RING RANK: SUPREME OVERLORD</p>
+        </div>
+        
+        <!-- FOOTER CHAOS -->
+        <div style="background: #000000; color: #00FF00; padding: 50px; text-align: center; font-family: monospace; border: 20px ridge #FF00FF;">
+            <div class="visitor-counter blink">
+                VISITOR COUNTER: <span id="final-counter">0031337</span>
+            </div>
+            <br>
+            <p style="font-size: 24px;" class="seizure">BEST VIEWED WITH:</p>
+            <p>NETSCAPE NAVIGATOR 2.0 OR INTERNET EXPLORER 3.0</p>
+            <p>RESOLUTION: 640x480 OR HIGHER</p>
+            <p>COLORS: AT LEAST 256</p>
+            <p>SOUND: SOUNDBLASTER 16 COMPATIBLE</p>
+            <br>
+            <p class="blink" style="font-size: 30px; color: #FFFF00;">© 1999-2025 JEFFK PRODUCTIONS</p>
+            <p style="color: #FF00FF;">ALL RIGHTS RESERVED (I WILL SUE U)</p>
+            <br>
+            <p style="font-size: 18px;">MADE WITH: NOTEPAD.EXE, MOUNTAIN DEW, AND PURE SKILL</p>
+            <p>HOSTED ON: MY MOMS COMPUTER (DONT TELL HER)</p>
+            <br>
+            <div class="ascii-art" style="display: inline-block;">
+     _____  _____ _____ _____ _   __
+    |_   _||  ___|  ___|  ___| | / /
+      | |  | |__ | |_  | |_  | |/ / 
+      | |  |  __||  _| |  _| |    \ 
+     _| |_ | |___| |   | |   | |\  \
+    |_____||_____|_|   |_|   |_| \_/
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // JEFFK JAVASCRIPT CHAOS
+        
+        // MATRIX EFFECT BUT JEFFK STYLE
+        function createMatrix() {
+            const container = document.getElementById('matrix-container');
+            const chars = 'JEFFK1337HACKLINUXDEPLOYMP3WAREZVIRUSDOOMQUAKE';
+            
+            for (let i = 0; i < 50; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = (i * 30) + 'px';
+                column.style.animationDuration = (5 + Math.random() * 10) + 's';
+                column.style.animationDelay = Math.random() * 5 + 's';
+                
+                let text = '';
+                for (let j = 0; j < 50; j++) {
+                    text += chars[Math.floor(Math.random() * chars.length)] + '<br>';
+                }
+                column.innerHTML = text;
+                container.appendChild(column);
+            }
+        }
+        createMatrix();
+        
+        // COPY FUNCTION JEFFK STYLE
+        function copyCodeJeffk(btn) {
+            const code = btn.parentElement.querySelector('code');
+            const text = code.textContent;
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                btn.innerHTML = 'COPYED!!!!';
+                btn.style.background = '#00FF00';
+                btn.style.animation = 'spin 0.5s linear, seizure 0.1s infinite';
+                
+                // RANDOM ALERTS
+                const messages = [
+                    'GOOD JOB!!! UR ALMOST A HACKER LIKE ME!!!!',
+                    'U COPYED TEH CODE!!! NOW U CAN HACK NASA!!!!',
+                    'EXCELLENT!!! I TAUGHT U WELL!!!!',
+                    'WOW UR SO SMART!!! ALMOST AS SMART AS ME!!!!',
+                    'U DID IT!!! UR MOM WOULD BE PROUD!!!!',
+                    'CONGRATULATIONS!!! U GET A GOLD STAR!!!!',
+                    'AMAZING!!! U R NOW 1% CLOSER 2 BEING JEFFK!!!!'
+                ];
+                
+                if (Math.random() > 0.5) {
+                    alert(messages[Math.floor(Math.random() * messages.length)]);
+                }
+                
+                setTimeout(() => {
+                    btn.innerHTML = 'COPY AGAIN!!!';
+                    btn.style.background = 'linear-gradient(to bottom, #FFFFFF 0%, #E0E0E0 50%, #C0C0C0 100%)';
+                    btn.style.animation = '';
+                }, 3000);
+                
+            } catch(e) {
+                alert('OH NO!!! SOMETHING WENT WRONG!!! TRY TURNING UR COMPUTER OFF AND ON AGAIN!!! OR DOWNLOAD MORE RAM!!!!');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+        
+        // RANDOM COUNTER
+        setInterval(() => {
+            const counters = document.querySelectorAll('#counter, #final-counter');
+            counters.forEach(counter => {
+                counter.textContent = Math.floor(Math.random() * 9999999);
+            });
+        }, 100);
+        
+        // MOUSE TRAIL
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.9) {
+                const trail = document.createElement('div');
+                trail.className = 'mouse-trail';
+                trail.style.left = e.pageX + 'px';
+                trail.style.top = e.pageY + 'px';
+                trail.innerHTML = ['💀', '🔥', '💯', '🚀', '⚡', '🎮', '💻', '🍕'][Math.floor(Math.random() * 8)];
+                document.body.appendChild(trail);
+                
+                setTimeout(() => trail.remove(), 1000);
+            }
+        });
+        
+        // RANDOM ALERTS
+        const jeffkMessages = [
+            'DONT FORGET 2 DEFRAG UR HARD DRIVE!!!!',
+            'I JUST HACKED TEH PENTAGON!!! THEY HAD TERRIBLE SECURITY!!!!',
+            'MY COMPUTER HAS 69420 TERAFLOPS!!!!',
+            'I INVENTED LINUX BUT LINUS TORVALDS STOLE IT FROM ME!!!!',
+            'BILL GATES CALLS ME 4 COMPUTER ADVICE!!!!',
+            'I CAN HACK U THROUGH UR SCREEN!!! WATCH OUT!!!!',
+            'MY GIRLFRIEND LIVES IN CANADA!!! U WOULDNT KNOW HER!!!!',
+            'I BEAT DARK SOULS WITH A GUITAR HERO CONTROLLER!!!!',
+            'I DOWNLOADED A CAR YESTERDAY!!! IT GETS 200 MPG!!!!',
+            'MY IQ IS OVER 9000!!! SCIENTISTS R BAFFLED!!!!'
+        ];
+        
+        let messageIndex = 0;
+        setInterval(() => {
+            console.log('%c' + jeffkMessages[messageIndex], 'color: #00FF00; font-size: 20px; background: #000000; padding: 10px;');
+            messageIndex = (messageIndex + 1) % jeffkMessages.length;
+        }, 5000);
+        
+        // KONAMI CODE BUT JEFFK VERSION
+        const jeffkCode = ['j','e','f','f','k','r','u','l','e','z'];
+        let jeffkIndex = 0;
+        
+        document.addEventListener('keypress', (e) => {
+            if (e.key === jeffkCode[jeffkIndex]) {
+                jeffkIndex++;
+                if (jeffkIndex === jeffkCode.length) {
+                    document.body.style.animation = 'spin 1s linear infinite, seizure 0.1s infinite';
+                    alert('U FOUND TEH SECRET!!! U R NOW AN HONORARY JEFFK!!! WELCOME 2 TEH CLUB!!!!');
+                    
+                    // CREATE CHAOS
+                    setInterval(() => {
+                        const elements = document.querySelectorAll('*');
+                        const randomElement = elements[Math.floor(Math.random() * elements.length)];
+                        randomElement.style.transform = `rotate(${Math.random() * 360}deg) scale(${0.5 + Math.random() * 2})`;
+                    }, 100);
+                    
+                    jeffkIndex = 0;
+                }
+            } else {
+                jeffkIndex = 0;
+            }
+        });
+        
+        // FAKE POPUP CLICKS
+        document.querySelectorAll('.fake-popup button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                alert('HAHA U FELL 4 IT!!! CLASSIC NOOB MISTAKE!!! NOW I HAVE UR IP ADDRESS: 127.0.0.1 !!!!');
+                btn.parentElement.parentElement.style.display = 'none';
+            });
+        });
+        
+        // PAGE LOAD MESSAGE
+        window.addEventListener('load', () => {
+            console.log('%cWELCOME 2 JEFFKS DEPLOYMENT PAGE!!!!', 'color: #FF0000; font-size: 50px; font-weight: bold; text-shadow: 3px 3px 0 #00FF00;');
+            console.log('%cDONT OPEN TEH CONSOLE!!! ITS 4 HACKERS ONLY!!!!', 'color: #FFFF00; font-size: 30px; background: #FF0000; padding: 20px;');
+            console.log('%cIF U CAN READ THIS U R ALREADY 50% HACKER!!!!', 'color: #00FF00; font-size: 25px; background: #000000; padding: 15px;');
+        });
+        
+        // RANDOM PAGE MODIFICATIONS
+        setInterval(() => {
+            if (Math.random() > 0.95) {
+                const elements = document.querySelectorAll('.jeffk-box, .testimonial, .deploy-step');
+                const target = elements[Math.floor(Math.random() * elements.length)];
+                if (target) {
+                    target.style.transform = `rotate(${-5 + Math.random() * 10}deg) scale(${0.95 + Math.random() * 0.1})`;
+                }
+            }
+        }, 2000);
+        
+        // RIGHT CLICK MESSAGE
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            alert('NO RIGHT CLICKING!!! THATS HOW HACKERS STEAL UR CODE!!! I DISABLED IT 4 UR SAFETY!!! UR WELCOME!!!!');
+            return false;
+        });
+        
+        // WINDOW BLUR/FOCUS
+        window.addEventListener('blur', () => {
+            document.title = 'COME BACK!!! DONT LEAVE ME!!!!';
+        });
+        
+        window.addEventListener('focus', () => {
+            document.title = '☠️💀 JEFFK\'S ULTRA MEGA DEPLOYMENT SYSTEM 3000 TURBO EDITION 💀☠️ [NETSCAPE ONLY]';
+        });
+        
+        // CREATE MORE CHAOS ON SCROLL
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > lastScroll && Math.random() > 0.9) {
+                const marquee = document.createElement('marquee');
+                marquee.style.position = 'fixed';
+                marquee.style.top = Math.random() * window.innerHeight + 'px';
+                marquee.style.width = '100%';
+                marquee.style.fontSize = '30px';
+                marquee.style.color = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF'][Math.floor(Math.random() * 5)];
+                marquee.style.zIndex = '9999';
+                marquee.textContent = 'JEFFK WAS HERE!!! ' + jeffkMessages[Math.floor(Math.random() * jeffkMessages.length)];
+                marquee.behavior = Math.random() > 0.5 ? 'alternate' : 'scroll';
+                marquee.direction = Math.random() > 0.5 ? 'left' : 'right';
+                document.body.appendChild(marquee);
+                
+                setTimeout(() => marquee.remove(), 5000);
+            }
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>
