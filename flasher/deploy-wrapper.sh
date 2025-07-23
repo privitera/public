@@ -145,7 +145,8 @@ fi
 echo -e "${YELLOW}Creating system directories...${NC}"
 sudo mkdir -p /var/lib/battery-flasher
 sudo mkdir -p /var/log/battery-flasher
-sudo chown $USER:$USER /var/lib/battery-flasher /var/log/battery-flasher
+# Keep root ownership since deploy.sh runs as root
+sudo chmod 755 /var/lib/battery-flasher /var/log/battery-flasher
 
 # Execute the deployment script
 echo -e "${YELLOW}Running deployment script...${NC}"
