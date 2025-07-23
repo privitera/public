@@ -2645,67 +2645,159 @@
                         FPS: <span id="fps-display">60</span><br>
                         MEMORY: <span id="memory-display">--</span> MB
                     </div>
-                    <div style="position: absolute; bottom: 20px; left: 20px; z-index: 10;">
-                        <div style="color: var(--neon-magenta); font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
-                            PARTICLE SIZE: <span id="size-value">15</span>
-                        </div>
-                        <input type="range" id="particle-size-slider" min="5" max="50" value="15" style="
-                            width: 200px;
-                            height: 4px;
-                            background: rgba(255, 0, 255, 0.2);
-                            outline: none;
+                    <!-- Collapsible Physics Control Panel -->
+                    <div class="physics-controls" style="position: absolute; bottom: 20px; left: 20px; z-index: 10;">
+                        <div class="physics-controls-header" style="
+                            background: rgba(0, 0, 0, 0.8);
+                            border: 1px solid var(--neon-cyan);
+                            padding: 5px 10px;
                             cursor: pointer;
-                            -webkit-appearance: none;
+                            font-family: 'Share Tech Mono', monospace;
+                            font-size: 12px;
+                            color: var(--neon-cyan);
+                            min-width: 200px;
+                            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
                         ">
-                        <style>
-                            #particle-size-slider::-webkit-slider-thumb {
-                                -webkit-appearance: none;
-                                width: 12px;
-                                height: 12px;
-                                background: var(--neon-magenta);
-                                cursor: pointer;
-                                border-radius: 50%;
-                                box-shadow: 0 0 5px var(--neon-magenta);
-                            }
-                            #particle-size-slider::-moz-range-thumb {
-                                width: 12px;
-                                height: 12px;
-                                background: var(--neon-magenta);
-                                cursor: pointer;
-                                border-radius: 50%;
-                                box-shadow: 0 0 5px var(--neon-magenta);
-                            }
-                        </style>
-                        <div style="color: var(--neon-cyan); font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px; margin-top: 10px;">
-                            MAX PARTICLES: <span id="max-value">5000</span>
+                            <span class="physics-toggle">▶</span> PHYSICS.CTRL
                         </div>
-                        <input type="range" id="max-particles-slider" min="100" max="10000" value="5000" step="100" style="
-                            width: 200px;
-                            height: 4px;
-                            background: rgba(0, 255, 255, 0.2);
-                            outline: none;
-                            cursor: pointer;
-                            -webkit-appearance: none;
+                        <div class="physics-controls-content" style="
+                            display: none;
+                            background: rgba(0, 0, 0, 0.9);
+                            border: 1px solid var(--neon-cyan);
+                            border-top: none;
+                            padding: 15px;
+                            min-width: 250px;
+                            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
                         ">
-                        <style>
-                            #max-particles-slider::-webkit-slider-thumb {
+                            <!-- Particle Size -->
+                            <div style="color: var(--neon-magenta); font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
+                                PARTICLE SIZE: <span id="size-value">15</span>
+                            </div>
+                            <input type="range" id="particle-size-slider" min="5" max="50" value="15" style="
+                                width: 100%;
+                                height: 4px;
+                                background: rgba(255, 0, 255, 0.2);
+                                outline: none;
+                                cursor: pointer;
                                 -webkit-appearance: none;
-                                width: 12px;
-                                height: 12px;
-                                background: var(--neon-cyan);
+                                margin-bottom: 15px;
+                            ">
+                            
+                            <!-- Max Particles -->
+                            <div style="color: var(--neon-cyan); font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
+                                MAX PARTICLES: <span id="max-value">5000</span>
+                            </div>
+                            <input type="range" id="max-particles-slider" min="100" max="10000" value="5000" step="100" style="
+                                width: 100%;
+                                height: 4px;
+                                background: rgba(0, 255, 255, 0.2);
+                                outline: none;
                                 cursor: pointer;
-                                border-radius: 50%;
-                                box-shadow: 0 0 5px var(--neon-cyan);
-                            }
-                            #max-particles-slider::-moz-range-thumb {
-                                width: 12px;
-                                height: 12px;
-                                background: var(--neon-cyan);
+                                -webkit-appearance: none;
+                                margin-bottom: 15px;
+                            ">
+                            
+                            <!-- Gravity -->
+                            <div style="color: var(--neon-yellow); font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
+                                GRAVITY: <span id="gravity-value">1.0</span>
+                            </div>
+                            <input type="range" id="gravity-slider" min="0" max="2" value="1" step="0.1" style="
+                                width: 100%;
+                                height: 4px;
+                                background: rgba(255, 255, 0, 0.2);
+                                outline: none;
                                 cursor: pointer;
-                                border-radius: 50%;
-                                box-shadow: 0 0 5px var(--neon-cyan);
-                            }
-                        </style>
+                                -webkit-appearance: none;
+                                margin-bottom: 15px;
+                            ">
+                            
+                            <!-- Restitution -->
+                            <div style="color: var(--neon-green); font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
+                                RESTITUTION: <span id="restitution-value">0.1</span>
+                            </div>
+                            <input type="range" id="restitution-slider" min="0" max="1" value="0.1" step="0.05" style="
+                                width: 100%;
+                                height: 4px;
+                                background: rgba(0, 255, 0, 0.2);
+                                outline: none;
+                                cursor: pointer;
+                                -webkit-appearance: none;
+                                margin-bottom: 15px;
+                            ">
+                            
+                            <!-- Sleep Mode Toggle -->
+                            <div style="margin-top: 10px;">
+                                <label style="color: var(--neon-orange); font-family: 'Share Tech Mono', monospace; font-size: 11px; display: flex; align-items: center; cursor: pointer;">
+                                    <input type="checkbox" id="sleep-toggle" checked style="margin-right: 5px;">
+                                    SLEEP MODE
+                                </label>
+                            </div>
+                            
+                            <!-- Clear All Button -->
+                            <button id="clear-particles" style="
+                                background: transparent;
+                                border: 1px solid var(--neon-red);
+                                color: var(--neon-red);
+                                padding: 5px 10px;
+                                font-family: 'Share Tech Mono', monospace;
+                                font-size: 11px;
+                                cursor: pointer;
+                                margin-top: 15px;
+                                width: 100%;
+                            ">CLEAR ALL PARTICLES</button>
+                            
+                            <style>
+                                #particle-size-slider::-webkit-slider-thumb,
+                                #particle-size-slider::-moz-range-thumb {
+                                    -webkit-appearance: none;
+                                    width: 12px;
+                                    height: 12px;
+                                    background: var(--neon-magenta);
+                                    cursor: pointer;
+                                    border-radius: 50%;
+                                    box-shadow: 0 0 5px var(--neon-magenta);
+                                }
+                                
+                                #max-particles-slider::-webkit-slider-thumb,
+                                #max-particles-slider::-moz-range-thumb {
+                                    -webkit-appearance: none;
+                                    width: 12px;
+                                    height: 12px;
+                                    background: var(--neon-cyan);
+                                    cursor: pointer;
+                                    border-radius: 50%;
+                                    box-shadow: 0 0 5px var(--neon-cyan);
+                                }
+                                
+                                #gravity-slider::-webkit-slider-thumb,
+                                #gravity-slider::-moz-range-thumb {
+                                    -webkit-appearance: none;
+                                    width: 12px;
+                                    height: 12px;
+                                    background: var(--neon-yellow);
+                                    cursor: pointer;
+                                    border-radius: 50%;
+                                    box-shadow: 0 0 5px var(--neon-yellow);
+                                }
+                                
+                                #restitution-slider::-webkit-slider-thumb,
+                                #restitution-slider::-moz-range-thumb {
+                                    -webkit-appearance: none;
+                                    width: 12px;
+                                    height: 12px;
+                                    background: var(--neon-green);
+                                    cursor: pointer;
+                                    border-radius: 50%;
+                                    box-shadow: 0 0 5px var(--neon-green);
+                                }
+                                
+                                #clear-particles:hover {
+                                    background: var(--neon-red);
+                                    color: #000;
+                                    box-shadow: 0 0 10px var(--neon-red);
+                                }
+                            </style>
+                        </div>
                     </div>
                 </div>
             `;
@@ -2836,7 +2928,26 @@
                 const sizeSlider = document.getElementById('particle-size-slider');
                 const sizeValue = document.getElementById('size-value');
                 const skipButton = document.getElementById('skip-physics');
+                const gravitySlider = document.getElementById('gravity-slider');
+                const gravityValue = document.getElementById('gravity-value');
+                const restitutionSlider = document.getElementById('restitution-slider');
+                const restitutionValue = document.getElementById('restitution-value');
+                const sleepToggle = document.getElementById('sleep-toggle');
+                const clearButton = document.getElementById('clear-particles');
+                const controlsHeader = document.querySelector('.physics-controls-header');
+                const controlsContent = document.querySelector('.physics-controls-content');
+                const controlsToggle = document.querySelector('.physics-toggle');
                 const colors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00'];
+                
+                // Control panel toggle
+                if (controlsHeader) {
+                    controlsHeader.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const isOpen = controlsContent.style.display !== 'none';
+                        controlsContent.style.display = isOpen ? 'none' : 'block';
+                        controlsToggle.textContent = isOpen ? '▶' : '▼';
+                    });
+                }
                 
                 // Update max particles display
                 if (maxDisplay) maxDisplay.textContent = maxParticles;
@@ -2865,6 +2976,50 @@
                     skipButton.addEventListener('click', (e) => {
                         e.stopPropagation();
                         closePhysicsLoader();
+                    });
+                }
+                
+                // Gravity control
+                if (gravitySlider) {
+                    gravitySlider.addEventListener('input', (e) => {
+                        e.stopPropagation();
+                        const gravity = parseFloat(e.target.value);
+                        engine.world.gravity.y = gravity;
+                        if (gravityValue) gravityValue.textContent = gravity.toFixed(1);
+                    });
+                }
+                
+                // Restitution control
+                let globalRestitution = 0.1;
+                if (restitutionSlider) {
+                    restitutionSlider.addEventListener('input', (e) => {
+                        e.stopPropagation();
+                        globalRestitution = parseFloat(e.target.value);
+                        if (restitutionValue) restitutionValue.textContent = globalRestitution.toFixed(2);
+                    });
+                }
+                
+                // Sleep mode toggle
+                if (sleepToggle) {
+                    sleepToggle.addEventListener('change', (e) => {
+                        e.stopPropagation();
+                        engine.enableSleeping = e.target.checked;
+                    });
+                }
+                
+                // Clear particles button
+                if (clearButton) {
+                    clearButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        // Remove all non-static bodies
+                        const bodies = Matter.Composite.allBodies(engine.world);
+                        bodies.forEach(body => {
+                            if (!body.isStatic && body !== box) {
+                                Matter.World.remove(engine.world, body);
+                            }
+                        });
+                        particleCount = 0;
+                        if (countDisplay) countDisplay.textContent = particleCount;
                     });
                 }
                 
@@ -2898,10 +3053,10 @@
                         
                         const particle = Matter.Bodies.circle(
                             window.innerWidth/2 + (Math.random() - 0.5) * 200,
-                            50,
+                            -200, // Spawn well above screen so they're falling when visible
                             particleSize,
                             {
-                                restitution: 0.1, // Much less bouncy (was 0.8)
+                                restitution: globalRestitution, // Use dynamic restitution value
                                 friction: 0.8, // Much more friction (was 0.1)
                                 frictionStatic: 0.9, // High static friction
                                 frictionAir: 0.01, // Air resistance
