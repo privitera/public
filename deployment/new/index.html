@@ -2816,9 +2816,8 @@
                 const runner = Matter.Runner.create();
                 Matter.Runner.run(runner, engine);
                 
-                // Enable sleeping to reduce jitter when settled
-                engine.enableSleeping = true;
-                Matter.Sleeping.set(engine.world, true);
+                // Disable sleeping for continuous simulation
+                engine.enableSleeping = false;
                 
                 // Particle system setup
                 let particleCount = 0;
