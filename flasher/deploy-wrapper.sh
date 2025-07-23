@@ -141,7 +141,13 @@ if [ -f .gitmodules ]; then
     echo -e "\n${GREEN}✓ Submodules initialized${NC}"
 fi
 
-# Execute the deployment script with sudo
+# Create system directories with proper permissions before running deploy
+echo -e "${YELLOW}Creating system directories...${NC}"
+sudo mkdir -p /var/lib/battery-flasher
+sudo mkdir -p /var/log/battery-flasher
+sudo chown $USER:$USER /var/lib/battery-flasher /var/log/battery-flasher
+
+# Execute the deployment script
 echo -e "${YELLOW}Running deployment script...${NC}"
 cd flasher
 
