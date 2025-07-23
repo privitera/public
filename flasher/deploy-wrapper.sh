@@ -40,7 +40,8 @@ cleanup() {
         echo -e "\n${YELLOW}Cleaning up temporary files...${NC}"
         # Note: The deployment script should have copied all needed files
         # to their permanent locations (/root/flasher, /etc/systemd/system, etc)
-        rm -rf "$TEMP_DIR"
+        # Use sudo to remove files that may have been created as root
+        sudo rm -rf "$TEMP_DIR"
     fi
 }
 
