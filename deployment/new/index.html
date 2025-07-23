@@ -2938,18 +2938,6 @@
                 ];
                 Matter.World.add(engine.world, walls);
                 
-                // Create a simple test box with realistic physics
-                const box = Matter.Bodies.rectangle(400, 200, 80, 80, {
-                    restitution: 0.1,
-                    friction: 0.8,
-                    frictionStatic: 0.9,
-                    frictionAir: 0.01,
-                    density: 0.002,
-                    render: {
-                        fillStyle: '#ff0000'
-                    }
-                });
-                Matter.World.add(engine.world, box);
                 
                 // Run the renderer
                 Matter.Render.run(render);
@@ -3072,7 +3060,7 @@
                         // Remove all non-static bodies
                         const bodies = Matter.Composite.allBodies(engine.world);
                         bodies.forEach(body => {
-                            if (!body.isStatic && body !== box) {
+                            if (!body.isStatic) {
                                 Matter.World.remove(engine.world, body);
                             }
                         });
