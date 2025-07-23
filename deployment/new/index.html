@@ -2816,8 +2816,12 @@
                 const runner = Matter.Runner.create();
                 Matter.Runner.run(runner, engine);
                 
-                // Disable sleeping for continuous simulation
-                engine.enableSleeping = false;
+                // Enable sleeping to improve performance with many particles
+                engine.enableSleeping = true;
+                
+                // Set sleep thresholds for particles
+                Matter.Sleeping._motionSleepThreshold = 0.08;
+                Matter.Sleeping._motionWakeThreshold = 0.18;
                 
                 // Particle system setup
                 let particleCount = 0;
