@@ -2629,10 +2629,19 @@
                     <canvas id="matter-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></canvas>
                     <div style="position: absolute; top: 20px; left: 20px; color: var(--neon-cyan); font-family: 'Share Tech Mono', monospace; font-size: 12px; z-index: 10;">
                         MATTER.JS PHYSICS v0.19<br>
-                        <span style="color: var(--neon-yellow);">[CLICK TO SKIP]</span>
+                        <button id="skip-physics" style="
+                            background: transparent;
+                            border: 1px solid var(--neon-yellow);
+                            color: var(--neon-yellow);
+                            padding: 2px 8px;
+                            font-family: 'Share Tech Mono', monospace;
+                            font-size: 11px;
+                            cursor: pointer;
+                            margin-top: 5px;
+                        ">[CLICK TO SKIP]</button>
                     </div>
                     <div style="position: absolute; bottom: 20px; right: 20px; color: var(--neon-green); font-family: 'Share Tech Mono', monospace; font-size: 11px; z-index: 10; text-align: right;">
-                        PARTICLES: <span id="particle-count">0</span>/<span id="max-particles">500</span><br>
+                        PARTICLES: <span id="particle-count">0</span>/<span id="max-particles">5000</span><br>
                         FPS: <span id="fps-display">60</span><br>
                         MEMORY: <span id="memory-display">--</span> MB
                     </div>
@@ -2665,6 +2674,36 @@
                                 cursor: pointer;
                                 border-radius: 50%;
                                 box-shadow: 0 0 5px var(--neon-magenta);
+                            }
+                        </style>
+                        <div style="color: var(--neon-cyan); font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px; margin-top: 10px;">
+                            MAX PARTICLES: <span id="max-value">5000</span>
+                        </div>
+                        <input type="range" id="max-particles-slider" min="100" max="10000" value="5000" step="100" style="
+                            width: 200px;
+                            height: 4px;
+                            background: rgba(0, 255, 255, 0.2);
+                            outline: none;
+                            cursor: pointer;
+                            -webkit-appearance: none;
+                        ">
+                        <style>
+                            #max-particles-slider::-webkit-slider-thumb {
+                                -webkit-appearance: none;
+                                width: 12px;
+                                height: 12px;
+                                background: var(--neon-cyan);
+                                cursor: pointer;
+                                border-radius: 50%;
+                                box-shadow: 0 0 5px var(--neon-cyan);
+                            }
+                            #max-particles-slider::-moz-range-thumb {
+                                width: 12px;
+                                height: 12px;
+                                background: var(--neon-cyan);
+                                cursor: pointer;
+                                border-radius: 50%;
+                                box-shadow: 0 0 5px var(--neon-cyan);
                             }
                         </style>
                     </div>
@@ -2710,20 +2749,44 @@
                 
                 console.log('Renderer created:', render);
                 
-                // Create ground
-                const ground = Matter.Bodies.rectangle(
-                    window.innerWidth / 2, 
-                    window.innerHeight - 25, 
-                    window.innerWidth, 
-                    50, 
-                    { 
-                        isStatic: true,
-                        render: {
-                            fillStyle: '#444'
+                // Create walls
+                const wallThickness = 50;
+                const walls = [
+                    // Ground
+                    Matter.Bodies.rectangle(
+                        window.innerWidth / 2, 
+                        window.innerHeight + wallThickness/2, 
+                        window.innerWidth + wallThickness*2, 
+                        wallThickness, 
+                        { 
+                            isStatic: true,
+                            render: { fillStyle: '#444' }
                         }
-                    }
-                );
-                Matter.World.add(engine.world, ground);
+                    ),
+                    // Left wall
+                    Matter.Bodies.rectangle(
+                        -wallThickness/2, 
+                        window.innerHeight / 2, 
+                        wallThickness, 
+                        window.innerHeight, 
+                        { 
+                            isStatic: true,
+                            render: { fillStyle: '#444' }
+                        }
+                    ),
+                    // Right wall
+                    Matter.Bodies.rectangle(
+                        window.innerWidth + wallThickness/2, 
+                        window.innerHeight / 2, 
+                        wallThickness, 
+                        window.innerHeight, 
+                        { 
+                            isStatic: true,
+                            render: { fillStyle: '#444' }
+                        }
+                    )
+                ];
+                Matter.World.add(engine.world, walls);
                 
                 // Create a simple test box
                 const box = Matter.Bodies.rectangle(400, 200, 80, 80, {
@@ -2742,14 +2805,17 @@
                 
                 // Particle system setup
                 let particleCount = 0;
-                const maxParticles = 500; // Increased from 100
+                let maxParticles = 5000; // Default to 5000
                 let baseParticleSize = 15;
                 const countDisplay = document.getElementById('particle-count');
                 const maxDisplay = document.getElementById('max-particles');
+                const maxSlider = document.getElementById('max-particles-slider');
+                const maxValue = document.getElementById('max-value');
                 const fpsDisplay = document.getElementById('fps-display');
                 const memoryDisplay = document.getElementById('memory-display');
                 const sizeSlider = document.getElementById('particle-size-slider');
                 const sizeValue = document.getElementById('size-value');
+                const skipButton = document.getElementById('skip-physics');
                 const colors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00'];
                 
                 // Update max particles display
@@ -2758,8 +2824,27 @@
                 // Particle size control
                 if (sizeSlider) {
                     sizeSlider.addEventListener('input', (e) => {
+                        e.stopPropagation(); // Prevent triggering container click
                         baseParticleSize = parseInt(e.target.value);
                         if (sizeValue) sizeValue.textContent = baseParticleSize;
+                    });
+                }
+                
+                // Max particles control
+                if (maxSlider) {
+                    maxSlider.addEventListener('input', (e) => {
+                        e.stopPropagation(); // Prevent triggering container click
+                        maxParticles = parseInt(e.target.value);
+                        if (maxValue) maxValue.textContent = maxParticles;
+                        if (maxDisplay) maxDisplay.textContent = maxParticles;
+                    });
+                }
+                
+                // Skip button
+                if (skipButton) {
+                    skipButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        closePhysicsLoader();
                     });
                 }
                 
@@ -2829,7 +2914,7 @@
                     }, 500);
                 }
                 
-                container.addEventListener('click', closePhysicsLoader);
+                // Skip button handles closing now
             }
         }
         
