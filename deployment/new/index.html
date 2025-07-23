@@ -2641,7 +2641,7 @@
                         ">[CLICK TO SKIP]</button>
                     </div>
                     <div style="position: absolute; bottom: 20px; right: 20px; color: var(--neon-green); font-family: 'Share Tech Mono', monospace; font-size: 11px; z-index: 10; text-align: right;">
-                        PARTICLES: <span id="particle-count">0</span>/<span id="max-particles">5000</span><br>
+                        PARTICLES: <span id="particle-count">0</span>/<span id="max-particles">1500</span><br>
                         FPS: <span id="fps-display">60</span><br>
                         MEMORY: <span id="memory-display">--</span> MB
                     </div>
@@ -2671,9 +2671,9 @@
                         ">
                             <!-- Particle Size -->
                             <div style="color: var(--neon-magenta); font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
-                                PARTICLE SIZE: <span id="size-value">5</span>
+                                PARTICLE SIZE: <span id="size-value">10</span>
                             </div>
-                            <input type="range" id="particle-size-slider" min="5" max="50" value="5" style="
+                            <input type="range" id="particle-size-slider" min="5" max="50" value="10" style="
                                 width: 100%;
                                 height: 4px;
                                 background: rgba(255, 0, 255, 0.2);
@@ -2685,9 +2685,9 @@
                             
                             <!-- Max Particles -->
                             <div style="color: var(--neon-cyan); font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
-                                MAX PARTICLES: <span id="max-value">5000</span>
+                                MAX PARTICLES: <span id="max-value">1500</span>
                             </div>
-                            <input type="range" id="max-particles-slider" min="100" max="10000" value="5000" step="100" style="
+                            <input type="range" id="max-particles-slider" min="100" max="10000" value="1500" step="100" style="
                                 width: 100%;
                                 height: 4px;
                                 background: rgba(0, 255, 255, 0.2);
@@ -2729,7 +2729,7 @@
                             <div style="color: var(--neon-red); font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
                                 SPAWN RATE: <span id="spawn-rate-value">20</span>/s
                             </div>
-                            <input type="range" id="spawn-rate-slider" min="1" max="100" value="20" style="
+                            <input type="range" id="spawn-rate-slider" min="1" max="200" value="20" style="
                                 width: 100%;
                                 height: 4px;
                                 background: rgba(255, 0, 0, 0.2);
@@ -2743,7 +2743,7 @@
                             <div style="color: var(--neon-pink); font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
                                 SPAWN WIDTH: <span id="spawn-width-value">200</span>px
                             </div>
-                            <input type="range" id="spawn-width-slider" min="50" max="800" value="200" step="10" style="
+                            <input type="range" id="spawn-width-slider" min="1" max="800" value="200" step="1" style="
                                 width: 100%;
                                 height: 4px;
                                 background: rgba(255, 0, 255, 0.2);
@@ -2759,6 +2759,55 @@
                                     <input type="checkbox" id="sleep-toggle" checked style="margin-right: 5px;">
                                     SLEEP MODE
                                 </label>
+                            </div>
+                            
+                            <!-- Advanced Physics Settings -->
+                            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                                <div style="color: var(--neon-white); font-family: 'Share Tech Mono', monospace; font-size: 10px; margin-bottom: 10px; opacity: 0.7; text-transform: uppercase;">
+                                    Advanced Performance
+                                </div>
+                                
+                                <!-- Velocity Iterations -->
+                                <div style="color: #88ccff; font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
+                                    VELOCITY ITER: <span id="velocity-iter-value">10</span>
+                                </div>
+                                <input type="range" id="velocity-iter-slider" min="1" max="20" value="10" style="
+                                    width: 100%;
+                                    height: 4px;
+                                    background: rgba(136, 204, 255, 0.2);
+                                    outline: none;
+                                    cursor: pointer;
+                                    -webkit-appearance: none;
+                                    margin-bottom: 10px;
+                                ">
+                                
+                                <!-- Position Iterations -->
+                                <div style="color: #ff88cc; font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
+                                    POSITION ITER: <span id="position-iter-value">10</span>
+                                </div>
+                                <input type="range" id="position-iter-slider" min="1" max="20" value="10" style="
+                                    width: 100%;
+                                    height: 4px;
+                                    background: rgba(255, 136, 204, 0.2);
+                                    outline: none;
+                                    cursor: pointer;
+                                    -webkit-appearance: none;
+                                    margin-bottom: 10px;
+                                ">
+                                
+                                <!-- Constraint Iterations -->
+                                <div style="color: #ccff88; font-family: 'Share Tech Mono', monospace; font-size: 11px; margin-bottom: 5px;">
+                                    CONSTRAINT ITER: <span id="constraint-iter-value">10</span>
+                                </div>
+                                <input type="range" id="constraint-iter-slider" min="1" max="10" value="10" style="
+                                    width: 100%;
+                                    height: 4px;
+                                    background: rgba(204, 255, 136, 0.2);
+                                    outline: none;
+                                    cursor: pointer;
+                                    -webkit-appearance: none;
+                                    margin-bottom: 10px;
+                                ">
                             </div>
                             
                             <!-- Clear All Button -->
@@ -2839,6 +2888,39 @@
                                     cursor: pointer;
                                     border-radius: 50%;
                                     box-shadow: 0 0 5px var(--neon-pink);
+                                }
+                                
+                                #velocity-iter-slider::-webkit-slider-thumb,
+                                #velocity-iter-slider::-moz-range-thumb {
+                                    -webkit-appearance: none;
+                                    width: 12px;
+                                    height: 12px;
+                                    background: #88ccff;
+                                    cursor: pointer;
+                                    border-radius: 50%;
+                                    box-shadow: 0 0 5px #88ccff;
+                                }
+                                
+                                #position-iter-slider::-webkit-slider-thumb,
+                                #position-iter-slider::-moz-range-thumb {
+                                    -webkit-appearance: none;
+                                    width: 12px;
+                                    height: 12px;
+                                    background: #ff88cc;
+                                    cursor: pointer;
+                                    border-radius: 50%;
+                                    box-shadow: 0 0 5px #ff88cc;
+                                }
+                                
+                                #constraint-iter-slider::-webkit-slider-thumb,
+                                #constraint-iter-slider::-moz-range-thumb {
+                                    -webkit-appearance: none;
+                                    width: 12px;
+                                    height: 12px;
+                                    background: #ccff88;
+                                    cursor: pointer;
+                                    border-radius: 50%;
+                                    box-shadow: 0 0 5px #ccff88;
                                 }
                                 
                                 #clear-particles:hover {
@@ -2955,8 +3037,8 @@
                 
                 // Particle system setup
                 let particleCount = 0;
-                let maxParticles = 5000; // Default to 5000
-                let baseParticleSize = 5; // Default to minimum size
+                let maxParticles = 1500; // Default to 1500
+                let baseParticleSize = 10; // Default to 10
                 const countDisplay = document.getElementById('particle-count');
                 const maxDisplay = document.getElementById('max-particles');
                 const maxSlider = document.getElementById('max-particles-slider');
@@ -2979,6 +3061,12 @@
                 const controlsHeader = document.querySelector('.physics-controls-header');
                 const controlsContent = document.querySelector('.physics-controls-content');
                 const controlsToggle = document.querySelector('.physics-toggle');
+                const velocityIterSlider = document.getElementById('velocity-iter-slider');
+                const velocityIterValue = document.getElementById('velocity-iter-value');
+                const positionIterSlider = document.getElementById('position-iter-slider');
+                const positionIterValue = document.getElementById('position-iter-value');
+                const constraintIterSlider = document.getElementById('constraint-iter-slider');
+                const constraintIterValue = document.getElementById('constraint-iter-value');
                 const colors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00'];
                 
                 // Spawn control variables
@@ -3087,6 +3175,36 @@
                         e.stopPropagation();
                         spawnWidth = parseInt(e.target.value);
                         if (spawnWidthValue) spawnWidthValue.textContent = spawnWidth;
+                    });
+                }
+                
+                // Velocity iterations control
+                if (velocityIterSlider) {
+                    velocityIterSlider.addEventListener('input', (e) => {
+                        e.stopPropagation();
+                        const value = parseInt(e.target.value);
+                        engine.velocityIterations = value;
+                        if (velocityIterValue) velocityIterValue.textContent = value;
+                    });
+                }
+                
+                // Position iterations control
+                if (positionIterSlider) {
+                    positionIterSlider.addEventListener('input', (e) => {
+                        e.stopPropagation();
+                        const value = parseInt(e.target.value);
+                        engine.positionIterations = value;
+                        if (positionIterValue) positionIterValue.textContent = value;
+                    });
+                }
+                
+                // Constraint iterations control
+                if (constraintIterSlider) {
+                    constraintIterSlider.addEventListener('input', (e) => {
+                        e.stopPropagation();
+                        const value = parseInt(e.target.value);
+                        engine.constraintIterations = value;
+                        if (constraintIterValue) constraintIterValue.textContent = value;
                     });
                 }
                 
