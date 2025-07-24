@@ -169,7 +169,13 @@ else
     echo -e "${COLOR_ORANGE}GitHub authentication required${COLOR_RESET}"
     echo ""
     echo "Would you like to authenticate with GitHub now? [Y/n]"
-    read -r response
+    if [ -t 0 ]; then
+        read -r response < /dev/tty
+    else
+        # Can't read when piped, default to no
+        response="n"
+        echo -e "${DIM}(Skipping interactive auth - run 'gh auth login' manually)${COLOR_RESET}"
+    fi
     response=${response:-Y}
     
     if [[ "$response" =~ ^[Yy]$ ]]; then
@@ -222,19 +228,27 @@ echo ""
 
 # Offer to run Stage 2 if authenticated
 if sudo -u "$ACTUAL_USER" gh auth status &>/dev/null 2>&1; then
-    echo -e "${COLOR_ORANGE}Would you like to proceed with Stage 2 deployment now? [Y/n]${COLOR_RESET}"
-    read -r proceed_response
-    proceed_response=${proceed_response:-Y}
-    
-    if [[ "$proceed_response" =~ ^[Yy]$ ]]; then
-        echo ""
-        echo -e "${COLOR_LIGHT_BLUE}${INFO} Launching Stage 2 deployment...${COLOR_RESET}"
-        echo ""
-        # Run Stage 2 as the actual user
-        sudo -u "$ACTUAL_USER" bash -c 'wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash'
+    # Check if we can read from terminal (not piped)
+    if [ -t 0 ]; then
+        echo -e "${COLOR_ORANGE}Would you like to proceed with Stage 2 deployment now? [Y/n]${COLOR_RESET}"
+        read -r proceed_response < /dev/tty
+        proceed_response=${proceed_response:-Y}
+        
+        if [[ "$proceed_response" =~ ^[Yy]$ ]]; then
+            echo ""
+            echo -e "${COLOR_LIGHT_BLUE}${INFO} Launching Stage 2 deployment...${COLOR_RESET}"
+            echo ""
+            # Run Stage 2 as the actual user
+            sudo -u "$ACTUAL_USER" bash -c 'wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash'
+        else
+            echo ""
+            echo -e "${COLOR_ORANGE}To run Stage 2 deployment later:${COLOR_RESET}"
+            echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
+        fi
     else
+        # Can't read input when piped, show command instead
         echo ""
-        echo -e "${COLOR_ORANGE}To run Stage 2 deployment later:${COLOR_RESET}"
+        echo -e "${COLOR_GREEN}${SUCCESS} Stage 1 complete! To continue with deployment:${COLOR_RESET}"
         echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
     fi
 fi
