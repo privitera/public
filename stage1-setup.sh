@@ -155,32 +155,67 @@ echo -e "\n${COLOR_GREEN}========================================${COLOR_RESET}"
 echo -e "${COLOR_GREEN}${SUCCESS} Stage 1 Setup Complete!${COLOR_RESET}"
 echo -e "${COLOR_GREEN}========================================${COLOR_RESET}"
 echo ""
-echo -e "${COLOR_ORANGE}Next steps:${COLOR_RESET}"
+
+# Store the actual username for later
+ACTUAL_USER=${SUDO_USER:-$USER}
+
+# Check if already authenticated
+if sudo -u "$ACTUAL_USER" gh auth status &>/dev/null 2>&1; then
+    echo -e "${COLOR_GREEN}${SUCCESS} GitHub CLI already authenticated${COLOR_RESET}"
+    echo ""
+    echo -e "${COLOR_ORANGE}Ready to run Stage 2 deployment:${COLOR_RESET}"
+    echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
+else
+    echo -e "${COLOR_ORANGE}GitHub authentication required${COLOR_RESET}"
+    echo ""
+    echo "Would you like to authenticate with GitHub now? [Y/n]"
+    read -r response
+    response=${response:-Y}
+    
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        echo ""
+        echo -e "${COLOR_LIGHT_BLUE}${INFO} Starting GitHub authentication...${COLOR_RESET}"
+        echo "   • Choose: GitHub.com"
+        echo "   • Choose: SSH (recommended)"
+        echo "   • Generate new SSH key: Yes"
+        echo "   • Passphrase: Optional (press Enter to skip)"
+        echo "   • Title: $(hostname) (or custom name)"
+        echo ""
+        
+        # Run gh auth login as the actual user
+        sudo -u "$ACTUAL_USER" gh auth login
+        
+        if sudo -u "$ACTUAL_USER" gh auth status &>/dev/null 2>&1; then
+            echo -e "\n${COLOR_GREEN}${SUCCESS} Authentication successful!${COLOR_RESET}"
+            echo ""
+            echo -e "${COLOR_ORANGE}Ready to run Stage 2 deployment:${COLOR_RESET}"
+            echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
+        else
+            echo -e "\n${COLOR_VERMILLION}${ERROR} Authentication failed or cancelled${COLOR_RESET}"
+            echo ""
+            echo "To authenticate later, run:"
+            echo -e "   ${COLOR_BLUE}gh auth login${COLOR_RESET}"
+            echo ""
+            echo "Then run Stage 2 deployment:"
+            echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
+        fi
+    else
+        echo ""
+        echo -e "${COLOR_ORANGE}To authenticate later, run:${COLOR_RESET}"
+        echo -e "   ${COLOR_BLUE}gh auth login${COLOR_RESET}"
+        echo ""
+        echo "Then run Stage 2 deployment:"
+        echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
+    fi
+fi
+
 echo ""
-echo "1. Authenticate with GitHub (as your regular user, not root):"
-echo -e "   ${COLOR_BLUE}gh auth login${COLOR_RESET}"
-echo ""
-echo "   • Choose: GitHub.com"
-echo "   • Choose: SSH (recommended)"
-echo "   • Generate new SSH key: Yes"
-echo "   • Passphrase: Optional (press Enter to skip)"
-echo "   • Title: $(hostname) (or custom name)"
-echo "   • Complete authentication in browser"
-echo ""
-echo "2. Run Stage 2 deployment:"
-echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
-echo ""
-echo "   The Stage 2 script will:"
-echo "   • Clone your private deployment repository"
-echo "   • Launch an interactive TUI to select profiles"
-echo "   • Apply your selected configuration"
-echo ""
-echo -e "${COLOR_LIGHT_BLUE}${INFO} Available profiles:${COLOR_RESET}"
+echo -e "${COLOR_LIGHT_BLUE}${INFO} Available deployment profiles:${COLOR_RESET}"
 echo "   • The Works™ - Full Ubuntu deployment"
 echo "   • BareBones - Lightweight essentials"
 echo "   • Impulse Dev - Corporate dev environment"
 echo "   • FLASH_BATT - RPi battery flasher"
 echo "   • BATTERY_TESTER - RPi battery testing"
 echo ""
-echo -e "${DIM}System ready for deployment | Whiptail TUI enabled${COLOR_RESET}"
+echo -e "${DIM}System ready | Whiptail TUI enabled${COLOR_RESET}"
 echo ""
