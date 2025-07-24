@@ -246,13 +246,21 @@ if sudo -u "$ACTUAL_USER" gh auth status &>/dev/null 2>&1; then
             echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
         fi
     else
-        # Can't read input when piped
+        # Can't read input when piped - automatically proceed if authenticated
         echo ""
-        echo -e "${COLOR_GREEN}${SUCCESS} Stage 1 complete!${COLOR_RESET}"
+        echo -e "${COLOR_LIGHT_BLUE}${INFO} Launching Stage 2 deployment...${COLOR_RESET}"
+        echo -e "${DIM}(Already authenticated and running non-interactively)${COLOR_RESET}"
         echo ""
-        echo -e "${COLOR_ORANGE}To continue with deployment, run:${COLOR_RESET}"
-        echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
-        echo ""
-        echo -e "${DIM}Note: Stage 2 requires direct terminal access for the TUI${COLOR_RESET}"
+        sleep 2
+        
+        # Drop sudo privileges and run Stage 2 as the actual user
+        # This ensures whiptail has proper terminal access
+        echo -e "${COLOR_ORANGE}Downloading and running Stage 2 as ${ACTUAL_USER}...${COLOR_RESET}"
+        
+        # Create a script that will run as the actual user
+        STAGE2_CMD='wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash'
+        
+        # Use su to completely switch to the user context with a proper terminal
+        su - "$ACTUAL_USER" -c "$STAGE2_CMD"
     fi
 fi
