@@ -246,9 +246,13 @@ if sudo -u "$ACTUAL_USER" gh auth status &>/dev/null 2>&1; then
             echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
         fi
     else
-        # Can't read input when piped, show command instead
+        # Can't read input when piped - automatically proceed if authenticated
         echo ""
-        echo -e "${COLOR_GREEN}${SUCCESS} Stage 1 complete! To continue with deployment:${COLOR_RESET}"
-        echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
+        echo -e "${COLOR_LIGHT_BLUE}${INFO} Automatically proceeding to Stage 2...${COLOR_RESET}"
+        echo -e "${DIM}(Already authenticated and running non-interactively)${COLOR_RESET}"
+        echo ""
+        sleep 2
+        # Run Stage 2 as the actual user
+        sudo -u "$ACTUAL_USER" bash -c 'wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash'
     fi
 fi
