@@ -190,9 +190,6 @@ else
         
         if sudo -u "$ACTUAL_USER" gh auth status &>/dev/null 2>&1; then
             echo -e "\n${COLOR_GREEN}${SUCCESS} Authentication successful!${COLOR_RESET}"
-            echo ""
-            echo -e "${COLOR_ORANGE}Ready to run Stage 2 deployment:${COLOR_RESET}"
-            echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
         else
             echo -e "\n${COLOR_VERMILLION}${ERROR} Authentication failed or cancelled${COLOR_RESET}"
             echo ""
@@ -222,3 +219,22 @@ echo "   • BATTERY_TESTER - RPi battery testing"
 echo ""
 echo -e "${DIM}System ready | Whiptail TUI enabled${COLOR_RESET}"
 echo ""
+
+# Offer to run Stage 2 if authenticated
+if sudo -u "$ACTUAL_USER" gh auth status &>/dev/null 2>&1; then
+    echo -e "${COLOR_ORANGE}Would you like to proceed with Stage 2 deployment now? [Y/n]${COLOR_RESET}"
+    read -r proceed_response
+    proceed_response=${proceed_response:-Y}
+    
+    if [[ "$proceed_response" =~ ^[Yy]$ ]]; then
+        echo ""
+        echo -e "${COLOR_LIGHT_BLUE}${INFO} Launching Stage 2 deployment...${COLOR_RESET}"
+        echo ""
+        # Run Stage 2 as the actual user
+        sudo -u "$ACTUAL_USER" bash -c 'wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash'
+    else
+        echo ""
+        echo -e "${COLOR_ORANGE}To run Stage 2 deployment later:${COLOR_RESET}"
+        echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
+    fi
+fi
