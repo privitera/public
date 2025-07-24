@@ -85,14 +85,34 @@ cd "$TEMP_DIR"
 show_progress() {
     local progress=$1
     local total=$2
-    local width=40
+    local width=50
     local percentage=$((progress * 100 / total))
     local filled=$((width * progress / total))
     
-    printf "\r["
-    printf "%${filled}s" | tr ' ' '█'
-    printf "%$((width - filled))s" | tr ' ' '░'
-    printf "] %3d%%" $percentage
+    # Create gradient effect with different block characters
+    printf "\r${COLOR_BLUE}["
+    
+    # Filled portion with gradient blocks
+    local i
+    for ((i=0; i<filled; i++)); do
+        if [ $i -lt $((filled - 1)) ]; then
+            printf "█"
+        else
+            # Last block shows partial fill
+            case $((percentage % 10)) in
+                0|1) printf "█" ;;
+                2|3) printf "▓" ;;
+                4|5) printf "▒" ;;
+                6|7) printf "░" ;;
+                *) printf "▓" ;;
+            esac
+        fi
+    done
+    
+    # Empty portion
+    printf "%$((width - filled))s" | tr ' ' '·'
+    
+    printf "]${COLOR_RESET} ${COLOR_GREEN}%3d%%${COLOR_RESET}" $percentage
 }
 
 # Clone the private deployments repository
