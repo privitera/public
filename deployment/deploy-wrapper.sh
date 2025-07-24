@@ -1,35 +1,49 @@
 #!/bin/bash
-
-# Public wrapper script for deploying from private repository
-# This script handles authentication for accessing the private deployment repo
-
+# Stage 2 Deployment Wrapper - Launches private deployment TUI
+# This script clones the private repository and runs the whiptail-based deploy.sh
 set -e
 
-# Colors - Standard ANSI for better compatibility
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-BLUE='\033[0;34m'
-GREY='\033[0;90m'
+# Colors - Wong/Tol hybrid colorblind-safe palette (matching deployments-private)
+COLOR_BLUE='\033[38;2;0;114;178m'        # #0072B2 - Primary blue
+COLOR_ORANGE='\033[38;2;230;159;0m'      # #E69F00 - Warning/attention
+COLOR_LIGHT_BLUE='\033[38;2;86;180;233m' # #56B4E9 - Info/secondary
+COLOR_GREEN='\033[38;2;0;158;115m'       # #009E73 - Success
+COLOR_VERMILLION='\033[38;2;213;94;0m'   # #D55E00 - Error/danger
+COLOR_GREY='\033[38;2;187;187;187m'     # #BBBBBB - Neutral
+COLOR_RESET='\033[0m'
 BOLD='\033[1m'
-NC='\033[0m'
+DIM='\033[2m'
 
-echo -e "${BOLD}${GREEN}========================================${NC}"
-echo -e "${BOLD}${GREEN}Stage 2 Deployment System${NC}"
-echo -e "${BOLD}${GREEN}========================================${NC}"
+# Symbols
+SUCCESS='✓'
+WARNING='⚠'
+ERROR='✗'
+INFO='ℹ'
+
+echo -e "${BOLD}${COLOR_BLUE}========================================${COLOR_RESET}"
+echo -e "${BOLD}${COLOR_BLUE}Stage 2 Deployment System${COLOR_RESET}"
+echo -e "${BOLD}${COLOR_BLUE}========================================${COLOR_RESET}"
 echo ""
+
+# Check if whiptail is installed
+if ! command -v whiptail &> /dev/null; then
+    echo -e "${COLOR_VERMILLION}${ERROR} Error: whiptail is not installed${COLOR_RESET}"
+    echo "Please run Stage 1 setup first:"
+    echo "  wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash"
+    exit 1
+fi
 
 # Check if gh is installed
 if ! command -v gh &> /dev/null; then
-    echo -e "${RED}Error: GitHub CLI (gh) is not installed${NC}"
-    echo "Please run the Stage 1 setup first:"
+    echo -e "${COLOR_VERMILLION}${ERROR} Error: GitHub CLI (gh) is not installed${COLOR_RESET}"
+    echo "Please run Stage 1 setup first:"
     echo "  wget -qO- https://privitera.github.io/public/stage1-setup.sh | sudo bash"
     exit 1
 fi
 
 # Check if authenticated
 if ! gh auth status &> /dev/null; then
-    echo -e "${RED}Error: Not authenticated with GitHub${NC}"
+    echo -e "${COLOR_VERMILLION}${ERROR} Error: Not authenticated with GitHub${COLOR_RESET}"
     echo "Please authenticate first:"
     echo "  gh auth login"
     echo ""
@@ -38,13 +52,23 @@ if ! gh auth status &> /dev/null; then
 fi
 
 # Get GitHub username
-GITHUB_USER=$(gh api user -q .login)
-echo -e "${BLUE}GitHub user:${NC} $GITHUB_USER"
+GITHUB_USER=$(gh api user -q .login 2>/dev/null || echo "unknown")
+echo -e "${COLOR_LIGHT_BLUE}${INFO} GitHub user:${COLOR_RESET} $GITHUB_USER"
+
+# Check if running in an interactive terminal
+if [ ! -t 0 ] || [ ! -t 1 ]; then
+    echo -e "${COLOR_VERMILLION}${ERROR} This script requires an interactive terminal${COLOR_RESET}"
+    echo "The deployment TUI needs keyboard input to select profiles."
+    echo ""
+    echo "Please run this command directly in your terminal:"
+    echo -e "  ${COLOR_BLUE}wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh${COLOR_RESET}"
+    exit 1
+fi
 
 # Set up cleanup trap
 cleanup() {
     if [ -n "$TEMP_DIR" ] && [ -d "$TEMP_DIR" ]; then
-        echo -e "\n${YELLOW}Cleaning up temporary files...${NC}"
+        echo -e "\n${COLOR_ORANGE}Cleaning up temporary files...${COLOR_RESET}"
         rm -rf "$TEMP_DIR"
     fi
 }
@@ -53,7 +77,7 @@ cleanup() {
 TEMP_DIR=$(mktemp -d)
 trap cleanup EXIT INT TERM
 
-echo -e "${YELLOW}Cloning private deployment repository...${NC}"
+echo -e "${COLOR_ORANGE}Cloning private deployment repository...${COLOR_RESET}"
 cd "$TEMP_DIR"
 
 # Function to show progress
@@ -65,71 +89,104 @@ show_progress() {
     local filled=$((width * progress / total))
     
     printf "\r["
-    printf "%${filled}s" | tr ' ' '='
-    printf "%$((width - filled))s" | tr ' ' '-'
+    printf "%${filled}s" | tr ' ' '█'
+    printf "%$((width - filled))s" | tr ' ' '░'
     printf "] %3d%%" $percentage
 }
 
 # Clone the private deployments repository
 REPO_NAME="deployments-private"
-echo -e "${GREY}Repository: github.com:${GITHUB_USER}/${REPO_NAME}.git${NC}"
+echo -e "${COLOR_GREY}Repository: github.com:${GITHUB_USER}/${REPO_NAME}.git${COLOR_RESET}"
 
-if ! git clone --progress "git@github.com:${GITHUB_USER}/${REPO_NAME}.git" 2>&1 | while IFS= read -r line; do
+# First, check if the user has access to the repository
+echo -e "${COLOR_ORANGE}Checking repository access...${COLOR_RESET}"
+if ! gh repo view "${GITHUB_USER}/${REPO_NAME}" &>/dev/null; then
+    # Try the original repository
+    if ! gh repo view "privitera/${REPO_NAME}" &>/dev/null; then
+        echo -e "\n${COLOR_VERMILLION}${ERROR} Repository not found or access denied${COLOR_RESET}"
+        echo ""
+        echo "Please ensure you have:"
+        echo "1. Forked or been granted access to: https://github.com/privitera/deployments-private"
+        echo "2. Made sure the repository is set to private"
+        echo "3. Authenticated with the correct GitHub account"
+        echo ""
+        echo -e "${COLOR_ORANGE}To create your own fork:${COLOR_RESET}"
+        echo "  gh repo fork privitera/deployments-private --private"
+        exit 1
+    else
+        # Use the original repository
+        REPO_OWNER="privitera"
+        echo -e "${COLOR_GREEN}${SUCCESS} Using original repository${COLOR_RESET}"
+    fi
+else
+    REPO_OWNER="$GITHUB_USER"
+    echo -e "${COLOR_GREEN}${SUCCESS} Repository access confirmed${COLOR_RESET}"
+fi
+
+# Clone with progress output
+if ! git clone --progress "git@github.com:${REPO_OWNER}/${REPO_NAME}.git" 2>&1 | while IFS= read -r line; do
     if [[ "$line" =~ Receiving\ objects:\ +([0-9]+)%\ \(([0-9]+)/([0-9]+)\) ]]; then
         current="${BASH_REMATCH[2]}"
         total="${BASH_REMATCH[3]}"
         show_progress $current $total
     elif [[ "$line" =~ "Cloning into" ]]; then
-        echo -e "${GREY}$line${NC}"
+        echo -e "${COLOR_GREY}$line${COLOR_RESET}"
     elif [[ "$line" =~ "error:" ]] || [[ "$line" =~ "fatal:" ]]; then
-        echo -e "\n${RED}$line${NC}"
-        
-        # Check if it's a repository not found error
-        if [[ "$line" =~ "Repository not found" ]] || [[ "$line" =~ "Could not read from remote repository" ]]; then
-            echo -e "\n${YELLOW}If you haven't created your private deployments repository yet:${NC}"
-            echo "1. Fork or create: https://github.com/privitera/deployments-private"
-            echo "2. Make sure it's private"
-            echo "3. Run this script again"
-        fi
+        echo -e "\n${COLOR_VERMILLION}$line${COLOR_RESET}"
         exit 1
     fi
 done; then
-    echo -e "\n${RED}Error: Failed to clone repository${NC}"
+    echo -e "\n${COLOR_VERMILLION}${ERROR} Failed to clone repository${COLOR_RESET}"
     echo "Please check your GitHub authentication and repository access"
     exit 1
 fi
 
-echo -e "\n${GREEN}✓ Repository cloned successfully${NC}"
+echo -e "\n${COLOR_GREEN}${SUCCESS} Repository cloned successfully${COLOR_RESET}"
 
 # Check if deploy.sh exists
 if [ ! -f "${REPO_NAME}/deploy.sh" ]; then
-    echo -e "${RED}Error: deploy.sh not found in repository${NC}"
+    echo -e "${COLOR_VERMILLION}${ERROR} deploy.sh not found in repository${COLOR_RESET}"
     echo "Expected location: ${REPO_NAME}/deploy.sh"
+    echo ""
+    echo "The repository structure may have changed. Please check:"
+    echo "  https://github.com/${REPO_OWNER}/${REPO_NAME}"
     exit 1
 fi
 
-# Make it executable
+# Make deploy.sh executable
 chmod +x "${REPO_NAME}/deploy.sh"
 
 # Change to repository directory
 cd "${REPO_NAME}"
 
-# Execute the deployment script
-echo -e "\n${YELLOW}Launching deployment TUI...${NC}"
-echo -e "${GREY}Select your deployment profile from the menu${NC}\n"
+# Show what's about to happen
+echo -e "\n${COLOR_ORANGE}Launching deployment TUI...${COLOR_RESET}"
+echo -e "${COLOR_GREY}You will be able to select from these profiles:${COLOR_RESET}"
+echo ""
+echo "  • The Works™ - Full Ubuntu deployment (everything)"
+echo "  • BareBones - Lightweight Ubuntu with essentials"
+echo "  • Impulse Dev - Corporate dev with sw repo"
+echo "  • FLASH_BATT - RPi battery flasher"
+echo "  • BATTERY_TESTER - RPi battery testing & CAN"
+echo "  • Custom - Manual configuration"
+echo ""
+echo -e "${DIM}Use arrow keys to navigate, Enter to select${COLOR_RESET}"
+echo ""
 
-# Check if running in an interactive terminal
-if [ -t 0 ] && [ -t 1 ]; then
-    # Interactive terminal available, run normally
-    ./deploy.sh
+# Small pause to let user read the information
+sleep 2
+
+# Execute the deployment script
+./deploy.sh
+
+# Check exit status
+EXIT_CODE=$?
+if [ $EXIT_CODE -eq 0 ]; then
+    echo -e "\n${COLOR_GREEN}${SUCCESS} Deployment completed successfully!${COLOR_RESET}"
+    echo -e "${DIM}Temporary files will be cleaned up automatically${COLOR_RESET}"
 else
-    # No interactive terminal
-    echo -e "${RED}Error: This script requires an interactive terminal${NC}"
-    echo "The deployment TUI needs keyboard input to select profiles"
-    echo ""
-    echo "Please run this command directly in your terminal:"
-    echo -e "  ${GREEN}wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh${NC}"
-    exit 1
+    echo -e "\n${COLOR_VERMILLION}${ERROR} Deployment failed with exit code: $EXIT_CODE${COLOR_RESET}"
+    echo "Check the logs for more information"
 fi
 
 # Cleanup happens automatically via trap
