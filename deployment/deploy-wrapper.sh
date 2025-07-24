@@ -147,9 +147,13 @@ fi
 # Clone with progress output
 if ! git clone --progress "git@github.com:${REPO_OWNER}/${REPO_NAME}.git" 2>&1 | while IFS= read -r line; do
     if [[ "$line" =~ Receiving\ objects:\ +([0-9]+)%\ \(([0-9]+)/([0-9]+)\) ]]; then
+        percentage="${BASH_REMATCH[1]}"
         current="${BASH_REMATCH[2]}"
         total="${BASH_REMATCH[3]}"
-        show_progress $current $total
+        # Only show progress up to 100%
+        if [ "$percentage" -le 100 ]; then
+            show_progress $current $total
+        fi
     elif [[ "$line" =~ "Cloning into" ]]; then
         echo -e "${COLOR_GREY}$line${COLOR_RESET}"
     elif [[ "$line" =~ "error:" ]] || [[ "$line" =~ "fatal:" ]]; then
