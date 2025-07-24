@@ -132,12 +132,23 @@ GH_VERSION=$(gh --version 2>/dev/null | head -n1 | cut -d' ' -f3 || echo "unknow
 USER_HOME=/home/${SUDO_USER:-$USER}
 EOF
 
-# Test whiptail installation
-echo -e "\n${COLOR_ORANGE}Testing whiptail installation...${COLOR_RESET}"
-if whiptail --title "Test" --msgbox "Whiptail is working correctly!" 8 40 2>/dev/null; then
-    echo -e "${COLOR_GREEN}${SUCCESS} Whiptail TUI verified${COLOR_RESET}"
+# Test whiptail installation only if in proper terminal
+echo -e "\n${COLOR_ORANGE}Verifying whiptail installation...${COLOR_RESET}"
+if [ -t 0 ] && [ -t 1 ] && [ -n "$TERM" ] && [ "$TERM" != "dumb" ]; then
+    # Only test if we have a real terminal
+    if TERM=xterm-256color whiptail --title "Test" --msgbox "Whiptail is working correctly!" 8 40 2>/dev/null; then
+        echo -e "${COLOR_GREEN}${SUCCESS} Whiptail TUI verified${COLOR_RESET}"
+    else
+        echo -e "${COLOR_ORANGE}${WARNING} Whiptail test failed${COLOR_RESET}"
+    fi
 else
-    echo -e "${COLOR_ORANGE}${WARNING} Whiptail test skipped (no terminal)${COLOR_RESET}"
+    # Just verify it's installed
+    if command -v whiptail &> /dev/null; then
+        echo -e "${COLOR_GREEN}${SUCCESS} Whiptail installed (test skipped - no interactive terminal)${COLOR_RESET}"
+    else
+        echo -e "${COLOR_VERMILLION}${ERROR} Whiptail installation failed${COLOR_RESET}"
+        exit 1
+    fi
 fi
 
 echo -e "\n${COLOR_GREEN}========================================${COLOR_RESET}"
