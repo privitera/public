@@ -181,9 +181,12 @@ else
         echo "   • Passphrase: Optional (press Enter to skip)"
         echo "   • Title: $(hostname) (or custom name)"
         echo ""
+        echo -e "${DIM}Note: Browser will not open in SSH sessions. Copy the provided URL manually.${COLOR_RESET}"
+        echo ""
         
         # Run gh auth login as the actual user
-        sudo -u "$ACTUAL_USER" gh auth login
+        # Set BROWSER=echo to prevent browser launch attempts in CLI
+        sudo -u "$ACTUAL_USER" BROWSER=echo gh auth login
         
         if sudo -u "$ACTUAL_USER" gh auth status &>/dev/null 2>&1; then
             echo -e "\n${COLOR_GREEN}${SUCCESS} Authentication successful!${COLOR_RESET}"
