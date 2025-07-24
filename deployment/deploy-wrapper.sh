@@ -14,11 +14,11 @@ COLOR_RESET='\033[0m'
 BOLD='\033[1m'
 DIM='\033[2m'
 
-# Symbols
-SUCCESS='✓'
-WARNING='⚠'
-ERROR='✗'
-INFO='ℹ'
+# Symbols (ASCII for compatibility)
+SUCCESS='[OK]'
+WARNING='[!]'
+ERROR='[X]'
+INFO='[i]'
 
 echo -e "${BOLD}${COLOR_BLUE}========================================${COLOR_RESET}"
 echo -e "${BOLD}${COLOR_BLUE}Stage 2 Deployment System${COLOR_RESET}"
@@ -89,28 +89,17 @@ show_progress() {
     local percentage=$((progress * 100 / total))
     local filled=$((width * progress / total))
     
-    # Create gradient effect with different block characters
+    # Use simple ASCII characters for compatibility
     printf "\r${COLOR_BLUE}["
     
-    # Filled portion with gradient blocks
+    # Filled portion with simple hashes
     local i
     for ((i=0; i<filled; i++)); do
-        if [ $i -lt $((filled - 1)) ]; then
-            printf "█"
-        else
-            # Last block shows partial fill
-            case $((percentage % 10)) in
-                0|1) printf "█" ;;
-                2|3) printf "▓" ;;
-                4|5) printf "▒" ;;
-                6|7) printf "░" ;;
-                *) printf "▓" ;;
-            esac
-        fi
+        printf "#"
     done
     
-    # Empty portion
-    printf "%$((width - filled))s" | tr ' ' '·'
+    # Empty portion with dots
+    printf "%$((width - filled))s" | tr ' ' '.'
     
     printf "]${COLOR_RESET} ${COLOR_GREEN}%3d%%${COLOR_RESET}" $percentage
 }
@@ -184,12 +173,12 @@ cd "${REPO_NAME}"
 echo -e "\n${COLOR_ORANGE}Launching deployment TUI...${COLOR_RESET}"
 echo -e "${COLOR_GREY}You will be able to select from these profiles:${COLOR_RESET}"
 echo ""
-echo "  • The Works™ - Full Ubuntu deployment (everything)"
-echo "  • BareBones - Lightweight Ubuntu with essentials"
-echo "  • Impulse Dev - Corporate dev with sw repo"
-echo "  • FLASH_BATT - RPi battery flasher"
-echo "  • BATTERY_TESTER - RPi battery testing & CAN"
-echo "  • Custom - Manual configuration"
+echo "  - The Works(TM) - Full Ubuntu deployment (everything)"
+echo "  - BareBones - Lightweight Ubuntu with essentials"
+echo "  - Impulse Dev - Corporate dev with sw repo"
+echo "  - FLASH_BATT - RPi battery flasher"
+echo "  - BATTERY_TESTER - RPi battery testing & CAN"
+echo "  - Custom - Manual configuration"
 echo ""
 echo -e "${DIM}Use arrow keys to navigate, Enter to select${COLOR_RESET}"
 echo ""
