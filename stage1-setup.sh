@@ -246,21 +246,27 @@ if sudo -u "$ACTUAL_USER" gh auth status &>/dev/null 2>&1; then
             echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
         fi
     else
-        # Can't read input when piped - automatically proceed if authenticated
+        # Can't read input when piped
         echo ""
-        echo -e "${COLOR_LIGHT_BLUE}${INFO} Launching Stage 2 deployment...${COLOR_RESET}"
-        echo -e "${DIM}(Already authenticated and running non-interactively)${COLOR_RESET}"
+        echo -e "${COLOR_GREEN}${SUCCESS} Stage 1 complete!${COLOR_RESET}"
         echo ""
-        sleep 2
         
-        # Drop sudo privileges and run Stage 2 as the actual user
-        # This ensures whiptail has proper terminal access
-        echo -e "${COLOR_ORANGE}Downloading and running Stage 2 as ${ACTUAL_USER}...${COLOR_RESET}"
+        # Since we can't properly hand off terminal control through sudo,
+        # create a one-liner that's easy to copy/paste
+        STAGE2_CMD="wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash"
         
-        # Create a script that will run as the actual user
-        STAGE2_CMD='wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash'
+        echo -e "${COLOR_ORANGE}Ready to launch Stage 2 deployment!${COLOR_RESET}"
+        echo ""
+        echo -e "${COLOR_LIGHT_BLUE}Run this command:${COLOR_RESET}"
+        echo ""
+        echo -e "   ${BOLD}${COLOR_BLUE}${STAGE2_CMD}${COLOR_RESET}"
+        echo ""
+        echo -e "${DIM}The deployment TUI will start immediately${COLOR_RESET}"
         
-        # Use su to completely switch to the user context with a proper terminal
-        su - "$ACTUAL_USER" -c "$STAGE2_CMD"
+        # Make it super easy - save to clipboard if xclip is available
+        if command -v xclip &>/dev/null; then
+            echo "$STAGE2_CMD" | xclip -selection clipboard 2>/dev/null && \
+            echo -e "${DIM}(Command copied to clipboard)${COLOR_RESET}"
+        fi
     fi
 fi
