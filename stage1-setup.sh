@@ -246,24 +246,13 @@ if sudo -u "$ACTUAL_USER" gh auth status &>/dev/null 2>&1; then
             echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
         fi
     else
-        # Can't read input when piped - automatically proceed if authenticated
+        # Can't read input when piped
         echo ""
-        echo -e "${COLOR_LIGHT_BLUE}${INFO} Automatically proceeding to Stage 2...${COLOR_RESET}"
-        echo -e "${DIM}(Already authenticated and running non-interactively)${COLOR_RESET}"
+        echo -e "${COLOR_GREEN}${SUCCESS} Stage 1 complete!${COLOR_RESET}"
         echo ""
-        sleep 2
-        # Download and run Stage 2 properly (not piped) so it has terminal access
-        echo -e "${COLOR_ORANGE}Downloading Stage 2...${COLOR_RESET}"
-        TEMP_SCRIPT="/tmp/deploy-wrapper-$$.sh"
-        if sudo -u "$ACTUAL_USER" wget -q https://privitera.github.io/public/deployment/deploy-wrapper.sh -O "$TEMP_SCRIPT"; then
-            chmod +x "$TEMP_SCRIPT"
-            # Run with proper terminal access
-            sudo -u "$ACTUAL_USER" bash "$TEMP_SCRIPT"
-            rm -f "$TEMP_SCRIPT"
-        else
-            echo -e "${COLOR_VERMILLION}${ERROR} Failed to download Stage 2${COLOR_RESET}"
-            echo -e "${COLOR_ORANGE}Run manually:${COLOR_RESET}"
-            echo -e "   ${COLOR_BLUE}wget https://privitera.github.io/public/deployment/deploy-wrapper.sh && bash deploy-wrapper.sh && rm deploy-wrapper.sh${COLOR_RESET}"
-        fi
+        echo -e "${COLOR_ORANGE}To continue with deployment, run:${COLOR_RESET}"
+        echo -e "   ${COLOR_BLUE}wget -qO- https://privitera.github.io/public/deployment/deploy-wrapper.sh | bash${COLOR_RESET}"
+        echo ""
+        echo -e "${DIM}Note: Stage 2 requires direct terminal access for the TUI${COLOR_RESET}"
     fi
 fi
