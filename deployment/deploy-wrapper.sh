@@ -56,7 +56,8 @@ GITHUB_USER=$(gh api user -q .login 2>/dev/null || echo "unknown")
 echo -e "${COLOR_LIGHT_BLUE}${INFO} GitHub user:${COLOR_RESET} $GITHUB_USER"
 
 # Check if running in an interactive terminal
-if [ ! -t 0 ] || [ ! -t 1 ]; then
+# When run via Stage 1's auto-launch, we might not have stdin but we do have stdout/stderr
+if [ ! -t 1 ] && [ ! -t 2 ]; then
     echo -e "${COLOR_VERMILLION}${ERROR} This script requires an interactive terminal${COLOR_RESET}"
     echo "The deployment TUI needs keyboard input to select profiles."
     echo ""
